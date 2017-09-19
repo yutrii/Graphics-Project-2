@@ -158,7 +158,7 @@ public class Terrain {
         		// simplifly interpolation by finding difference in altitude
         		double height = (double)(getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z)); 
         		//distance of unknown point along line
-        		double pos = Math.sqrt(x*x + z*z);
+        		double pos = Math.sqrt((p1x-x)*(p1x-x) + (z-p1z)*(z-p1z));
         				
         		altitude = pos * height / dist;
         	} else {
