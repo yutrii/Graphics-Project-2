@@ -119,9 +119,76 @@ public class Terrain {
      * @return
      */
     public double altitude(double x, double z) {
-        double altitude = 0;
-
+        double altitude;
         
+        //if point is integer
+        if (x == Math.floor(x) && z == Math.floor(z)) {
+        	altitude = getGridAltitude((int)x, (int)z));
+        } else { //non integer
+        	/*	 +-----+  
+   				 | U  /|  
+   				 |  /  |
+   				 |/  L |
+   				 +-----+
+        	 */
+        	
+        	//determine if it is in upper or lower triangle
+        	//4 points are (Starting top left clockwise
+        	//floor(x), floor(z) -> p1
+        	//ceil(x), floor(z)  -> p2
+        	//ceil(x), ceil(z)   -> p3
+        	//floor(x), ceil(z)  -> p4
+        	
+        	//method is to check which side of the diagonal edge the point lies (between p2 and p4)
+        	//call them p1 and p2
+        	
+        	int p1x = Math.ceil(x);
+        	int p1z = Math.floor(z);
+        	int p2x = Math.floor(x);
+        	int p2z = Math.ceil(z);
+        	int p3x;
+        	int p3z;
+        	
+        	double det = ((p2x - p1x)*(z - p1z) - (p2z - p1z)*(x - p1x));
+        	
+        	if (det == 0) {
+        		//it's on the diagonal line, easy
+        		//use p1 and p2 altitude to interpolate
+        		double dist = Math.sqrt(2); //length of diagonal
+        		// simplifly interpolation by finding difference in altitude
+        		double height = (double)(getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z)); 
+        		//distance of unknown point along line
+        		double pos = Math.sqrt(x*x + z*z);
+        				
+        		altitude = pos * height / dist;
+        	} else {
+        		altitude = 0;
+        		if (det > 0) {
+        			//it's in upper trangle (i think)
+        			p3x = Math.floor(x);
+        			p3z = Math.floor(z);
+        		} else {
+        			//it's in lower (i think)
+        			p3x = Math.ceil(x);
+        			p3z = Math.ceil.(z);
+        		}
+        		
+        		//TODO: interpolate in triangle plane
+        	}
+        			
+        	
+        	
+        	/*
+        	//pretend these are the three triangle points once determined
+        	double[] t1 = new double {1,2 3};
+        	double[] t2 = new double {1, 2, 3};
+        	double[] t3 = new double {1, 2, 3};
+        	
+        	[ t1x t1z t1a ]   [ x ]
+        	[ t2x t2z t2a ] = [ z ]
+        	[ t3x t3z t3a ]   [ a ]
+        	*/
+        }
         
         return altitude;
     }
