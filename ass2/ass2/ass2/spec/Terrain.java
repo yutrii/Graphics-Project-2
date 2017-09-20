@@ -156,7 +156,7 @@ public class Terrain {
         		//use p1 and p2 altitude to interpolate
         		 //length of diagonal
         		// simplifly interpolation by finding difference in altitude
-        		double height = (double)(getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z));
+        		double height = getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z);
         		
         		if (height == 0) { //points are same altitude
         			altitude = getGridAltitude((int)p2x, (int)p2z);
