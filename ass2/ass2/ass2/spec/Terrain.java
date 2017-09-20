@@ -159,7 +159,7 @@ public class Terrain {
         		double height = (double)(getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z));
         		
         		if (height == 0) { //points are same altitude
-        			altitude = getGridAltitude(p2x, p2z);
+        			altitude = getGridAltitude((int)p2x, (int)p2z);
         		} else {
         			double pos;
         			double dist = Math.sqrt(2);
