@@ -123,7 +123,7 @@ public class Terrain {
         
         //if point is integer
         if (x == Math.floor(x) && z == Math.floor(z)) {
-        	altitude = getGridAltitude((int)x, (int)z));
+        	altitude = getGridAltitude((int)x, (int)z);
         } else { //non integer
         	/*	 +-----+  
    				 | U  /|  
@@ -142,12 +142,12 @@ public class Terrain {
         	//method is to check which side of the diagonal edge the point lies (between p2 and p4)
         	//call them p1 and p2
         	
-        	int p1x = Math.ceil(x);
-        	int p1z = Math.floor(z);
-        	int p2x = Math.floor(x);
-        	int p2z = Math.ceil(z);
-        	int p3x;
-        	int p3z;
+        	double p1x = Math.ceil(x);
+        	double p1z = Math.floor(z);
+        	double p2x = Math.floor(x);
+        	double p2z = Math.ceil(z);
+        	double p3x;
+        	double p3z;
         	
         	double det = ((p2x - p1x)*(z - p1z) - (p2z - p1z)*(x - p1x));
         	
@@ -156,7 +156,7 @@ public class Terrain {
         		//use p1 and p2 altitude to interpolate
         		double dist = Math.sqrt(2); //length of diagonal
         		// simplifly interpolation by finding difference in altitude
-        		double height = (double)(getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z)); 
+        		double height = getGridAltitude((int)p2x, (int)p2z) - getGridAltitude((int)p1x, (int)p1z); 
         		//distance of unknown point along line
         		double pos = Math.sqrt((p1x-x)*(p1x-x) + (z-p1z)*(z-p1z));
         				
@@ -170,7 +170,7 @@ public class Terrain {
         		} else {
         			//it's in lower (i think)
         			p3x = Math.ceil(x);
-        			p3z = Math.ceil.(z);
+        			p3z = Math.ceil(z);
         		}
         		
         		//TODO: interpolate in triangle plane
