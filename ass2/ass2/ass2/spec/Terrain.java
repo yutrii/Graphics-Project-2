@@ -154,13 +154,25 @@ public class Terrain {
         	if (det == 0) {
         		//it's on the diagonal line, easy
         		//use p1 and p2 altitude to interpolate
-        		double dist = Math.sqrt(2); //length of diagonal
+        		 //length of diagonal
         		// simplifly interpolation by finding difference in altitude
-        		double height = getGridAltitude((int)p2x, (int)p2z) - getGridAltitude((int)p1x, (int)p1z); 
-        		//distance of unknown point along line
-        		double pos = Math.sqrt((p1x-x)*(p1x-x) + (z-p1z)*(z-p1z));
-        				
-        		altitude = pos * height / dist;
+        		double height = (double)(getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z));
+        		
+        		if (height == 0) { //points are same altitude
+        			altitude = getGridAltitude(p2x, p2z);
+        		} else {
+        			double pos;
+        			double dist = Math.sqrt(2);
+        			
+        			if (height > 0) { // p2 is higher than p1
+        			//distance of unknown point along line
+        				pos = Math.sqrt((p1x-x)*(p1x-x) + (z-p1z)*(z-p1z));
+        			} else { //p1 is higher than p2
+        				height = Math.abs(height);
+        				pos = Math.sqrt((x-p2x)*(x-p2x) + (p2z-z)*(p2z-z));
+        			}
+        			altitude = pos * height / dist;
+        		}
         	} else {
         		altitude = 0;
         		if (det > 0) {
