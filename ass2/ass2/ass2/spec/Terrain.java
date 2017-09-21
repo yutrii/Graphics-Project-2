@@ -138,68 +138,67 @@ public class Terrain {
         	//ceil(x), floor(z)  -> p2
         	//ceil(x), ceil(z)   -> p3
         	//floor(x), ceil(z)  -> p4
-        	
+        		
         	//method is to check which side of the diagonal edge the point lies (between p2 and p4)
-        	//call them p1 and p2
+        	//then interpolate
         	
-        	double p1x = Math.ceil(x);
-        	double p1z = Math.floor(z);
-        	double p2x = Math.floor(x);
-        	double p2z = Math.ceil(z);
-        	double p3x;
-        	double p3z;
+        	double p2x = Math.ceil(x);
+        	double p2z = Math.floor(z);
         	
-        	double det = ((p2x - p1x)*(z - p1z) - (p2z - p1z)*(x - p1x));
+        	double p4x = Math.floor(x);
+        	double p4z = Math.ceil(z);
+        	
+        	double det = ((p4x - p2x)*(z - p2z) - (p4z - p2z)*(x - p2x));
+        	
+        	double p2y = getGridAltitude((int)p2x, (int)p2z);
+        	double p4y = getGridAltitude((int)p4x, (int)p4z);
         	
         	if (det == 0) {
         		//it's on the diagonal line, easy
         		//use p1 and p2 altitude to interpolate
         		 //length of diagonal
         		// simplifly interpolation by finding difference in altitude
-        		double height = getGridAltitude(p2x, p2z) - getGridAltitude(p1x, p1z);
+        		double height = p2y - p4y;
         		
         		if (height == 0) { //points are same altitude
-        			altitude = getGridAltitude((int)p2x, (int)p2z);
+        			altitude = getGridAltitude((int)p4x, (int)p4z);
         		} else {
         			double pos;
         			double dist = Math.sqrt(2);
         			
         			if (height > 0) { // p2 is higher than p1
         			//distance of unknown point along line
-        				pos = Math.sqrt((p1x-x)*(p1x-x) + (z-p1z)*(z-p1z));
+        				pos = Math.sqrt((p2x-x)*(p2x-x) + (z-p2z)*(z-p2z));
         			} else { //p1 is higher than p2
         				height = Math.abs(height);
-        				pos = Math.sqrt((x-p2x)*(x-p2x) + (p2z-z)*(p2z-z));
+        				pos = Math.sqrt((x-p4x)*(x-p4x) + (p4z-z)*(p4z-z));
         			}
         			altitude = pos * height / dist;
         		}
         	} else {
-        		altitude = 0;
+        		double r1;
+        		double r2;
         		if (det > 0) {
         			//it's in upper trangle (i think)
-        			p3x = Math.floor(x);
-        			p3z = Math.floor(z);
+        			double p1x = p4x;
+                	double p1z = p2z;
+                	double p1y = getGridAltitude((int)p1x, (int)p1z);
+                	
+                	r1 = (z-p1z)*p4y + (p4z-z)*p1y;
+                	r2 = (z-p2z)*p4y + (p4z-z)*p2y;
+                	altitude = ((x-p4x)/(p4z-z))*r2 + ((p4x+p4z-z-x)/(p4z-z))*r1;
+                	
         		} else {
         			//it's in lower (i think)
-        			p3x = Math.ceil(x);
-        			p3z = Math.ceil(z);
+        			double p3x = p2x;
+                	double p3z = p4z;
+                	double p3y = getGridAltitude((int)p3x, (int)p3z);
+
+                	r1 = (z-p2z)*p4y + (p4z-z)*p2y;
+                	r2 = (z-p2z)*p3y + (p3z-z)*p2y;
+                	altitude = ((x-p2x-p2z+z)/(z-p2z))*r2 + ((p2x-x)/(z-p2z))*r1;
         		}
-        		
-        		//TODO: interpolate in triangle plane
         	}
-        			
-        	
-        	
-        	/*
-        	//pretend these are the three triangle points once determined
-        	double[] t1 = new double {1,2 3};
-        	double[] t2 = new double {1, 2, 3};
-        	double[] t3 = new double {1, 2, 3};
-        	
-        	[ t1x t1z t1a ]   [ x ]
-        	[ t2x t2z t2a ] = [ z ]
-        	[ t3x t3z t3a ]   [ a ]
-        	*/
         }
         
         return altitude;
