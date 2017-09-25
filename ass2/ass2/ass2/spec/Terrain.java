@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jogamp.opengl.GL2;
+
 //TESTING COMMENT FOR GIT SETUP
 
 /**
@@ -227,6 +229,30 @@ public class Terrain {
     public void addRoad(double width, double[] spine) {
         Road road = new Road(width, spine);
         myRoads.add(road);        
+    }
+    
+    public void drawTerrain(GL2 gl) {
+    	int width = mySize.width;
+    	int height = mySize.height;
+    	int x, z = 0;
+    	
+    	gl.glColor4d(0, 0, 0, 1);
+    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+    	gl.glBegin(GL2.GL_TRIANGLES);
+    		for (z = 0; z < height-1; z++) {
+    			for (x = 0; x < width-1; x++) {
+    				gl.glVertex3d(x, myAltitude[x][z], z);
+    				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
+    				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
+    				
+    				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
+    				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
+    				gl.glVertex3d(x+1, myAltitude[x+1][z+1], z+1);
+    			}
+    		}
+    	gl.glEnd();
+    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+    	
     }
 
 
