@@ -20,7 +20,11 @@ public class Terrain {
     private List<Tree> myTrees;
     private List<Road> myRoads;
     private float[] mySunlight;
-
+    
+    //Points as array for normal calculations
+    double[] p0 = new double[3];
+    double[] p1 = new double[3];
+    double[] p2 = new double[3];
     /**
      * Create a new terrain
      *
@@ -236,15 +240,36 @@ public class Terrain {
     	int height = mySize.height;
     	int x, z = 0;
     	
-    	gl.glColor4d(0, 0, 0, 1);
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+    	/*gl.glColor4d(0, 0, 0, 1);
+    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);*/
+    	
     	gl.glBegin(GL2.GL_TRIANGLES);
     		for (z = 0; z < height-1; z++) {
     			for (x = 0; x < width-1; x++) {
+    				p0[0] = x;
+    				p0[1] = myAltitude[x][z];
+    				p0[2] = z;
+    				
+    				p1[0] = x;
+    				p1[1] = myAltitude[x][z+1];
+    				p1[2] = z+1;
+    				
+    				p2[0] = x+1;
+    				p2[1] = myAltitude[x+1][z];
+    				p2[2] = z;
+    				
+    				double[] normal1 = MathUtil.getNormalisedNormal(p0, p1, p2);
+    				gl.glNormal3dv(normal1, 0);
     				gl.glVertex3d(x, myAltitude[x][z], z);
     				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				
+    				p0[0] = x+1;
+    				p0[1] = myAltitude[x+1][z+1];
+    				p0[2] = z+1;
+    				
+    				double[] normal2 = MathUtil.getNormalisedNormal(p0, p1, p2);
+    				gl.glNormal3dv(normal2, 0);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
     				gl.glVertex3d(x+1, myAltitude[x+1][z+1], z+1);
@@ -254,6 +279,4 @@ public class Terrain {
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     	
     }
-
-
 }
