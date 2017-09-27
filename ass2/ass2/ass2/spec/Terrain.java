@@ -25,6 +25,13 @@ public class Terrain {
     double[] p0 = new double[3];
     double[] p1 = new double[3];
     double[] p2 = new double[3];
+    double[] p3 = new double[3];
+    
+    //Texture variables
+    private static MyTexture[] myTextures;
+    private static String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
+    private static String textureExt1 = "jpg";
+    
     /**
      * Create a new terrain
      *
@@ -37,6 +44,8 @@ public class Terrain {
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
         mySunlight = new float[3];
+        
+     
     }
     
     public Terrain(Dimension size) {
@@ -57,6 +66,13 @@ public class Terrain {
 
     public float[] getSunlight() {
         return mySunlight;
+    }
+    
+    //Initialisation function for terrain
+    public void init(GL2 gl) {
+    	// Create texture ids. 
+    	myTextures = new MyTexture[1];
+    	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
     }
 
     /**
@@ -242,6 +258,7 @@ public class Terrain {
     	
     	/*gl.glColor4d(0, 0, 0, 1);
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);*/
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
     	gl.glBegin(GL2.GL_TRIANGLES);
     		for (z = 0; z < height-1; z++) {
@@ -258,25 +275,43 @@ public class Terrain {
     				p2[1] = myAltitude[x+1][z];
     				p2[2] = z;
     				
-    				double[] normal1 = MathUtil.getNormalisedNormal(p0, p1, p2);
-    				gl.glNormal3dv(normal1, 0);
+    				p3[0] = x+1;
+    				p3[1] = myAltitude[x+1][z+1];
+    				p3[2] = z+1;
+    				
+    				double[] n1 = MathUtil.getNormalisedNormal(p0, p1, p2);
+    				double[] n2 = MathUtil.getNormalisedNormal(p1, p2, p3);
+    				double[] n3 = { n1[0] + n2[0], n1[1] + n1[1], n1[2] + n2[2] };
+    				double[] smoothNormal = MathUtil.normalise(n3);
+    						
+    				
+    				gl.glNormal3dv(n1, 0);
+    				gl.glTexCoord2d(0.5, 1);
     				gl.glVertex3d(x, myAltitude[x][z], z);
+    				
+    				gl.glNormal3dv(smoothNormal, 0);
+    				gl.glTexCoord2d(0, 0);
     				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
+    				gl.glTexCoord2d(1, 0);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				
-    				p0[0] = x+1;
-    				p0[1] = myAltitude[x+1][z+1];
-    				p0[2] = z+1;
-    				
-    				double[] normal2 = MathUtil.getNormalisedNormal(p0, p1, p2);
-    				gl.glNormal3dv(normal2, 0);
+    				gl.glTexCoord2d(0, 0);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
+    				gl.glTexCoord2d(1, 0);
     				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
+    				
+    				gl.glNormal3dv(n2, 0);
+    				gl.glTexCoord2d(0.5, 1);
     				gl.glVertex3d(x+1, myAltitude[x+1][z+1], z+1);
     			}
     		}
     	gl.glEnd();
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+    	
+    	gl.glBegin(GL2.GL_POINT);
+    		gl.glLineWidth(3.0f);
+			gl.glVertex3f(mySunlight[0], mySunlight[1], mySunlight[2]);
+		gl.glEnd();
     	
     }
 }
