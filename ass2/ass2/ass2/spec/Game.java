@@ -1,8 +1,12 @@
 package ass2.spec;
 
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import com.jogamp.opengl.*;
@@ -17,7 +21,7 @@ import com.jogamp.opengl.util.FPSAnimator;
  *
  * @author malcolmr
  */
-public class Game extends JFrame implements GLEventListener, MouseMotionListener{
+public class Game extends JFrame implements GLEventListener, MouseMotionListener, MouseWheelListener, KeyListener{
 
     private Terrain myTerrain;
     
@@ -25,6 +29,13 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     private double rotateY = 0;
     private Point myMousePoint = null;
     private static final int ROTATION_SCALE = 1;
+    private static double zoom = 1;
+    private static double translateX = 0;
+    private static double translateY = 0;
+    
+    private int[] textureID = new int[10];
+    private static final int GRASS = 0;
+    private static final int WOOD = 1;
 
     public Game(Terrain terrain) {
     	super("Assignment 2");
@@ -42,6 +53,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
           GLJPanel panel = new GLJPanel();
           panel.addGLEventListener(this);
           panel.addMouseMotionListener(this);
+          panel.addMouseWheelListener(this);
+          panel.addKeyListener(this);
           panel.setFocusable(true);
  
           // Add an animator to call 'display' at 60fps        
@@ -75,24 +88,18 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glClearColor(1, 1, 1, 1);
-		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
+				| GL2.GL_DEPTH_BUFFER_BIT);
 		
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
 		
+        gl.glTranslated(translateX, translateY, 0);
+        
 		gl.glRotated(rotateX, 1, 0, 0);
         gl.glRotated(rotateY, 0, 1, 0);
-		
-        /*gl.glColor3d(0, 0, 0);
-		gl.glBegin(GL2.GL_TRIANGLES);
-			gl.glVertex3d(0, 0, 0);
-			gl.glVertex3d(0, 0, 2);
-			gl.glVertex3d(2, 1, 0);
-			
-			gl.glVertex3d(2, 1, 0);
-			gl.glVertex3d(0, 0, 2);
-			gl.glVertex3d(2, 0.6, 2);
-		gl.glEnd();*/
+        
+        gl.glScaled(zoom, zoom, zoom);
 		
 		myTerrain.drawTerrain(gl);
 		
@@ -105,12 +112,32 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 
 	@Override
 	public void init(GLAutoDrawable arg0) {
-		/*GL2 gl = arg0.getGL().getGL2();
+		GL2 gl = arg0.getGL().getGL2();
 		gl.glEnable(GL2.GL_DEPTH_TEST);
+		lightingInit(gl);
+		textureInit(gl);
+		
+	}
+	
+	//Does lighting initialisations.
+	private void lightingInit(GL2 gl) {
 		gl.glEnable(GL2.GL_LIGHTING);
 		gl.glEnable(GL2.GL_LIGHT0);
-		gl.glEnable(GL2.GL_NORMALIZE);*/
+		gl.glEnable(GL2.GL_NORMALIZE);
 		
+		float[] dir = new float[4];
+		float[] sun = myTerrain.getSunlight();
+		dir[0] = sun[0];
+		dir[1] = sun[1];
+		dir[2] = sun[2];
+		dir[3] = 0;
+		
+		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, dir, 0);
+	}
+	
+	//Does the texture initialisations.
+	private void textureInit(GL2 gl) {
+		gl.glEnable(GL2.GL_TEXTURE_2D);
 	}
 
 	@Override
@@ -148,5 +175,49 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 		myMousePoint = e.getPoint();
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent arg0) {
+		// TODO Auto-generated method stub
+		if (arg0.getWheelRotation() < 0) {
+			zoom = Math.min(10, zoom + 0.1);
+		} else {
+			zoom = Math.max(0.01, zoom - 0.1);
+		}
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		switch (e.getKeyCode()) {
+		 case KeyEvent.VK_UP:
+			 translateY++;
+			 break;
+		 case KeyEvent.VK_DOWN:
+			 translateY--;
+			 break;
+		 case KeyEvent.VK_RIGHT:
+			 translateX++;
+			 break;
+		 case KeyEvent.VK_LEFT:
+			 translateX--;
+			 break;
+		 default:
+			 break;
+		 }
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
