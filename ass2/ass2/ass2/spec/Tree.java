@@ -11,14 +11,14 @@ public class Tree {
 
     private double[] myPos;
     private double radius = 0.1;
-    private static final int NUM_QUADS = 32;
-    private static final double INC = 360/NUM_QUADS;
+    private static final double NUM_QUADS = 32;
+    private static final double INC = 2*Math.PI/NUM_QUADS;
     
     //Texture variables
     private static MyTexture[] myTextures;
     private static String textureFileName1 = "ass2/ass2/textures/bark2.jpg";
     private static String textureExt1 = "jpg";
-    private static String textureFileName2 = "ass2/ass2/textures/leaves1.jpg";
+    private static String textureFileName2 = "ass2/ass2/textures/leaves2.jpg";
     
     public Tree(double x, double y, double z) {
         myPos = new double[3];
@@ -49,8 +49,8 @@ public class Tree {
     	double x1, z1;
     	gl.glBegin(GL2.GL_QUAD_STRIP);
 	    	for (int i = 0; i <= NUM_QUADS; i++) {
-		    	x1 = radius * Math.cos(Math.toRadians(INC*i));
-		    	z1 = radius * Math.sin(Math.toRadians(INC*i));
+		    	x1 = radius * Math.cos(INC*i);
+		    	z1 = radius * Math.sin(INC*i);
 		    	
 		    	gl.glNormal3d(x1, 0, z1);
 		    	
@@ -63,11 +63,11 @@ public class Tree {
 	    	}
     	gl.glEnd();
     	
-    	//drawSphere(gl);
+    	drawSphere(gl);
     }
     
     private void drawSphere(GL2 gl) {
-    	gl.glTranslated(0, 1, 0);
+    	gl.glTranslated(0, 1.3, 0);
     	double deltaT;
     	double radius = 0.5;
     	int maxStacks = 10;
@@ -81,6 +81,8 @@ public class Tree {
     	int ang;  
     	int delang = 360/maxSlices;
     	double x1,x2,z1,z2,y1,y2;
+    	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
     	
     	for (int i = 0; i < numStacks; i++) 
     	{ 
@@ -102,14 +104,20 @@ public class Tree {
 
     			normalize(normal);    
 
-    			gl.glNormal3dv(normal,0);         
+    			double sCoord = j/numSlices;
+    			gl.glNormal3dv(normal,0);
+    			
+    			gl.glTexCoord2d(0d, 0d);
     			gl.glVertex3d(x1,y1,z1);
+    			
     			normal[0] = x2;
     			normal[1] = y2;
     			normal[2] = z2;
 
     			normalize(normal);    
-    			gl.glNormal3dv(normal,0); 
+    			gl.glNormal3dv(normal,0);
+    			
+    			gl.glTexCoord2d(0.3d, 0.3d);
     			gl.glVertex3d(x2,y2,z2); 
 
     		}; 
