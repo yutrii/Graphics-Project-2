@@ -1,9 +1,5 @@
 package ass2.spec;
 
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jogamp.opengl.GL2;
 
 /**
@@ -14,6 +10,15 @@ import com.jogamp.opengl.GL2;
 public class Tree {
 
     private double[] myPos;
+    private double radius = 0.1;
+    private static final int NUM_QUADS = 32;
+    private static final double INC = 360/NUM_QUADS;
+    
+    //Texture variables
+    private static MyTexture[] myTextures;
+    private static String textureFileName1 = "ass2/ass2/textures/bark2.jpg";
+    private static String textureExt1 = "jpg";
+    private static String textureFileName2 = "ass2/ass2/textures/leaves1.jpg";
     
     public Tree(double x, double y, double z) {
         myPos = new double[3];
@@ -26,102 +31,39 @@ public class Tree {
         return myPos;
     }
     
+    public void init(GL2 gl) {
+    	// Create texture ids. 
+    	myTextures = new MyTexture[2];
+    	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
+    	myTextures[1] = new MyTexture(gl, textureFileName2, textureExt1, true);
+    }
+    
     public void drawTree(GL2 gl) {
     	double x = myPos[0];
     	double y = myPos[1];
     	double z = myPos[2];
     	gl.glTranslated(x, y, z);
     	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
-    	gl.glColor4d(0.6, 0.4, 0.2, 1); //brown
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-    	gl.glBegin(GL2.GL_QUADS);
-    	
-    	
-    	
-    	
-    	/* drawing trunk as two 2d rectangles
-    	gl.glVertex3d(x + 0.1, y, z);
-    	gl.glVertex3d(x - 0.1, y, z);
-    	gl.glVertex3d(x - 0.1, y + 1.5, z);
-    	gl.glVertex3d(x + 0.1, y + 1.5, z);
-    	
-    	gl.glVertex3d(x, y, z + 0.1);
-    	gl.glVertex3d(x, y, z - 0.1);
-    	gl.glVertex3d(x, y + 1.5, z - 0.1);
-    	gl.glVertex3d(x, y + 1.5, z + 0.1);
-    	
-    	gl.glEnd();
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-    	*/
-    	
-    	double inc = 360/32;
-    	double angle = 0;
-    	
-    	double x1, z1, x2, z2;
-    	gl.glBegin(GL2.GL_QUADS);
-    	for (int i = 0; i <= 32; i++, angle += inc) {
-    	
-	    	x1 = 0.1 * Math.cos(Math.toRadians(angle));
-	    	z1 = 0.1 * Math.sin(Math.toRadians(angle));
-	    	x2 = 0.1 * Math.cos(Math.toRadians(angle+inc));
-	    	z2 = 0.1 * Math.sin(Math.toRadians(angle+inc));
-	    	
-    	    gl.glVertex3d(x1,0,z1);
-    	    gl.glVertex3d(x1,1,z1);
-    	    gl.glVertex3d(x2,1,z2);
-    	    gl.glVertex3d(x2,0,z2);
-    	    
-    	    /*gl.glVertex3d(x1+x,y,z1+z);
-    	    gl.glVertex3d(x1+x,y+1,z1+z);
-    	    gl.glVertex3d(x2+x,y+1,z2+z);
-    	    gl.glVertex3d(x2+x,y,z2+z);*/
-    	}
+    	double x1, z1;
+    	gl.glBegin(GL2.GL_QUAD_STRIP);
+	    	for (int i = 0; i <= NUM_QUADS; i++) {
+		    	x1 = radius * Math.cos(Math.toRadians(INC*i));
+		    	z1 = radius * Math.sin(Math.toRadians(INC*i));
+		    	
+		    	gl.glNormal3d(x1, 0, z1);
+		    	
+		    	gl.glTexCoord2d(i/NUM_QUADS, 0);
+	    	    gl.glVertex3d(x1, 0, z1);
+	    	    
+	    	    gl.glTexCoord2d(i/NUM_QUADS, 1);
+	    	    gl.glVertex3d(x1, 1, z1);
+	
+	    	}
     	gl.glEnd();
     	
-    	drawSphere(gl);
-    	
-    	//gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-    	/*
-    	angle = 0;
-    	inc = 360/128;
-    	
-    	for (int i = 0; i <= 128; i++, angle += inc) {
-    		gl.glRotated(inc, 0, 1, 0);
-    		drawSemicircle(gl);
-    	}
-       	*/
-    	
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-    	/*
-    	gl.glColor4d(0.247, 0.749, 0.247, 1); //green
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-    	gl.glBegin(GL2.GL_TRIANGLES);
-    	
-    	gl.glEnd();
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-    	*/
-    	
-    	
-    }
-    
-    private void drawSemicircle(GL2 gl) {
-    	
-    	gl.glColor4d(0.247, 0.749, 0.247, 1); //green
-    	
-		gl.glBegin(GL2.GL_POLYGON);    	
-		
-		double angle = 90;
-    	double increment = 360/32;
-    	for (int i = 0; i <= 16; i++, angle += increment) {
-    		
-    		double Z = 0.5 * Math.cos(Math.toRadians(angle));
-    		double Y = 0.5 * Math.sin(Math.toRadians(angle));
-    	
-    		gl.glVertex3d(0, Y+1, Z);
-    	}
-    	
-    	gl.glEnd();
+    	//drawSphere(gl);
     }
     
     private void drawSphere(GL2 gl) {
@@ -148,16 +90,15 @@ public class Tree {
     		for(int j = 0; j <= numSlices; j++)  
     		{  
     			ang = j*delang;
-    			x1=radius * getX(t)*Math.cos((double)ang*2.0*Math.PI/360.0); 
-    			x2=radius * getX(t+deltaT)*Math.cos((double)ang*2.0*Math.PI/360.0); 
+    			x1 = radius * getX(t)*Math.cos((double)ang*2.0*Math.PI/360.0); 
+    			x2 = radius * getX(t+deltaT)*Math.cos((double)ang*2.0*Math.PI/360.0); 
     			y1 = radius * getY(t);
 
-    			z1=radius * getX(t)*Math.sin((double)ang*2.0*Math.PI/360.0);  
-    			z2= radius * getX(t+deltaT)*Math.sin((double)ang*2.0*Math.PI/360.0);  
+    			z1 = radius * getX(t)*Math.sin((double)ang*2.0*Math.PI/360.0);  
+    			z2 = radius * getX(t+deltaT)*Math.sin((double)ang*2.0*Math.PI/360.0);  
     			y2 = radius * getY(t+deltaT);
 
     			double normal[] = {x1,y1,z1};
-
 
     			normalize(normal);    
 

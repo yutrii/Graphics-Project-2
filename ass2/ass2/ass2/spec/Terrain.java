@@ -73,6 +73,10 @@ public class Terrain {
     	// Create texture ids. 
     	myTextures = new MyTexture[1];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
+    	
+    	for (Tree t : myTrees) {
+    		t.init(gl);
+    	}
     }
 
     /**
@@ -308,10 +312,16 @@ public class Terrain {
     	gl.glEnd();
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
     	
-    	gl.glBegin(GL2.GL_POINT);
+    	/*gl.glBegin(GL2.GL_POINT);
     		gl.glLineWidth(3.0f);
 			gl.glVertex3f(mySunlight[0], mySunlight[1], mySunlight[2]);
-		gl.glEnd();
+		gl.glEnd();*/
+		
+		for (Tree t : myTrees) {
+			gl.glPushMatrix();
+			t.drawTree(gl);
+			gl.glPopMatrix();
+		}
     	
     }
 }

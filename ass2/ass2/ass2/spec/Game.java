@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
+
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -84,7 +86,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     public static void main(String[] args) throws FileNotFoundException {
         //Terrain terrain = LevelIO.load(new File(args[0]));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/test2.json"));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testa.json"));
+        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/test4.json"));
         Game game = new Game(terrain);
         game.run();
     }
@@ -93,7 +95,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void display(GLAutoDrawable drawable) {
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
-		gl.glClearColor(0, 0, 0, 1);
+		gl.glClearColor(1, 1, 1, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
@@ -119,12 +121,16 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	@Override
 	public void init(GLAutoDrawable arg0) {
 		GL2 gl = arg0.getGL().getGL2();
+		//gl.glPushMatrix();
+		
 		gl.glEnable(GL2.GL_DEPTH_TEST);
 		
 		lightingInit(gl);
 		textureInit(gl);
+		
 		myTerrain.init(gl);
 		
+		//gl.glPopMatrix();
 	}
 	
 	//Does lighting initialisations.
@@ -191,15 +197,30 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable arg0, int x, int y, int width,
-			int height) {
+	public void reshape(GLAutoDrawable arg0, int x, int y, int w,
+			int h) {
 		// TODO Auto-generated method stub
 		GL2 gl = arg0.getGL().getGL2();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
        
-        gl.glOrtho(-7,7,-7,7,-1,8);
+        gl.glOrtho(-7,7,-7,7,-10,20);
 		
+        /*GLU glu = new GLU();
+        glu.gluPerspective(90.0, (float)w/(float)h, 1.0, 50.0);
+        
+        gl.glMatrixMode(GL2.GL_MODELVIEW);*/
+        
+        
+        /*GLU glu = new GLU();
+        double aspect = (1.0*w)/h;
+		double size   = 1.0;
+		if (aspect >= 1) {
+			glu.gluOrtho2D(-size*aspect, size*aspect, -size, size);
+		} else {
+			glu.gluOrtho2D(-size, size, -size/aspect, size/aspect);
+		}*/
+        
 	}
 
 	@Override
