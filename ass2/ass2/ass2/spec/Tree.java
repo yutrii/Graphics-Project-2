@@ -39,6 +39,7 @@ public class Tree {
     }
     
     public void drawTree(GL2 gl) {
+    	gl.glPushMatrix();
     	double x = myPos[0];
     	double y = myPos[1];
     	double z = myPos[2];
@@ -64,10 +65,10 @@ public class Tree {
     	gl.glEnd();
     	
     	drawSphere(gl);
+    	gl.glPopMatrix();
     }
     
     private void drawSphere(GL2 gl) {
-    	gl.glPushMatrix();
     	gl.glTranslated(0, 1.3, 0);
     	double deltaT;
     	double radius = 0.5;
@@ -124,7 +125,6 @@ public class Tree {
     		}; 
     		gl.glEnd();  
     	}
-    	gl.glPopMatrix();
     }
     
     public void normalize(double v[])  
