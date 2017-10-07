@@ -16,6 +16,11 @@ public class Road {
     private double myWidth;
     private static final double t = 0.001;
     
+    //Texture variables
+    private static MyTexture[] myTextures;
+    private static String textureFileName1 = "ass2/ass2/textures/road.jpg";
+    private static String textureExt1 = "jpg";
+    
     
     /** 
      * Create a new road starting at the specified point
@@ -40,6 +45,12 @@ public class Road {
             myPoints.add(spine[i]);
         }
     }
+    
+    public void init(GL2 gl) {
+    	// Create texture ids. 
+    	myTextures = new MyTexture[1];
+    	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
+    }
 
     /**
      * The width of the road.
@@ -52,27 +63,27 @@ public class Road {
 
     /**
      * Add a new segment of road, beginning at the last point added and ending at (x3, y3).
-     * (x1, y1) and (x2, y2) are interpolated as bezier control points.
+     * (x1, z1) and (x2, z2) are interpolated as bezier control points.
      * 
      * @param x1
-     * @param y1
+     * @param z1
      * @param x2
-     * @param y2
+     * @param z2
      * @param x3
      * @param y3
      */
-    public void addSegment(double x1, double y1, double x2, double y2, double x3, double y3) {
+    public void addSegment(double x1, double z1, double x2, double z2, double x3, double y3) {
         myPoints.add(x1);
-        myPoints.add(y1);
+        myPoints.add(z1);
         myPoints.add(x2);
-        myPoints.add(y2);
+        myPoints.add(z2);
         myPoints.add(x3);
         myPoints.add(y3);        
     }
     
     /**
      * Get the number of segments in the curve
-     * 
+     * A segment comprises of 3 control points to make 1 bezier curve
      * @return
      */
     public int size() {
@@ -108,16 +119,17 @@ public class Road {
         double x0 = myPoints.get(i++);
         double y0 = myPoints.get(i++);
         double x1 = myPoints.get(i++);
-        double y1 = myPoints.get(i++);
+        double z1 = myPoints.get(i++);
         double x2 = myPoints.get(i++);
-        double y2 = myPoints.get(i++);
+        double z2 = myPoints.get(i++);
         double x3 = myPoints.get(i++);
         double y3 = myPoints.get(i++);
+        
         
         double[] p = new double[2];
 
         p[0] = b(0, t) * x0 + b(1, t) * x1 + b(2, t) * x2 + b(3, t) * x3;
-        p[1] = b(0, t) * y0 + b(1, t) * y1 + b(2, t) * y2 + b(3, t) * y3;        
+        p[1] = b(0, t) * y0 + b(1, t) * z1 + b(2, t) * z2 + b(3, t) * y3;        
         
         return p;
     }
@@ -150,13 +162,161 @@ public class Road {
         throw new IllegalArgumentException("" + i);
     }
     
+    //Same as getting the normal point but at a tangent
+    public double[] getTangent(double t) {
+    	int i = (int)Math.floor(t);
+        t = t - i;
+        
+        i *= 6;
+        
+        double x0 = myPoints.get(i++);
+        double y0 = myPoints.get(i++);
+        double x1 = myPoints.get(i++);
+        double z1 = myPoints.get(i++);
+        double x2 = myPoints.get(i++);
+        double z2 = myPoints.get(i++);
+        double x3 = myPoints.get(i++);
+        double y3 = myPoints.get(i++);
+        
+        
+        double[] p = new double[2];
+
+        p[0] = t(0, t) * x0 + t(1, t) * x1 + t(2, t) * x2 + t(3, t) * x3;
+        p[1] = t(0, t) * y0 + t(1, t) * z1 + t(2, t) * z2 + t(3, t) * y3;        
+        
+        return p;
+    }
+    
+    
+    //Returns the coefficients for the tangent at the point t
+    private double t(int i, double t) {
+        //Differentiate the curve for tangent
+        switch(i) {
+        
+        case 0:
+            return -3*(1 - t)*(1 - t);
+
+        case 1:
+            return 9*t*t - 12*t + 3;
+            
+        case 2:
+            return 6*t - 9*t*t;
+
+        case 3:
+            return 3*t*t;
+        }
+        
+        // this should never happen
+        throw new IllegalArgumentException("" + i);
+    }
+    
     public void drawRoad(GL2 gl, double[][] altitudes) {
     	gl.glPushMatrix();
-    	double altitude = altitudes(0,0);
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
+    	//Only handling flat surfaces for now
+    	double altitude = altitudes[0][0];
     	
-    	gl.glBegin(GL2.GL_LINE_STRIP);
-    		gl.glVertex3d(0, 0, 0);
+    	//Setup of initial cross section
+    	double d = 0.5*myWidth;
+    	//double newPoint1[0], newPoint1[2], newPoint2[0], newPoint2[2];
+    	double[] newPoint1 = new double[4];
+    	double[] newPoint2 = new double[4];
+    	newPoint1[3] = 1;
+    	newPoint2[3] = 1;
+    	//double x1 = newPoint1[0] = newPoint2[0] = point(0)[0];
+    	//double z1 = newPoint1[2] = newPoint2[2] = point(0)[1];
+    	
+    	double x1 = newPoint1[0] = newPoint2[0] = point(0)[0];
+    	double z1 = newPoint1[2] = newPoint2[2] = point(0)[1];
+    	
+    	double x2 = point(t)[0];
+    	double z2 = point(t)[1];
+    	
+    	if (z2 - z1 == 0) { //Means the curve starts horizontally
+    		newPoint1[2] += d;
+    		newPoint2[2] -= d;
+    	} else if (x2 - x1 == 0) {//Means the curve starts vertically
+    		newPoint1[0] += d;
+    		newPoint2[0] -= d;
+    	} else {
+    		double gradient = (z2 - z1)/(x2 - x1); //z2-z1 / x2-x1
+        	double rightAngle = -1/gradient;
+        	
+    		newPoint1[0] = x1 + d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+    		newPoint1[2] = z1 + d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+    		
+    		newPoint2[0] = x1 - d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+    		newPoint2[2] = z1 - d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+    	}
+    	
+    	double[][] tMatrix = new double[4][4];
+    	
+    	/*gl.glLineWidth(10.0f);
+    	gl.glBegin(GL2.GL_LINES);
+    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
+    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
+    	gl.glEnd();*/
+    	
+    	gl.glBegin(GL2.GL_QUAD_STRIP);
+    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
+    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
+    		System.out.println("Initial line: (" + newPoint1[0] + ", " + newPoint1[2] + ") " + "(" + newPoint2[0] + ", " + newPoint2[2] + ")");
+	    	for (double increment = t; increment < size(); increment += t) {
+	    		//Calculate the new position on the spine	    		
+	    		double newPOnSpineX = point(increment)[0];
+	    		double newPOnSpineZ = point(increment)[1];
+	    		System.out.println("Point on spine: (" + newPOnSpineX + ", " + newPOnSpineZ + ")");
+	    		
+	    		//Add the new translation to the transformation matrix
+	    		tMatrix[0][3] = newPOnSpineX;
+	    		tMatrix[2][3] = newPOnSpineZ;
+	    		tMatrix[3][3] = 1;
+	    		
+	    		//Add the new k vector to the transformation matrix
+	    		double[] k = new double[3];
+	    		double[] tmp = getTangent(increment);
+	    		k[0] = tmp[0];
+	    		k[1] = tmp[1];
+	    		k = MathUtil.normalise(k);
+	    		tMatrix[0][2] = k[0];
+	    		//tMatrix[1][2] = altitude;
+	    		tMatrix[2][2] = k[1];
+	    		
+	    		//Add the new i vector to the transformation matrix
+	    		double[] i = new double[3];
+	    		i[0] = -k[1];
+	    		i[1] = k[0];
+	    		tMatrix[0][0] = i[0];
+	    		tMatrix[2][0] = i[1];
+	    		
+	    		//Add the new j vector to the transformation matrix
+	    		double[] j = MathUtil.cross(k, i);
+	    		tMatrix[0][1] = j[0];
+	    		tMatrix[2][1] = j[1];
+	    		//System.out.println("Line: (" + newPoint1[0] + ", " + newPoint1[2] + ") " + "(" + newPoint2[0] + ", " + newPoint2[2] + ")");
+	    		newPoint1 = MathUtil.multiply(tMatrix, newPoint1);
+	    		newPoint2 = MathUtil.multiply(tMatrix, newPoint2);
+	    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
+	    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
+	    		
+	    		
+	    		/*double[] tPoint1 = MathUtil.multiply(tMatrix, newPoint1);
+	    		double[] tPoint2 = MathUtil.multiply(tMatrix, newPoint2);
+	    		gl.glVertex3d(tPoint1[0], altitude, tPoint1[2]);
+	    		gl.glVertex3d(tPoint2[0], altitude, tPoint2[2]);*/
+	    	}
     	gl.glEnd();
+    	
+    	
+    	/*gl.glBegin(GL2.GL_LINE_STRIP);
+			for (double increment = 0 ; increment < size(); increment += t) {
+	    			double x_ = point(increment)[0];
+	    			double z_ = point(increment)[1];
+	    			gl.glVertex3d(x_, altitude, z_);
+	    		
+	    	}
+		gl.glEnd();*/
+    	
     	gl.glPopMatrix();
     }
 

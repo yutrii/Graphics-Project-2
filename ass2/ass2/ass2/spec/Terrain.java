@@ -77,6 +77,10 @@ public class Terrain {
     	for (Tree t : myTrees) {
     		t.init(gl);
     	}
+    	
+    	for (Road r : myRoads) {
+    		r.init(gl);
+    	}
     }
 
     /**
@@ -263,6 +267,9 @@ public class Terrain {
     	gl.glPushMatrix();
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
+    	gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
+    	gl.glPolygonOffset(1.0f, 1.0f);
+    	
     	gl.glBegin(GL2.GL_TRIANGLES);
     		for (z = 0; z < height-1; z++) {
     			for (x = 0; x < width-1; x++) {
@@ -309,13 +316,14 @@ public class Terrain {
     			}
     		}
     	gl.glEnd();
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+    	gl.glDisable(GL2.GL_POLYGON_OFFSET_FILL);
 		
     	//Draw all trees
 		for (Tree t : myTrees) {
 			t.drawTree(gl);
 		}
     	
+		//System.out.println("Roads: " + myRoads.size());
 		for (Road r : myRoads) {		
 			r.drawRoad(gl, myAltitude);
 		}

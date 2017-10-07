@@ -59,17 +59,17 @@ public class MathUtil {
     /**
      * Multiply a vector by a matrix
      * 
-     * @param m A 3x3 matrix
-     * @param v A 3x1 vector
+     * @param m A 4x4 matrix
+     * @param v A 4x1 vector
      * @return
      */
     public static double[] multiply(double[][] m, double[] v) {
 
-        double[] u = new double[3];
+        double[] u = new double[4];
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             u[i] = 0;
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < 4; j++) {
                 u[i] += m[i][j] * v[j];
             }
         }
