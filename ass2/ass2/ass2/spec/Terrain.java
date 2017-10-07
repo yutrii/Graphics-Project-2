@@ -260,8 +260,7 @@ public class Terrain {
     	int height = mySize.height;
     	int x, z = 0;
     	
-    	/*gl.glColor4d(0, 0, 0, 1);
-    	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);*/
+    	gl.glPushMatrix();
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
     	gl.glBegin(GL2.GL_TRIANGLES);
@@ -311,17 +310,16 @@ public class Terrain {
     		}
     	gl.glEnd();
     	gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-    	
-    	/*gl.glBegin(GL2.GL_POINT);
-    		gl.glLineWidth(3.0f);
-			gl.glVertex3f(mySunlight[0], mySunlight[1], mySunlight[2]);
-		gl.glEnd();*/
 		
+    	//Draw all trees
 		for (Tree t : myTrees) {
-			gl.glPushMatrix();
 			t.drawTree(gl);
-			gl.glPopMatrix();
 		}
     	
+		for (Road r : myRoads) {		
+			r.drawRoad(gl);
+		}
+		
+		gl.glPopMatrix();
     }
 }
