@@ -317,7 +317,7 @@ public class Terrain {
 		}
     	
 		for (Road r : myRoads) {		
-			r.drawRoad(gl);
+			r.drawRoad(gl, myAltitude);
 		}
 		
 		gl.glPopMatrix();

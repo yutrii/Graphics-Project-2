@@ -14,6 +14,8 @@ public class Road {
 
     private List<Double> myPoints;
     private double myWidth;
+    private static final double t = 0.001;
+    
     
     /** 
      * Create a new road starting at the specified point
@@ -148,9 +150,13 @@ public class Road {
         throw new IllegalArgumentException("" + i);
     }
     
-    public void drawRoad(GL2 gl) {
+    public void drawRoad(GL2 gl, double[][] altitudes) {
     	gl.glPushMatrix();
+    	double altitude = altitudes(0,0);
     	
+    	gl.glBegin(GL2.GL_LINE_STRIP);
+    		gl.glVertex3d(0, 0, 0);
+    	gl.glEnd();
     	gl.glPopMatrix();
     }
 

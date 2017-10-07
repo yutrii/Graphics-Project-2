@@ -178,5 +178,19 @@ public class MathUtil {
     	return normalise(getNormal(p0, p1, p2));	
     }
     
+    public static int getCombination(int n, int k) {
+    	if (k == 0 || k == n) {
+    		return 1;
+    	} else {
+    		return factorial(n)/(factorial(k)*factorial(n-k));
+    	}
+    }
+    
+    public static int factorial(int f) {
+    	if (f > 1) {
+    		return f*factorial(f-1);
+    	}
+    	return f;
+    }
     
 }
