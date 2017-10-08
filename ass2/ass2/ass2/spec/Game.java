@@ -33,6 +33,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 
 	private Terrain myTerrain;
     
+	private Camera camera;
+	
     private double rotateX = 0;
     private double rotateY = 0;
     private Point myMousePoint = null;
@@ -40,6 +42,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     private static double zoom = 1;
     private static double translateX = 0;
     private static double translateY = 0;
+    private static double translateZ = 0;
+    
+    
     
     private static MyTexture[] myTextures;
     private String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
@@ -48,6 +53,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
+        camera = new Camera(terrain);
    
     }
     
@@ -85,9 +91,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      */
     public static void main(String[] args) throws FileNotFoundException {
         //Terrain terrain = LevelIO.load(new File(args[0]));
-        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/test2.json"));
+        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads.json"));
+        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads.json"));
         Game game = new Game(terrain);
         game.run();
     }
@@ -100,15 +106,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
-		gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-		
-        gl.glTranslated(translateX, translateY, 0);
-        
-		gl.glRotated(rotateX, 1, 0, 0);
-        gl.glRotated(rotateY, 0, 1, 0);
-        
-        gl.glScaled(zoom, zoom, zoom);
+				
+		camera.updateCamera(gl);
 		
 		myTerrain.drawTerrain(gl);
 		
@@ -205,23 +204,23 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
        
-        gl.glOrtho(-7,7,-7,7,-10,20);
+        //gl.glOrtho(-7,7,-7,7,-10,100);
 		
-        /*GLU glu = new GLU();
+        GLU glu = new GLU();
         glu.gluPerspective(90.0, (float)w/(float)h, 1.0, 50.0);
         
-        gl.glMatrixMode(GL2.GL_MODELVIEW);*/
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
         
-        
-        /*GLU glu = new GLU();
+        /*
+        GLU glu = new GLU();
         double aspect = (1.0*w)/h;
 		double size   = 1.0;
 		if (aspect >= 1) {
 			glu.gluOrtho2D(-size*aspect, size*aspect, -size, size);
 		} else {
 			glu.gluOrtho2D(-size, size, -size/aspect, size/aspect);
-		}*/
-        
+		}
+        */
 	}
 
 	@Override
@@ -265,16 +264,28 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		switch (e.getKeyCode()) {
 		 case KeyEvent.VK_UP:
-			 translateY++;
+			 camera.move(0.05);
 			 break;
 		 case KeyEvent.VK_DOWN:
-			 translateY--;
+			 camera.move(-0.05);
 			 break;
 		 case KeyEvent.VK_RIGHT:
-			 translateX++;
+			 camera.rotate(-0.1);
 			 break;
 		 case KeyEvent.VK_LEFT:
-			 translateX--;
+			 camera.rotate(0.1);
+			 break;
+		 case KeyEvent.VK_W:
+			 rotateX+=2;
+			 break;
+		 case KeyEvent.VK_S:
+			 rotateX-=2;
+			 break;
+		 case KeyEvent.VK_A:
+			 translateX+=0.1;
+			 break;
+		 case KeyEvent.VK_D:
+			 translateX-=0.1;
 			 break;
 		 default:
 			 break;
