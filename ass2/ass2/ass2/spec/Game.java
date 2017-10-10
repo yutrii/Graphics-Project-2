@@ -16,6 +16,8 @@ import com.jogamp.opengl.glu.GLU;
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
 
+import ass2.spec.Camera.Mode;
+
 
 
 
@@ -32,7 +34,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	private static final long serialVersionUID = 1L;
 
 	private Terrain myTerrain;
-    
+    private Avatar aang;
 	private Camera camera;
 	
     private double rotateX = 0;
@@ -53,7 +55,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     public Game(Terrain terrain) {
     	super("Assignment 2");
         myTerrain = terrain;
-        camera = new Camera(terrain);
+        aang = new Avatar(0, 0.5, 0 ,terrain);
+        camera = new Camera(terrain, aang);
    
     }
     
@@ -91,8 +94,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      */
     public static void main(String[] args) throws FileNotFoundException {
         //Terrain terrain = LevelIO.load(new File(args[0]));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
-        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
+        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
+        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads.json"));
         Game game = new Game(terrain);
         game.run();
@@ -102,13 +105,18 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void display(GLAutoDrawable drawable) {
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
+		//GLU glu = new GLU();
 		gl.glClearColor(1, 1, 1, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
-				
-		camera.updateCamera(gl);
 		
+		camera.updateCamera(gl);
+		//System.out.println("cam pos is " + camera.getPos()[0] + " " + camera.getPos()[2]);
+		if (camera.getMode() == Mode.THIRD_PERSON) {
+			//System.out.println("avatar pos is " + aang.getPos()[0] + " " + aang.getPos()[2]);
+			aang.drawAvatar(gl);
+		}
 		myTerrain.drawTerrain(gl);
 		
 	}
@@ -263,17 +271,39 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		switch (e.getKeyCode()) {
-		 case KeyEvent.VK_UP:
-			 camera.move(0.05);
+		case KeyEvent.VK_UP:
+			//if (camera.getMode() == Mode.FIRST_PERSON) {
+				camera.move(0.05);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(0.05);
+			}
 			 break;
 		 case KeyEvent.VK_DOWN:
-			 camera.move(-0.05);
+			 //if (camera.getMode() == Mode.FIRST_PERSON) {
+				 camera.move(-0.05);
+			 if (camera.getMode() == Mode.THIRD_PERSON) {
+				 aang.move(-0.05);
+			 }
 			 break;
 		 case KeyEvent.VK_RIGHT:
-			 camera.rotate(-0.1);
+			 //if (camera.getMode() == Mode.FIRST_PERSON) {
+			  camera.rotate(-0.1);
+			 if (camera.getMode() ==  Mode.THIRD_PERSON) {
+				 aang.rotate(-0.1);
+			 }
 			 break;
 		 case KeyEvent.VK_LEFT:
-			 camera.rotate(0.1);
+			 //if (camera.getMode() == Mode.FIRST_PERSON) {
+				 camera.rotate(0.1);
+			 if (camera.getMode() == Mode.THIRD_PERSON) {
+				 aang.rotate(0.1);
+			 }
+			 break;
+		 case KeyEvent.VK_C:
+			 camera.changeMode();
+			 if (camera.getMode() == Mode.THIRD_PERSON) {
+				 aang.summonAvatar(camera.getPos()[0], camera.getPos()[1], camera.getPos()[2], camera.getAngle());
+			 }
 			 break;
 		 case KeyEvent.VK_W:
 			 rotateX+=2;

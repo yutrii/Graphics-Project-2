@@ -259,6 +259,14 @@ public class Terrain {
         myRoads.add(road);        
     }
     
+    public boolean withinRange(double x, double z) {
+    	if (x < 0 || x > mySize.height - 1 || z < 0 || z+1 > mySize.width - 1) {
+    		return false;
+    	}
+    	
+    	return true;
+    }
+    
     public void drawTerrain(GL2 gl) {
     	int width = mySize.width;
     	int height = mySize.height;
