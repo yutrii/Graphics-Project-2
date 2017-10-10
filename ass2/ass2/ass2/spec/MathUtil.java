@@ -42,12 +42,12 @@ public class MathUtil {
      */
     public static double[][] multiply(double[][] p, double[][] q) {
 
-        double[][] m = new double[3][3];
+        double[][] m = new double[p.length][q.length];
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < p.length; i++) {
+            for (int j = 0; j < p.length; j++) {
                 m[i][j] = 0;
-                for (int k = 0; k < 3; k++) {
+                for (int k = 0; k < p.length; k++) {
                    m[i][j] += p[i][k] * q[k][j]; 
                 }
             }
@@ -139,6 +139,25 @@ public class MathUtil {
 				  				  matrix[2][2] + " ]");
     }
     
+    public static void print4DMatrix(double[][] matrix) {
+    	System.out.println("[ " + matrix[0][0] + "  " +
+    							  matrix[0][1] + "  " +
+    							  matrix[0][2] + "  " +
+    							  matrix[0][3]);
+    	System.out.println("  " + matrix[1][0] + "  " +
+				  				  matrix[1][1] + "  " +
+				  				  matrix[1][2] + "  " +
+				  				  matrix[1][3]);
+    	System.out.println("  " + matrix[2][0] + "  " +
+				  				  matrix[2][1] + "  " +
+				  				  matrix[2][2] + "  " +
+				  				  matrix[2][3]);
+    	System.out.println("  " + matrix[3][0] + "  " +
+				  				  matrix[3][1] + "  " +
+				  				  matrix[3][2] + "  " +
+				  				  matrix[3][3] + " ]");
+    }
+    
     
     /* 
      * Some maths utility functions
@@ -154,6 +173,18 @@ public class MathUtil {
     public static double [] normalise(double [] n){
     	double  mag = getMagnitude(n);
     	double norm[] = {n[0]/mag,n[1]/mag,n[2]/mag};
+    	return norm;
+    }
+    
+    public static double get4DMagnitude(double [] n){
+    	double mag = n[0]*n[0] + n[1]*n[1] + n[2]*n[2] + n[3]*n[3];
+    	mag = Math.sqrt(mag);
+    	return mag;
+    }
+    
+    public static double [] normalise4D(double [] n){
+    	double  mag = getMagnitude(n);
+    	double norm[] = {n[0]/mag,n[1]/mag,n[2]/mag,n[3]/mag};
     	return norm;
     }
     

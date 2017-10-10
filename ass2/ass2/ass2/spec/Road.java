@@ -14,7 +14,7 @@ public class Road {
 
     private List<Double> myPoints;
     private double myWidth;
-    private static final double t = 0.001;
+    private static final double t = 0.1;
     
     //Texture variables
     private static MyTexture[] myTextures;
@@ -170,19 +170,22 @@ public class Road {
         i *= 6;
         
         double x0 = myPoints.get(i++);
-        double y0 = myPoints.get(i++);
+        double z0 = myPoints.get(i++);
         double x1 = myPoints.get(i++);
         double z1 = myPoints.get(i++);
         double x2 = myPoints.get(i++);
         double z2 = myPoints.get(i++);
         double x3 = myPoints.get(i++);
-        double y3 = myPoints.get(i++);
+        double z3 = myPoints.get(i++);
         
         
         double[] p = new double[2];
 
-        p[0] = t(0, t) * x0 + t(1, t) * x1 + t(2, t) * x2 + t(3, t) * x3;
-        p[1] = t(0, t) * y0 + t(1, t) * z1 + t(2, t) * z2 + t(3, t) * y3;        
+        /*p[0] = t(0, t) * x0 + t(1, t) * x1 + t(2, t) * x2 + t(3, t) * x3;
+        p[1] = t(0, t) * y0 + t(1, t) * z1 + t(2, t) * z2 + t(3, t) * y3; */       
+        
+        p[0] = t(0, t) * (x1 - x0) + t(1, t) * (x2 - x1) + t(2, t) * (x3 - x2);
+        p[1] = t(0, t) * (z1 - z0) + t(1, t) * (z2 - z1) + t(2, t) * (z3 - z2);
         
         return p;
     }
@@ -194,15 +197,12 @@ public class Road {
         switch(i) {
         
         case 0:
-            return -3*(1 - t)*(1 - t);
+            return 3*(1 - t)*(1 - t);
 
         case 1:
-            return 9*t*t - 12*t + 3;
+            return 6*t*(1-t);
             
         case 2:
-            return 6*t - 9*t*t;
-
-        case 3:
             return 3*t*t;
         }
         
@@ -218,104 +218,117 @@ public class Road {
     	
     	//Setup of initial cross section
     	double d = 0.5*myWidth;
-    	//double newPoint1[0], newPoint1[2], newPoint2[0], newPoint2[2];
     	double[] newPoint1 = new double[4];
     	double[] newPoint2 = new double[4];
     	newPoint1[3] = 1;
     	newPoint2[3] = 1;
-    	//double x1 = newPoint1[0] = newPoint2[0] = point(0)[0];
-    	//double z1 = newPoint1[2] = newPoint2[2] = point(0)[1];
     	
-    	double x1 = newPoint1[0] = newPoint2[0] = point(0)[0];
-    	double z1 = newPoint1[2] = newPoint2[2] = point(0)[1];
-    	
-    	double x2 = point(t)[0];
+    	//Starting point
+    	double x1 = newPoint1[0] = newPoint2[0] = myPoints.get(0);//point(0)[0];
+    	double z1 = newPoint1[2] = newPoint2[2] = myPoints.get(1);//point(0)[1];
+	    	
+		double x2 = point(t)[0];
     	double z2 = point(t)[1];
-    	
-    	if (z2 - z1 == 0) { //Means the curve starts horizontally
-    		newPoint1[2] += d;
-    		newPoint2[2] -= d;
-    	} else if (x2 - x1 == 0) {//Means the curve starts vertically
-    		newPoint1[0] += d;
-    		newPoint2[0] -= d;
-    	} else {
-    		double gradient = (z2 - z1)/(x2 - x1); //z2-z1 / x2-x1
-        	double rightAngle = -1/gradient;
-        	
-    		newPoint1[0] = x1 + d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-    		newPoint1[2] = z1 + d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-    		
-    		newPoint2[0] = x1 - d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-    		newPoint2[2] = z1 - d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-    	}
+
+		if (z2 - z1 == 0) { //Means the curve starts horizontally
+			newPoint1[2] += d;
+			newPoint2[2] -= d;
+		} else if (x2 - x1 == 0) {//Means the curve starts vertically
+			newPoint1[0] += d;
+			newPoint2[0] -= d;
+		} else {
+			double gradient = (z2 - z1)/(x2 - x1); //z2-z1 / x2-x1
+	    	double rightAngle = -1/gradient;
+	    	
+	    	//Calculating initial cross-section points that are
+	    	// perpendicular to the initial points on the curve.
+			newPoint1[0] = x1 + d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+			newPoint1[2] = z1 + d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+			
+			newPoint2[0] = x1 - d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+			newPoint2[2] = z1 - d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+		}
     	
     	double[][] tMatrix = new double[4][4];
     	
-    	/*gl.glLineWidth(10.0f);
+    	//Attempt to transform the cross section
+    	gl.glLineWidth(10.0f);
     	gl.glBegin(GL2.GL_LINES);
     		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
     		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
-    	gl.glEnd();*/
-    	
-    	gl.glBegin(GL2.GL_QUAD_STRIP);
-    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
-    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
-    		System.out.println("Initial line: (" + newPoint1[0] + ", " + newPoint1[2] + ") " + "(" + newPoint2[0] + ", " + newPoint2[2] + ")");
-	    	for (double increment = t; increment < size(); increment += t) {
-	    		//Calculate the new position on the spine	    		
-	    		double newPOnSpineX = point(increment)[0];
-	    		double newPOnSpineZ = point(increment)[1];
-	    		System.out.println("Point on spine: (" + newPOnSpineX + ", " + newPOnSpineZ + ")");
+    		
+    		for (double increment = t; increment < size(); increment += t) {
+    			double[] point = point(increment);
+	    		double spineX = point[0];
+	    		double spineZ = point[1];
 	    		
-	    		//Add the new translation to the transformation matrix
-	    		tMatrix[0][3] = newPOnSpineX;
-	    		tMatrix[2][3] = newPOnSpineZ;
+	    		//Add the new point to the transformation matrix
+	    		tMatrix[0][3] = spineX;
+	    		tMatrix[1][3] = 0;
+	    		tMatrix[2][3] = spineZ;
 	    		tMatrix[3][3] = 1;
 	    		
 	    		//Add the new k vector to the transformation matrix
 	    		double[] k = new double[3];
 	    		double[] tmp = getTangent(increment);
 	    		k[0] = tmp[0];
-	    		k[1] = tmp[1];
+	    		k[1] = 0;
+	    		k[2] = tmp[1];
 	    		k = MathUtil.normalise(k);
 	    		tMatrix[0][2] = k[0];
-	    		//tMatrix[1][2] = altitude;
-	    		tMatrix[2][2] = k[1];
+	    		tMatrix[1][2] = k[1];
+	    		tMatrix[2][2] = k[2];
+	    		tMatrix[3][2] = 0;
 	    		
 	    		//Add the new i vector to the transformation matrix
 	    		double[] i = new double[3];
 	    		i[0] = -k[1];
-	    		i[1] = k[0];
+	    		i[1] = 0;
+	    		i[2] = k[0];
+	    		
+	    		
+	    		i[0] += spineX;
+	    		i[2] += spineZ;
+	    		i = MathUtil.normalise(i);
+	    		
+	    		gl.glVertex3d(i[0], 0, i[2]);
+	    		gl.glVertex3d(spineX, 0, spineZ);
+	    		/*//i = MathUtil.normalise(i);
 	    		tMatrix[0][0] = i[0];
-	    		tMatrix[2][0] = i[1];
+	    		tMatrix[1][0] = i[1];
+	    		tMatrix[2][0] = 0;
+	    		tMatrix[3][0] = 0;
 	    		
 	    		//Add the new j vector to the transformation matrix
 	    		double[] j = MathUtil.cross(k, i);
 	    		tMatrix[0][1] = j[0];
-	    		tMatrix[2][1] = j[1];
-	    		//System.out.println("Line: (" + newPoint1[0] + ", " + newPoint1[2] + ") " + "(" + newPoint2[0] + ", " + newPoint2[2] + ")");
-	    		newPoint1 = MathUtil.multiply(tMatrix, newPoint1);
-	    		newPoint2 = MathUtil.multiply(tMatrix, newPoint2);
-	    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
-	    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
+	    		tMatrix[1][1] = j[1];
+	    		tMatrix[2][1] = j[2];
+	    		tMatrix[3][1] = 0;*/
 	    		
+	    		/*newPoint1 = MathUtil.multiply(tMatrix, newPoint1);
+	    		newPoint2 = MathUtil.multiply(tMatrix, newPoint2);
+	    		
+	    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
+	    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);*/
 	    		
 	    		/*double[] tPoint1 = MathUtil.multiply(tMatrix, newPoint1);
 	    		double[] tPoint2 = MathUtil.multiply(tMatrix, newPoint2);
 	    		gl.glVertex3d(tPoint1[0], altitude, tPoint1[2]);
 	    		gl.glVertex3d(tPoint2[0], altitude, tPoint2[2]);*/
-	    	}
+    		}
     	gl.glEnd();
     	
     	
-    	/*gl.glBegin(GL2.GL_LINE_STRIP);
-			for (double increment = 0 ; increment < size(); increment += t) {
-	    			double x_ = point(increment)[0];
-	    			double z_ = point(increment)[1];
+    	gl.glBegin(GL2.GL_LINE_STRIP);
+			for (double i = 0 ; i < size(); i += t) {
+	    			double x_ = point(i)[0];
+	    			double z_ = point(i)[1];
 	    			gl.glVertex3d(x_, altitude, z_);
 	    		
 	    	}
-		gl.glEnd();*/
+			gl.glVertex3d(myPoints.get(myPoints.size()-2), 0, myPoints.get(myPoints.size()-1));
+		gl.glEnd();
     	
     	gl.glPopMatrix();
     }
