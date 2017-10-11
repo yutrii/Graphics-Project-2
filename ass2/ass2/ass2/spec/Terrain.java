@@ -260,7 +260,7 @@ public class Terrain {
     }
     
     public boolean withinRange(double x, double z) {
-    	if (x < 0 || x > mySize.height - 1 || z < 0 || z+1 > mySize.width - 1) {
+    	if (x < 0 || x > mySize.height - 1 || z < 0 || z > mySize.width - 1) {
     		return false;
     	}
     	
@@ -333,7 +333,7 @@ public class Terrain {
     	
 		//System.out.println("Roads: " + myRoads.size());
 		for (Road r : myRoads) {		
-			r.drawRoad(gl, myAltitude);
+			r.drawRoad(gl, this);
 		}
 		
 		gl.glPopMatrix();
