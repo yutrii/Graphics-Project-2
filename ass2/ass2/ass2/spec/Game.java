@@ -215,7 +215,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
         //gl.glOrtho(-7,7,-7,7,-10,100);
 		
         GLU glu = new GLU();
-        glu.gluPerspective(90.0, (float)w/(float)h, 1.0, 50.0);
+        glu.gluPerspective(90.0f*w/h, (float)w/(float)h, 0.1, 100.0);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         
