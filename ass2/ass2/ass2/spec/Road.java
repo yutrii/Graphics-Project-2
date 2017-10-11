@@ -14,11 +14,12 @@ public class Road {
 
     private List<Double> myPoints;
     private double myWidth;
-    private static final double t = 0.1;
+    private static final double t = 0.001;
+    private static final double texInc = 0.005;
     
     //Texture variables
     private static MyTexture[] myTextures;
-    private static String textureFileName1 = "ass2/ass2/textures/road.jpg";
+    private static String textureFileName1 = "ass2/ass2/textures/road2.jpg";
     private static String textureExt1 = "jpg";
     
     
@@ -210,14 +211,15 @@ public class Road {
         throw new IllegalArgumentException("" + i);
     }
     
-    public void drawRoad(GL2 gl, double[][] altitudes) {
+    public void drawRoad(GL2 gl, Terrain terrain) {
     	gl.glPushMatrix();
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	//Only handling flat surfaces for now
-    	double altitude = altitudes[0][0];
+    	
     	
     	//Setup of initial cross section
-    	double d = 0.5*myWidth;
+    	/*double d = 0.5*myWidth;
+    	System.out.println("Distance is: " + d);
     	double[] newPoint1 = new double[4];
     	double[] newPoint2 = new double[4];
     	newPoint1[3] = 1;
@@ -247,24 +249,23 @@ public class Road {
 			
 			newPoint2[0] = x1 - d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
 			newPoint2[2] = z1 - d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-		}
+		}*/
     	
     	double[][] tMatrix = new double[4][4];
     	
     	//Attempt to transform the cross section
-    	gl.glLineWidth(10.0f);
-    	gl.glBegin(GL2.GL_LINES);
-    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
-    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);
-    		
-    		for (double increment = t; increment < size(); increment += t) {
+    	//gl.glLineWidth(10.0f);
+    	double texCoord = 0;
+    	gl.glBegin(GL2.GL_QUAD_STRIP);
+    		for (double increment = 0; increment < size(); increment += t) {
     			double[] point = point(increment);
 	    		double spineX = point[0];
 	    		double spineZ = point[1];
+	    		double altitude = terrain.altitude(spineX, spineZ);
 	    		
 	    		//Add the new point to the transformation matrix
 	    		tMatrix[0][3] = spineX;
-	    		tMatrix[1][3] = 0;
+	    		tMatrix[1][3] = altitude;
 	    		tMatrix[2][3] = spineZ;
 	    		tMatrix[3][3] = 1;
 	    		
@@ -272,59 +273,73 @@ public class Road {
 	    		double[] k = new double[3];
 	    		double[] tmp = getTangent(increment);
 	    		k[0] = tmp[0];
-	    		k[1] = 0;
+	    		k[1] = altitude;
 	    		k[2] = tmp[1];
 	    		k = MathUtil.normalise(k);
-	    		tMatrix[0][2] = k[0];
+	    		/*tMatrix[0][2] = k[0];
 	    		tMatrix[1][2] = k[1];
 	    		tMatrix[2][2] = k[2];
-	    		tMatrix[3][2] = 0;
+	    		tMatrix[3][2] = 0;*/
 	    		
 	    		//Add the new i vector to the transformation matrix
 	    		double[] i = new double[3];
-	    		i[0] = -k[1];
-	    		i[1] = 0;
-	    		i[2] = k[0];
+	    		i[0] = k[2];
+	    		i[1] = altitude;
+	    		i[2] = -k[0];
 	    		
+	    		//Adding the point onto the normal
+	    		i = MathUtil.normalise(i);
+	    		i[0] = 0.5*myWidth*i[0];
+	    		i[2] = 0.5*myWidth*i[2];
 	    		
 	    		i[0] += spineX;
 	    		i[2] += spineZ;
-	    		i = MathUtil.normalise(i);
-	    		
+
+	    		gl.glTexCoord2d(0, texCoord);
 	    		gl.glVertex3d(i[0], 0, i[2]);
+	    		gl.glTexCoord2d(1, texCoord);
 	    		gl.glVertex3d(spineX, 0, spineZ);
-	    		/*//i = MathUtil.normalise(i);
-	    		tMatrix[0][0] = i[0];
-	    		tMatrix[1][0] = i[1];
-	    		tMatrix[2][0] = 0;
-	    		tMatrix[3][0] = 0;
 	    		
-	    		//Add the new j vector to the transformation matrix
-	    		double[] j = MathUtil.cross(k, i);
-	    		tMatrix[0][1] = j[0];
-	    		tMatrix[1][1] = j[1];
-	    		tMatrix[2][1] = j[2];
-	    		tMatrix[3][1] = 0;*/
+	    		texCoord += texInc;
 	    		
-	    		/*newPoint1 = MathUtil.multiply(tMatrix, newPoint1);
-	    		newPoint2 = MathUtil.multiply(tMatrix, newPoint2);
-	    		
-	    		gl.glVertex3d(newPoint1[0], altitude, newPoint1[2]);
-	    		gl.glVertex3d(newPoint2[0], altitude, newPoint2[2]);*/
-	    		
-	    		/*double[] tPoint1 = MathUtil.multiply(tMatrix, newPoint1);
-	    		double[] tPoint2 = MathUtil.multiply(tMatrix, newPoint2);
-	    		gl.glVertex3d(tPoint1[0], altitude, tPoint1[2]);
-	    		gl.glVertex3d(tPoint2[0], altitude, tPoint2[2]);*/
     		}
+    		
+    		//Last point is a special case
+    		double lastX = myPoints.get(myPoints.size()-2);
+    		double lastZ = myPoints.get(myPoints.size()-1);
+    		/*double[] k = new double[3];
+    		double[] tmp = getTangent(increment);
+    		k[0] = tmp[0];
+    		k[1] = 0;
+    		k[2] = tmp[1];
+    		k = MathUtil.normalise(k);
+    		
+    		//Add the new i vector to the transformation matrix
+    		double[] i = new double[3];
+    		i[0] = k[2];
+    		i[1] = 0;
+    		i[2] = -k[0];
+    		
+    		//Adding the point onto the normal
+    		i = MathUtil.normalise(i);
+    		i[0] = 0.5*myWidth*i[0];
+    		i[2] = 0.5*myWidth*i[2];
+    		
+    		i[0] += spineX;
+    		i[2] += spineZ;
+
+    		gl.glVertex3d(i[0], 0, i[2]);
+    		gl.glVertex3d(spineX, 0, spineZ);*/
+    		
     	gl.glEnd();
     	
     	
     	gl.glBegin(GL2.GL_LINE_STRIP);
 			for (double i = 0 ; i < size(); i += t) {
-	    			double x_ = point(i)[0];
-	    			double z_ = point(i)[1];
-	    			gl.glVertex3d(x_, altitude, z_);
+    			double x = point(i)[0];
+    			double z = point(i)[1];
+    			double altitude = terrain.altitude(x, z);
+    			gl.glVertex3d(x, altitude, z);
 	    		
 	    	}
 			gl.glVertex3d(myPoints.get(myPoints.size()-2), 0, myPoints.get(myPoints.size()-1));
