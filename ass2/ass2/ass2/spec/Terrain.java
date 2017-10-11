@@ -14,7 +14,7 @@ import com.jogamp.opengl.GL2;
  * @author malcolmr
  */
 public class Terrain {
-
+	//hello
     private Dimension mySize;
     private double[][] myAltitude;
     private List<Tree> myTrees;

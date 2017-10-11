@@ -11,7 +11,7 @@ public class Avatar {
     private static final double NUM_QUADS = 32;
     private static final double INC = 2*Math.PI/NUM_QUADS;
 
-    
+    //hello
     public Avatar(double x, double y, double z, Terrain t) {
         myPos = new double[3];
         forward = new double[3];

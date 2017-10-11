@@ -10,7 +10,7 @@ public class Camera {
 		FIRST_PERSON,
 		THIRD_PERSON
 	}
-	
+	//hello
 	private Mode mode;
 	private double[] pos;
 	private double[] forward; //starting position facing 315deg
