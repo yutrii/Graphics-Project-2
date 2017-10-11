@@ -6,11 +6,12 @@ import com.jogamp.opengl.glu.GLU;
 public class Camera {
 	private Terrain terrain;
 	private Avatar aang;
+	private double aspectRatio;
 	public static enum Mode {
 		FIRST_PERSON,
 		THIRD_PERSON
 	}
-	//hello
+
 	private Mode mode;
 	private double[] pos;
 	private double[] forward; //starting position facing 315deg
@@ -18,15 +19,14 @@ public class Camera {
 	
 	public Camera(Terrain t, Avatar a) {
 		pos = new double[] {0, 0.5, 0};
-		forward = new double[] {1, 0, 1};
+		forward = new double[] {0.707, 0, 0.707};
 		terrain = t;
 		aang = a;
+		aspectRatio = 1;
 		mode = Mode.FIRST_PERSON;
 	}
 		
 	public void updateCamera(GL2 gl) {
-		
-		
 		GLU glu = new GLU();
 		
 		if (terrain.withinRange(pos[0], pos[2])) {
@@ -40,12 +40,14 @@ public class Camera {
         if (mode == Mode.FIRST_PERSON) {
         	glu.gluLookAt(pos[0], pos[1], pos[2], pos[0] + forward[0], pos[1], pos[2] + forward[2], 0, 1, 0);
         } else if (mode == Mode.THIRD_PERSON) {
-        	glu.gluLookAt(pos[0] - forward[0], pos[1], pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
+        	glu.gluLookAt(pos[0] - forward[0], pos[1]+0.2, pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
         }
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         
-        glu.gluPerspective(90, 1, 0.1f, 100f);
+        
+        //System.out.println(aspectRatio);
+        glu.gluPerspective(60, aspectRatio, 0.1f, 100f);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
@@ -77,6 +79,10 @@ public class Camera {
 	
 	public double getAngle() {
 		return angle;
+	}
+	
+	public void setAspectRatio(double ar) {
+		aspectRatio = ar;
 	}
 	
 	public void changeMode() {

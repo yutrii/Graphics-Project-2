@@ -208,17 +208,20 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void reshape(GLAutoDrawable arg0, int x, int y, int w,
 			int h) {
 		// TODO Auto-generated method stub
-		GL2 gl = arg0.getGL().getGL2();
+		/*GL2 gl = arg0.getGL().getGL2();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
        
         //gl.glOrtho(-7,7,-7,7,-10,100);
 		
         GLU glu = new GLU();
-        glu.gluPerspective(90.0f*w/h, (float)w/(float)h, 0.1, 100.0);
+        glu.gluPerspective(90.0f, (float)w/(float)h, 0.1, 100.0);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         
+        System.out.println(w + " " + h);
+        */
+        camera.setAspectRatio((float)w/(float)h);
         /*
         GLU glu = new GLU();
         double aspect = (1.0*w)/h;
@@ -243,6 +246,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
             // Note: dragging in the x dir rotates about y
             //       dragging in the y dir rotates about x
             rotateY += dx * ROTATION_SCALE;
+            
+            //camera.rotate(rotateY/10000);
             rotateX += dy * ROTATION_SCALE;
 
         }
@@ -271,55 +276,51 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_UP:
-			//if (camera.getMode() == Mode.FIRST_PERSON) {
+			case KeyEvent.VK_UP:
 				camera.move(0.05);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(0.05);
-			}
-			 break;
-		 case KeyEvent.VK_DOWN:
-			 //if (camera.getMode() == Mode.FIRST_PERSON) {
-				 camera.move(-0.05);
-			 if (camera.getMode() == Mode.THIRD_PERSON) {
-				 aang.move(-0.05);
-			 }
-			 break;
-		 case KeyEvent.VK_RIGHT:
-			 //if (camera.getMode() == Mode.FIRST_PERSON) {
-			  camera.rotate(-0.1);
-			 if (camera.getMode() ==  Mode.THIRD_PERSON) {
-				 aang.rotate(-0.1);
-			 }
-			 break;
-		 case KeyEvent.VK_LEFT:
-			 //if (camera.getMode() == Mode.FIRST_PERSON) {
-				 camera.rotate(0.1);
-			 if (camera.getMode() == Mode.THIRD_PERSON) {
-				 aang.rotate(0.1);
-			 }
-			 break;
-		 case KeyEvent.VK_C:
-			 camera.changeMode();
-			 if (camera.getMode() == Mode.THIRD_PERSON) {
-				 aang.summonAvatar(camera.getPos()[0], camera.getPos()[1], camera.getPos()[2], camera.getAngle());
-			 }
-			 break;
-		 case KeyEvent.VK_W:
-			 rotateX+=2;
-			 break;
-		 case KeyEvent.VK_S:
-			 rotateX-=2;
-			 break;
-		 case KeyEvent.VK_A:
-			 translateX+=0.1;
-			 break;
-		 case KeyEvent.VK_D:
-			 translateX-=0.1;
-			 break;
-		 default:
-			 break;
-		 }
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.move(0.05);
+				}
+				break;
+			case KeyEvent.VK_DOWN:
+				camera.move(-0.05);
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.move(-0.05);
+				}
+				break;
+			case KeyEvent.VK_RIGHT:
+				camera.rotate(-0.1);
+				if (camera.getMode() ==  Mode.THIRD_PERSON) {
+					aang.rotate(-0.1);
+				}
+				break;
+			case KeyEvent.VK_LEFT:
+				camera.rotate(0.1);
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.rotate(0.1);
+				}
+				break;
+			case KeyEvent.VK_C:
+				camera.changeMode();
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					 aang.summonAvatar(camera.getPos()[0], camera.getPos()[1], camera.getPos()[2], camera.getAngle());
+				}
+				break;
+			case KeyEvent.VK_W:
+				rotateX+=2;
+				break;
+			case KeyEvent.VK_S:
+				rotateX-=2;
+				break;
+			case KeyEvent.VK_A:
+				translateX+=0.1;
+				break;
+			case KeyEvent.VK_D:
+				translateX-=0.1;
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
