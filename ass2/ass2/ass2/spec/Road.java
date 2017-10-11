@@ -22,13 +22,7 @@ public class Road {
     private static String textureFileName1 = "ass2/ass2/textures/road2.jpg";
     private static String textureExt1 = "jpg";
     
-    //Material property vectors.
-    //Values taken from http://devernay.free.fr/cours/opengl/materials.html
-    float matAmb[] = {1.0f, 1.0f, 1.0f, 1.0f};
-	float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
-	float matSpec[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	float matShine[] = { 100.0f };
-
+    
     /** 
      * Create a new road starting at the specified point
      */
@@ -219,14 +213,45 @@ public class Road {
     
     public void drawRoad(GL2 gl, Terrain terrain) {
     	gl.glPushMatrix();
-    	
-    	// Material properties.
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
-    	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_DIFFUSE, matDif,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
-    	
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
+    	//Only handling flat surfaces for now
+    	
+    	
+    	//Setup of initial cross section
+    	/*double d = 0.5*myWidth;
+    	System.out.println("Distance is: " + d);
+    	double[] newPoint1 = new double[4];
+    	double[] newPoint2 = new double[4];
+    	newPoint1[3] = 1;
+    	newPoint2[3] = 1;
+    	
+    	//Starting point
+    	double x1 = newPoint1[0] = newPoint2[0] = myPoints.get(0);//point(0)[0];
+    	double z1 = newPoint1[2] = newPoint2[2] = myPoints.get(1);//point(0)[1];
+	    	
+		double x2 = point(t)[0];
+    	double z2 = point(t)[1];
+
+		if (z2 - z1 == 0) { //Means the curve starts horizontally
+			newPoint1[2] += d;
+			newPoint2[2] -= d;
+		} else if (x2 - x1 == 0) {//Means the curve starts vertically
+			newPoint1[0] += d;
+			newPoint2[0] -= d;
+		} else {
+			double gradient = (z2 - z1)/(x2 - x1); //z2-z1 / x2-x1
+	    	double rightAngle = -1/gradient;
+	    	
+	    	//Calculating initial cross-section points that are
+	    	// perpendicular to the initial points on the curve.
+			newPoint1[0] = x1 + d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+			newPoint1[2] = z1 + d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+			
+			newPoint2[0] = x1 - d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+			newPoint2[2] = z1 - d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
+		}*/
+    	
+    	double[][] tMatrix = new double[4][4];
     	
     	//Attempt to transform the cross section
     	//gl.glLineWidth(10.0f);
@@ -238,47 +263,42 @@ public class Road {
 	    		double spineZ = point[1];
 	    		double altitude = terrain.altitude(spineX, spineZ);
 	    		
+	    		//Add the new point to the transformation matrix
+	    		tMatrix[0][3] = spineX;
+	    		tMatrix[1][3] = altitude;
+	    		tMatrix[2][3] = spineZ;
+	    		tMatrix[3][3] = 1;
+	    		
 	    		//Add the new k vector to the transformation matrix
 	    		double[] k = new double[3];
 	    		double[] tmp = getTangent(increment);
 	    		k[0] = tmp[0];
-	    		//k[1] = altitude;
+	    		k[1] = altitude;
 	    		k[2] = tmp[1];
 	    		k = MathUtil.normalise(k);
-	    		k[1] = altitude;
+	    		/*tMatrix[0][2] = k[0];
+	    		tMatrix[1][2] = k[1];
+	    		tMatrix[2][2] = k[2];
+	    		tMatrix[3][2] = 0;*/
 	    		
 	    		//Add the new i vector to the transformation matrix
-	    		double[] i1 = new double[3];
-	    		i1[0] = k[2];
-	    		i1[2] = -k[0];
-	    		
-	    		double[] i2 = new double[3];
-	    		i2[0] = -k[2];
-	    		i2[2] = k[0];
+	    		double[] i = new double[3];
+	    		i[0] = k[2];
+	    		i[1] = altitude;
+	    		i[2] = -k[0];
 	    		
 	    		//Adding the point onto the normal
-	    		i1 = MathUtil.normalise(i1);
-	    		i2 = MathUtil.normalise(i2);
-	    
-	    		i1[0] = 0.5*myWidth*i1[0];
-	    		i1[1] = altitude;
-	    		i1[2] = 0.5*myWidth*i1[2];
+	    		i = MathUtil.normalise(i);
+	    		i[0] = 0.5*myWidth*i[0];
+	    		i[2] = 0.5*myWidth*i[2];
 	    		
-	    		i1[0] += spineX;
-	    		i1[2] += spineZ;
-	    		
-	    		i2[0] = 0.5*myWidth*i2[0];
-	    		i2[1] = altitude;
-	    		i2[2] = 0.5*myWidth*i2[2];
-	    		
-	    		i2[0] += spineX;
-	    		i2[2] += spineZ;
+	    		i[0] += spineX;
+	    		i[2] += spineZ;
 
-	    		gl.glNormal3d(0, 1, 0); //TMP FOR NOW SINCE ITS FLAT TERRAIN
 	    		gl.glTexCoord2d(0, texCoord);
-	    		gl.glVertex3d(i1[0], i1[1], i1[2]);
+	    		gl.glVertex3d(i[0], 0, i[2]);
 	    		gl.glTexCoord2d(1, texCoord);
-	    		gl.glVertex3d(i2[0], i2[1], i2[2]);
+	    		gl.glVertex3d(spineX, 0, spineZ);
 	    		
 	    		texCoord += texInc;
 	    		
@@ -314,7 +334,7 @@ public class Road {
     	gl.glEnd();
     	
     	
-    	/*gl.glBegin(GL2.GL_LINE_STRIP);
+    	gl.glBegin(GL2.GL_LINE_STRIP);
 			for (double i = 0 ; i < size(); i += t) {
     			double x = point(i)[0];
     			double z = point(i)[1];
@@ -323,7 +343,7 @@ public class Road {
 	    		
 	    	}
 			gl.glVertex3d(myPoints.get(myPoints.size()-2), 0, myPoints.get(myPoints.size()-1));
-		gl.glEnd();*/
+		gl.glEnd();
     	
     	gl.glPopMatrix();
     }

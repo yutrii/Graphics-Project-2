@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.glu.GLU;
+
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -43,6 +45,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     private static double translateX = 0;
     private static double translateY = 0;
     private static double translateZ = 0;
+    
+    
     
     private static MyTexture[] myTextures;
     private String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
@@ -92,8 +96,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
         //Terrain terrain = LevelIO.load(new File(args[0]));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testTerrain.json"));
+        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
         Game game = new Game(terrain);
         game.run();
     }
@@ -103,7 +106,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
 		//GLU glu = new GLU();
-		gl.glClearColor(0, 0, 0, 1);
+		gl.glClearColor(1, 1, 1, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
@@ -112,7 +115,6 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		if (camera.getMode() == Mode.THIRD_PERSON) {
 			aang.drawAvatar(gl);
 		}
-		//sun(gl);
 		myTerrain.drawTerrain(gl);
 		
 	}
@@ -143,17 +145,17 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		gl.glEnable(GL2.GL_NORMALIZE);
 		
 		// Light property vectors.
-		//float[] sun = myTerrain.getSunlight();
+		float[] sun = myTerrain.getSunlight();
     	float lightAmb[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    	//float lightPos[] = { sun[0], sun[1], sun[2], 0.0f };
+    	float lightPos[] = { sun[0], sun[1], sun[2], 0.0f };
     	float globAmb[] = { 1f, 1f, 1f, 1.0f };
 
     	// Light properties.
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
-    	//gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos,0);
+    	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos,0);
 
     	gl.glEnable(GL2.GL_LIGHT0); // Enable particular light source.
     	gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb,0); // Global ambient light.
@@ -175,13 +177,16 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);*/
-	}
-	
-	private void sun(GL2 gl) {
-		//Setting sunlight
-	    float[] sun = myTerrain.getSunlight();
-	    float lightPos[] = { sun[0], sun[1], sun[2], 0.0f };
-	    gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos,0);
+		
+		
+		/*float[] dir = new float[4];
+		float[] sun = myTerrain.getSunlight();
+		dir[0] = sun[0];
+		dir[1] = sun[1];
+		dir[2] = sun[2];
+		dir[3] = 0;
+		
+		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, dir, 0);*/
 	}
 	
 	//Does the texture initialisations.
