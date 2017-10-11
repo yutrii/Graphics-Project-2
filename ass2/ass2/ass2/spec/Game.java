@@ -112,9 +112,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		
 		
 		camera.updateCamera(gl);
-		//System.out.println("cam pos is " + camera.getPos()[0] + " " + camera.getPos()[2]);
 		if (camera.getMode() == Mode.THIRD_PERSON) {
-			//System.out.println("avatar pos is " + aang.getPos()[0] + " " + aang.getPos()[2]);
 			aang.drawAvatar(gl);
 		}
 		myTerrain.drawTerrain(gl);
