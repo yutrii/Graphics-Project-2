@@ -19,6 +19,7 @@ public class Terrain {
     private double[][] myAltitude;
     private List<Tree> myTrees;
     private List<Road> myRoads;
+    private List<Other> myOthers;
     private float[] mySunlight;
     
     //Points as array for normal calculations
@@ -43,6 +44,7 @@ public class Terrain {
         myAltitude = new double[width][depth];
         myTrees = new ArrayList<Tree>();
         myRoads = new ArrayList<Road>();
+        myOthers = new ArrayList<Other>();
         mySunlight = new float[3];
         
      
@@ -80,6 +82,12 @@ public class Terrain {
     	
     	for (Road r : myRoads) {
     		r.init(gl);
+    	}
+    	
+    	myOthers.add(new Other(3, 5, 3));
+    	
+    	for (Other o: myOthers) {
+    		o.init(gl);
     	}
     }
 
@@ -334,6 +342,10 @@ public class Terrain {
 		//System.out.println("Roads: " + myRoads.size());
 		for (Road r : myRoads) {		
 			r.drawRoad(gl, this);
+		}
+		
+		for (Other o: myOthers) {
+			o.draw(gl);
 		}
 		
 		gl.glPopMatrix();
