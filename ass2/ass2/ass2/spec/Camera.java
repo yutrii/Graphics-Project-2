@@ -40,7 +40,7 @@ public class Camera {
         if (mode == Mode.FIRST_PERSON) {
         	glu.gluLookAt(pos[0], pos[1], pos[2], pos[0] + forward[0], pos[1], pos[2] + forward[2], 0, 1, 0);
         } else if (mode == Mode.THIRD_PERSON) {
-        	glu.gluLookAt(pos[0] - forward[0], pos[1]+0.2, pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
+        	glu.gluLookAt(pos[0] - forward[0], pos[1], pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
         }
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
