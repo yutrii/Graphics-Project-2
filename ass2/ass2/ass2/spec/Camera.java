@@ -59,6 +59,13 @@ public class Camera {
 		}
 	}
 	
+	public void strafe(double l) {
+		if (mode == Mode.FIRST_PERSON || aang.canMove(l)) {
+			pos[0] += l * forward[2];
+			pos[2] -= l * forward[0];
+		}
+	}
+	
 	public void rotate(double rad) {
 		angle += rad;
 		//if (mode == Mode.THIRD_PERSON) {

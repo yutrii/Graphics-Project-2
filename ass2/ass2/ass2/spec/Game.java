@@ -94,9 +94,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      */
     public static void main(String[] args) throws FileNotFoundException {
         //Terrain terrain = LevelIO.load(new File(args[0]));
-        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
+        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
+        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
         Game game = new Game(terrain);
         game.run();
     }
@@ -305,16 +305,28 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 				}
 				break;
 			case KeyEvent.VK_W:
-				rotateX+=2;
+				camera.move(0.05);
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.move(0.05);
+				}
 				break;
 			case KeyEvent.VK_S:
-				rotateX-=2;
+				camera.move(-0.05);
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.move(-0.05);
+				}
 				break;
 			case KeyEvent.VK_A:
-				translateX+=0.1;
+				camera.strafe(0.05);
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.strafe(0.05);
+				}
 				break;
 			case KeyEvent.VK_D:
-				translateX-=0.1;
+				camera.strafe(-0.05);
+				if (camera.getMode() == Mode.THIRD_PERSON) {
+					aang.strafe(-0.05);
+				}
 				break;
 			default:
 				break;

@@ -74,6 +74,14 @@ public class Avatar {
     	}
     }
     
+    public void strafe(double l) {
+    	if (canMove(l)) {
+    		myPos[0] += l * forward[2];
+    		myPos[2] -= l * forward[0];
+    		myPos[1] = terrain.altitude(myPos[0], myPos[2]) + 0.5;
+    	}
+    }
+    
     public void rotate(double rad) {
     	//System.out.println("rotating");
     	angle += rad;
