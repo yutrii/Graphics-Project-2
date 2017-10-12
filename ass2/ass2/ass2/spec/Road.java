@@ -276,29 +276,40 @@ public class Road {
 	    		k[1] = altitude;
 	    		k[2] = tmp[1];
 	    		k = MathUtil.normalise(k);
-	    		/*tMatrix[0][2] = k[0];
-	    		tMatrix[1][2] = k[1];
-	    		tMatrix[2][2] = k[2];
-	    		tMatrix[3][2] = 0;*/
 	    		
-	    		//Add the new i vector to the transformation matrix
-	    		double[] i = new double[3];
-	    		i[0] = k[2];
-	    		i[1] = altitude;
-	    		i[2] = -k[0];
+	    		//Point that is perpendicular to curve
+	    		double[] i1 = new double[3];
+	    		i1[0] = k[2];
+	    		i1[1] = altitude;
+	    		i1[2] = -k[0];
 	    		
 	    		//Adding the point onto the normal
-	    		i = MathUtil.normalise(i);
-	    		i[0] = 0.5*myWidth*i[0];
-	    		i[2] = 0.5*myWidth*i[2];
+	    		//Normalise it to the half the size of the width
+	    		i1 = MathUtil.normalise(i1);
+	    		i1[0] = 0.5*myWidth*i1[0];
+	    		i1[2] = 0.5*myWidth*i1[2];
 	    		
-	    		i[0] += spineX;
-	    		i[2] += spineZ;
+	    		i1[0] += spineX;
+	    		i1[2] += spineZ;
+	    		
+	    		//Point that is on the other perpendicular side
+	    		double[] i2 = new double[3];
+	    		i2[0] = -k[2];
+	    		i2[1] = altitude;
+	    		i2[2] = k[0];
+	    		
+	    		//Adding the point onto the normal
+	    		i2 = MathUtil.normalise(i2);
+	    		i2[0] = 0.5*myWidth*i2[0];
+	    		i2[2] = 0.5*myWidth*i2[2];
+	    		
+	    		i2[0] += spineX;
+	    		i2[2] += spineZ;
 
 	    		gl.glTexCoord2d(0, texCoord);
-	    		gl.glVertex3d(i[0], altitude, i[2]);
+	    		gl.glVertex3d(i1[0], altitude, i1[2]);
 	    		gl.glTexCoord2d(1, texCoord);
-	    		gl.glVertex3d(spineX, altitude, spineZ);
+	    		gl.glVertex3d(i2[0], altitude, i2[2]);
 	    		
 	    		texCoord += texInc;
 	    		
