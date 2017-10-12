@@ -96,7 +96,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
         //Terrain terrain = LevelIO.load(new File(args[0]));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
         //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
+        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
         Game game = new Game(terrain);
         game.run();
     }
@@ -106,7 +106,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
 		//GLU glu = new GLU();
-		gl.glClearColor(1, 1, 1, 1);
+		gl.glClearColor(0, 0, 0, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
@@ -177,16 +177,6 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);*/
-		
-		
-		/*float[] dir = new float[4];
-		float[] sun = myTerrain.getSunlight();
-		dir[0] = sun[0];
-		dir[1] = sun[1];
-		dir[2] = sun[2];
-		dir[3] = 0;
-		
-		gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, dir, 0);*/
 	}
 	
 	//Does the texture initialisations.
