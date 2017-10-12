@@ -42,6 +42,16 @@ public class Camera {
         } else if (mode == Mode.THIRD_PERSON) {
         	glu.gluLookAt(pos[0] - forward[0], pos[1], pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
         }
+        
+        //Set the directional light after camera is set so it remains fixed.
+        float[] lightPos = new float[4];
+        float[] sun = terrain.getSunlight();
+        lightPos[0] = sun[0];
+        lightPos[1] = sun[1];
+        lightPos[2] = sun[2];
+        lightPos[3] = 0;
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
+        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         

@@ -33,6 +33,13 @@ public class Terrain {
     private static String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
     private static String textureExt1 = "jpg";
     
+    //Material lighting
+    float matAmbAndDif1[] = {0.5f, 0.5f, 0.5f, 1.0f};
+    float matAmbAndDif2[] = {0.0f, 0.9f, 0.0f, 1.0f};
+	float matSpec[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float matShine[] = { 50.0f };
+	
+    
     /**
      * Create a new terrain
      *
@@ -75,6 +82,12 @@ public class Terrain {
     	// Create texture ids. 
     	myTextures = new MyTexture[1];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
+    	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif1,0);
+    	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
     	
     	for (Tree t : myTrees) {
     		t.init(gl);
@@ -289,45 +302,69 @@ public class Terrain {
     	gl.glBegin(GL2.GL_TRIANGLES);
     		for (z = 0; z < height-1; z++) {
     			for (x = 0; x < width-1; x++) {
+    				//First point (0, 0)
     				p0[0] = x;
     				p0[1] = myAltitude[x][z];
     				p0[2] = z;
     				
+    				//Second point (0, 1)
     				p1[0] = x;
     				p1[1] = myAltitude[x][z+1];
     				p1[2] = z+1;
     				
+    				//Third point (1, 0)
     				p2[0] = x+1;
     				p2[1] = myAltitude[x+1][z];
     				p2[2] = z;
     				
+    				//Fourth point (1, 1)
     				p3[0] = x+1;
     				p3[1] = myAltitude[x+1][z+1];
     				p3[2] = z+1;
     				
-    				double[] n1 = MathUtil.getNormalisedNormal(p0, p1, p2);
-    				double[] n2 = MathUtil.getNormalisedNormal(p1, p2, p3);
-    				double[] n3 = { n1[0] + n2[0], n1[1] + n1[1], n1[2] + n2[2] };
+    				//Setup the vectors to cross for normal
+    				double[] v1 = {p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]};
+    				double[] v2 = {p2[0] - p0[0], p2[1] - p0[1], p2[2] - p0[2]};
+    				double[] v3 = {p1[0] - p3[0], p1[1] - p3[1], p1[2] - p3[2]};
+    				double[] v4 = {p2[0] - p3[0], p2[1] - p3[1], p2[2] - p3[2]};
+    				
+    				double[] n1 = MathUtil.cross(v1, v2);
+    				n1 = MathUtil.normalise(n1);
+    				
+    				/*double[] n1 = new double[3];
+    				n1[0] = v1[1];
+    				n1[1] = -v1[0];
+    				n1[2] = 0;
+    				n1 = MathUtil.normalise(n1);*/
+    				
+    				double[] n2 = MathUtil.cross(v3, v4);
+    				n2 = MathUtil.normalise(n2);
+    				
+    				/*double[] n2 = new double[3];
+    				n2[0] = v3[1];
+    				n2[1] = -v3[0];
+    				n2[2] = 0;
+    				n2 = MathUtil.normalise(n2);*/
+    				
+    				//Average the two normals to use on the two joining vertices
+    				double[] n3 = { n1[0] + n2[0], n1[1] + n2[1], n1[2] + n2[2] };
     				double[] smoothNormal = MathUtil.normalise(n3);
     						
+    				gl.glNormal3dv(n1, 0);
     				
-    				//gl.glNormal3dv(n1, 0);
-    				gl.glNormal3dv(smoothNormal, 0);
     				gl.glTexCoord2d(0.5, 1);
     				gl.glVertex3d(x, myAltitude[x][z], z);
-    				
-    				//gl.glNormal3dv(smoothNormal, 0);
     				gl.glTexCoord2d(0, 0);
     				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
     				gl.glTexCoord2d(1, 0);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				
+    				gl.glNormal3dv(n2, 0);
+    				
     				gl.glTexCoord2d(0, 0);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				gl.glTexCoord2d(1, 0);
     				gl.glVertex3d(x, myAltitude[x][z+1], z+1);
-    				
-    				//gl.glNormal3dv(n2, 0);
     				gl.glTexCoord2d(0.5, 1);
     				gl.glVertex3d(x+1, myAltitude[x+1][z+1], z+1);
     			}
@@ -346,7 +383,7 @@ public class Terrain {
 		}
 		
 		for (Monster m: myMonsters) {
-			m.draw(gl);
+			//m.draw(gl);
 		}
 		
 		gl.glPopMatrix();

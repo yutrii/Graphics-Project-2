@@ -22,6 +22,13 @@ public class Road {
     private static String textureFileName1 = "ass2/ass2/textures/road2.jpg";
     private static String textureExt1 = "jpg";
     
+    //Material lighting
+    float matAmbAndDif2[] = {0.0f, 0.9f, 0.0f, 1.0f};
+	float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float matShine[] = { 50.0f };
+
+	// Material property vectors.
+	float matAmbAndDif1[] = {1.0f, 1.0f, 1.0f, 1.0f};
     
     /** 
      * Create a new road starting at the specified point
@@ -51,6 +58,12 @@ public class Road {
     	// Create texture ids. 
     	myTextures = new MyTexture[1];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
+    	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif1,0);
+    	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
     }
 
     /**

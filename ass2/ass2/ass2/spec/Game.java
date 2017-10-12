@@ -93,10 +93,13 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      * @throws FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException {
-        //Terrain terrain = LevelIO.load(new File(args[0]));
-        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
-        //Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-        Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
+    	//Terrain terrain = LevelIO.load(new File(args[0]));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
+//    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testWorld.json"));
+    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testLight.json"));
         Game game = new Game(terrain);
         game.run();
     }
@@ -145,17 +148,17 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		gl.glEnable(GL2.GL_NORMALIZE);
 		
 		// Light property vectors.
-		float[] sun = myTerrain.getSunlight();
+		//float[] sun = myTerrain.getSunlight();
     	float lightAmb[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    	float lightPos[] = { sun[0], sun[1], sun[2], 0.0f };
+    	//float lightPos[] = { sun[0], sun[1], sun[2], 0.0f };
     	float globAmb[] = { 1f, 1f, 1f, 1.0f };
 
     	// Light properties.
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
-    	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos,0);
+    	//gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos,0);
 
     	gl.glEnable(GL2.GL_LIGHT0); // Enable particular light source.
     	gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb,0); // Global ambient light.
@@ -183,6 +186,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	private void textureInit(GL2 gl) {
     	// Create texture ids. 
     	myTextures = new MyTexture[1];
+    	//Bind texture and enable mipmaps with them
     	myTextures[0] = new MyTexture(gl,textureFileName1,textureExt1,true);
 
     	// Specify how texture values combine with current surface color values.
