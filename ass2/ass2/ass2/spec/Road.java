@@ -296,9 +296,9 @@ public class Road {
 	    		i[2] += spineZ;
 
 	    		gl.glTexCoord2d(0, texCoord);
-	    		gl.glVertex3d(i[0], 0, i[2]);
+	    		gl.glVertex3d(i[0], altitude, i[2]);
 	    		gl.glTexCoord2d(1, texCoord);
-	    		gl.glVertex3d(spineX, 0, spineZ);
+	    		gl.glVertex3d(spineX, altitude, spineZ);
 	    		
 	    		texCoord += texInc;
 	    		
@@ -332,18 +332,6 @@ public class Road {
     		gl.glVertex3d(spineX, 0, spineZ);*/
     		
     	gl.glEnd();
-    	
-    	
-    	gl.glBegin(GL2.GL_LINE_STRIP);
-			for (double i = 0 ; i < size(); i += t) {
-    			double x = point(i)[0];
-    			double z = point(i)[1];
-    			double altitude = terrain.altitude(x, z);
-    			gl.glVertex3d(x, altitude, z);
-	    		
-	    	}
-			gl.glVertex3d(myPoints.get(myPoints.size()-2), 0, myPoints.get(myPoints.size()-1));
-		gl.glEnd();
     	
     	gl.glPopMatrix();
     }
