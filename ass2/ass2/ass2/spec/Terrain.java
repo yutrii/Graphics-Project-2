@@ -351,7 +351,7 @@ public class Terrain {
     				double[] smoothNormal = MathUtil.normalise(n3);
     						
     				gl.glNormal3dv(n1, 0);
-    				
+    				//First triangle
     				gl.glTexCoord2d(0.5, 1);
     				gl.glVertex3d(x, myAltitude[x][z], z);
     				gl.glTexCoord2d(0, 0);
@@ -360,7 +360,7 @@ public class Terrain {
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				
     				gl.glNormal3dv(n2, 0);
-    				
+    				//Second triangle
     				gl.glTexCoord2d(0, 0);
     				gl.glVertex3d(x+1, myAltitude[x+1][z], z);
     				gl.glTexCoord2d(1, 0);
