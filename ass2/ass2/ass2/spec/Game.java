@@ -97,8 +97,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
-    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
-    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testWorld.json"));
+    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testWorld.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testLight.json"));
         Game game = new Game(terrain);
         game.run();

@@ -34,9 +34,10 @@ public class Terrain {
     private static String textureExt1 = "jpg";
     
     //Material lighting
+    //float matAmbAndDif2[] = {0.5f, 0.5f, 0.5f, 1.0f};
+    
     float matAmbAndDif1[] = {0.5f, 0.5f, 0.5f, 1.0f};
-    float matAmbAndDif2[] = {0.0f, 0.9f, 0.0f, 1.0f};
-	float matSpec[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	float matShine[] = { 50.0f };
 	
     
@@ -84,10 +85,11 @@ public class Terrain {
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
     	
     	// Material properties.
+    	/*//gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
+    	 * 
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif1,0);
-    	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);*/
     	
     	for (Tree t : myTrees) {
     		t.init(gl);
@@ -337,9 +339,12 @@ public class Terrain {
     				n1[2] = 0;
     				n1 = MathUtil.normalise(n1);*/
     				
-    				double[] n2 = MathUtil.cross(v3, v4);
+    				double[] n2 = MathUtil.cross(v4, v3);
     				n2 = MathUtil.normalise(n2);
     				
+    				
+    				System.out.println("Normal n1 is: " + n1[0] + " " + n1[1] + " " + n1[2]);
+    				System.out.println("Normal n2 is: " + n2[0] + " " + n2[1] + " " + n2[2]);
     				/*double[] n2 = new double[3];
     				n2[0] = v3[1];
     				n2[1] = -v3[0];
