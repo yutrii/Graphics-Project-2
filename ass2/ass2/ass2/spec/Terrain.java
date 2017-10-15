@@ -34,11 +34,10 @@ public class Terrain {
     private static String textureExt1 = "jpg";
     
     //Material lighting
-    //float matAmbAndDif2[] = {0.5f, 0.5f, 0.5f, 1.0f};
-    
-    float matAmbAndDif1[] = {0.5f, 0.5f, 0.5f, 1.0f};
-	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-	float matShine[] = { 50.0f };
+    float matAmb[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
+	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float matShine[] = { 5.0f };
 	
     
     /**
@@ -83,13 +82,6 @@ public class Terrain {
     	// Create texture ids. 
     	myTextures = new MyTexture[1];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
-    	
-    	// Material properties.
-    	/*//gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
-    	 * 
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif1,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);*/
     	
     	for (Tree t : myTrees) {
     		t.init(gl);
@@ -298,6 +290,12 @@ public class Terrain {
     	gl.glPushMatrix();
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+    	
     	gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
     	gl.glPolygonOffset(1.0f, 1.0f);
     	
@@ -333,23 +331,12 @@ public class Terrain {
     				double[] n1 = MathUtil.cross(v1, v2);
     				n1 = MathUtil.normalise(n1);
     				
-    				/*double[] n1 = new double[3];
-    				n1[0] = v1[1];
-    				n1[1] = -v1[0];
-    				n1[2] = 0;
-    				n1 = MathUtil.normalise(n1);*/
-    				
     				double[] n2 = MathUtil.cross(v4, v3);
     				n2 = MathUtil.normalise(n2);
     				
     				
     				System.out.println("Normal n1 is: " + n1[0] + " " + n1[1] + " " + n1[2]);
     				System.out.println("Normal n2 is: " + n2[0] + " " + n2[1] + " " + n2[2]);
-    				/*double[] n2 = new double[3];
-    				n2[0] = v3[1];
-    				n2[1] = -v3[0];
-    				n2[2] = 0;
-    				n2 = MathUtil.normalise(n2);*/
     				
     				//Average the two normals to use on the two joining vertices
     				double[] n3 = { n1[0] + n2[0], n1[1] + n2[1], n1[2] + n2[2] };

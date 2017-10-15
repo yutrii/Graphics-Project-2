@@ -20,6 +20,12 @@ public class Tree {
     private static String textureExt1 = "jpg";
     private static String textureFileName2 = "ass2/ass2/textures/leaves2.jpg";
     
+    //Material lighting
+    float matAmb[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
+	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float matShine[] = { 5.0f };
+    
     public Tree(double x, double y, double z) {
         myPos = new double[3];
         myPos[0] = x;
@@ -47,13 +53,21 @@ public class Tree {
     	
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+    	
     	double x1, z1;
     	gl.glBegin(GL2.GL_QUAD_STRIP);
 	    	for (int i = 0; i <= NUM_QUADS; i++) {
 		    	x1 = radius * Math.cos(INC*i);
 		    	z1 = radius * Math.sin(INC*i);
 		    	
-		    	gl.glNormal3d(x1, 0, z1);
+		    	double[] n = {x1, 0, z1};
+		    	n = MathUtil.normalise(n);
+		    	gl.glNormal3d(n[0], 0, n[2]);
 		    	
 		    	gl.glTexCoord2d(i/NUM_QUADS, 0);
 	    	    gl.glVertex3d(x1, 0, z1);
