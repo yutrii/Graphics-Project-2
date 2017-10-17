@@ -91,7 +91,7 @@ public class Terrain {
     		r.init(gl);
     	}
     	
-    	myMonsters.add(new Monster(1, 0, 1));
+    	myMonsters.add(new Monster(1, getGridAltitude(1, 1), 1));
     	
     	for (Monster m: myMonsters) {
     		m.init(gl);
@@ -375,7 +375,7 @@ public class Terrain {
 		}
 		
 		for (Monster m: myMonsters) {
-			//m.draw(gl);
+			m.draw(gl);
 		}
 		
 		gl.glPopMatrix();

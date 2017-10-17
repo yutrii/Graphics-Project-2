@@ -46,7 +46,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     private static double translateY = 0;
     private static double translateZ = 0;
     
-    
+    private boolean[] keyStates;
     
     private static MyTexture[] myTextures;
     private String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
@@ -57,7 +57,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
         myTerrain = terrain;
         aang = new Avatar(0, 0.5, 0 ,terrain);
         camera = new Camera(terrain, aang);
-   
+        keyStates = new boolean[256];
     }
     
     /** 
@@ -109,10 +109,12 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
 		//GLU glu = new GLU();
-		gl.glClearColor(0, 0, 0, 1);
+		gl.glClearColor(0.5f, 0.5f, 1, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
+		
+		keyOperations();
 		
 		camera.updateCamera(gl);
 		if (camera.getMode() == Mode.THIRD_PERSON) {
@@ -197,38 +199,13 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	}
 
 	@Override
-	public void reshape(GLAutoDrawable arg0, int x, int y, int w,
-			int h) {
-		// TODO Auto-generated method stub
-		/*GL2 gl = arg0.getGL().getGL2();
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-       
-        //gl.glOrtho(-7,7,-7,7,-10,100);
-		
-        GLU glu = new GLU();
-        glu.gluPerspective(90.0f, (float)w/(float)h, 0.1, 100.0);
-        
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        
-        System.out.println(w + " " + h);
-        */
+	public void reshape(GLAutoDrawable arg0, int x, int y, int w, int h) {
         camera.setAspectRatio((float)w/(float)h);
-        /*
-        GLU glu = new GLU();
-        double aspect = (1.0*w)/h;
-		double size   = 1.0;
-		if (aspect >= 1) {
-			glu.gluOrtho2D(-size*aspect, size*aspect, -size, size);
-		} else {
-			glu.gluOrtho2D(-size, size, -size/aspect, size/aspect);
-		}
-        */
 	}
+	
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
 		Point p = e.getPoint();
 
         if (myMousePoint != null) {
@@ -249,13 +226,11 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 		myMousePoint = e.getPoint();
 	}
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		// TODO Auto-generated method stub
 		if (arg0.getWheelRotation() < 0) {
 			zoom = Math.min(10, zoom + 0.1);
 		} else {
@@ -266,76 +241,104 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		switch (e.getKeyCode()) {
-			case KeyEvent.VK_UP:
-				camera.move(0.05);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.move(0.05);
-				}
-				break;
-			case KeyEvent.VK_DOWN:
-				camera.move(-0.05);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.move(-0.05);
-				}
-				break;
-			case KeyEvent.VK_RIGHT:
-				camera.rotate(-0.1);
-				if (camera.getMode() ==  Mode.THIRD_PERSON) {
-					aang.rotate(-0.1);
-				}
-				break;
-			case KeyEvent.VK_LEFT:
-				camera.rotate(0.1);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.rotate(0.1);
-				}
-				break;
-			case KeyEvent.VK_C:
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			keyStates[1] = true;
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			keyStates[2] = true;
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			keyStates[3] = true;
+		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			keyStates[4] = true;
+		} else {
+		
+			char key = e.getKeyChar();
+			keyStates[key] = true;
+			
+			if (key == 'c') {
 				camera.changeMode();
 				if (camera.getMode() == Mode.THIRD_PERSON) {
 					 aang.summonAvatar(camera.getPos()[0], camera.getPos()[1], camera.getPos()[2], camera.getAngle());
 				}
-				break;
-			case KeyEvent.VK_W:
-				camera.move(0.05);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.move(0.05);
-				}
-				break;
-			case KeyEvent.VK_S:
-				camera.move(-0.05);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.move(-0.05);
-				}
-				break;
-			case KeyEvent.VK_A:
-				camera.strafe(0.05);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.strafe(0.05);
-				}
-				break;
-			case KeyEvent.VK_D:
-				camera.strafe(-0.05);
-				if (camera.getMode() == Mode.THIRD_PERSON) {
-					aang.strafe(-0.05);
-				}
-				break;
-			default:
-				break;
+			}
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
+			keyStates[1] = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+			keyStates[2] = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			keyStates[3] = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			keyStates[4] = false;
+		} else {
+			keyStates[e.getKeyChar()] = false;
+		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	void keyOperations() {
+		if (keyStates[1]) {
+			camera.move(0.01);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(0.01);
+			}
+		}
+		
+		if (keyStates[2]) {
+			camera.move(-0.01);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(-0.01);
+			}
+		}
+		
+		if (keyStates[4]) {
+			camera.rotate(-0.02);
+			if (camera.getMode() ==  Mode.THIRD_PERSON) {
+				aang.rotate(-0.02);
+			}
+		}
+		
+		if (keyStates[3]) {
+			camera.rotate(0.02);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.rotate(0.02);
+			}
+		}
+		
+		if (keyStates['w']) {
+			camera.move(0.01);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(0.01);
+			}
+		}
+		
+		if (keyStates['s']) {
+			camera.move(-0.01);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(-0.01);
+			}
+		}
+		
+		if (keyStates['a']) {
+			camera.strafe(0.01);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.strafe(0.01);
+			}
+		}
+		
+		if (keyStates['d']) {
+			camera.strafe(-0.01);
+			if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.strafe(-0.01);
+			}
+		}
 	}
 }
