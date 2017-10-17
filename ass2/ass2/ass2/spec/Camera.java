@@ -25,10 +25,12 @@ public class Camera {
 		aspectRatio = 1;
 		mode = Mode.FIRST_PERSON;
 	}
-		
+	
+	//updates the camera based on new movements or rotations
 	public void updateCamera(GL2 gl) {
 		GLU glu = new GLU();
 		
+		//use terrain altitude if within bounds, otherwise float 0.5 above sea level (0 y ordinate)
 		if (terrain.withinRange(pos[0], pos[2])) {
 			pos[1] = terrain.altitude(pos[0], pos[2]) + 0.5;
 		} else {
@@ -37,6 +39,8 @@ public class Camera {
 		
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
+        
+        //regular camera in first person, follow avatar in third person
         if (mode == Mode.FIRST_PERSON) {
         	glu.gluLookAt(pos[0], pos[1], pos[2], pos[0] + forward[0], pos[1], pos[2] + forward[2], 0, 1, 0);
         } else if (mode == Mode.THIRD_PERSON) {
@@ -55,13 +59,12 @@ public class Camera {
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         
-        
-        //System.out.println(aspectRatio);
         glu.gluPerspective(60, aspectRatio, 0.1f, 100f);
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 	
+	//moves camera forward or back
 	public void move(double l) {
 		if (mode == Mode.FIRST_PERSON || aang.canMove(l)) {
 			pos[0] += l * forward[0];
@@ -69,6 +72,7 @@ public class Camera {
 		}
 	}
 	
+	//moves camera side to side (not rotate)
 	public void strafe(double l) {
 		if (mode == Mode.FIRST_PERSON || aang.canMove(l)) {
 			pos[0] += l * forward[2];
@@ -76,14 +80,12 @@ public class Camera {
 		}
 	}
 	
+	//rotates camera left and right (along y axis)
 	public void rotate(double rad) {
 		angle += rad;
-		//if (mode == Mode.THIRD_PERSON) {
-			
-		//} else if (mode == Mode.FIRST_PERSON) {
-			forward[0] = Math.cos(angle);
-			forward[2] = -Math.sin(angle);
-		//}
+
+		forward[0] = Math.cos(angle);
+		forward[2] = -Math.sin(angle);
 	}
 	
 	public Mode getMode() {
@@ -102,6 +104,8 @@ public class Camera {
 		aspectRatio = ar;
 	}
 	
+	
+	//switches the mode between first and third person
 	public void changeMode() {
 		if (mode == Mode.FIRST_PERSON) {
 			mode = Mode.THIRD_PERSON;

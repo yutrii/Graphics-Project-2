@@ -34,6 +34,35 @@ public class Monster {
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1
 		};
+		
+		// ~~~~~~~~~~~ vertex and fragment shader stuff ~~~~~~~~~~~~~~~~~~~~~~~~`
+		/*
+		int vertShader = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
+		int fragShader = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
+		
+		gl.glShaderSource(vertShader, vShaderSrc.length, vShaderSrc, vLengths, 0);
+		gl.glCompileShader(vertShader);
+		
+		int[] compiled = new int[1];
+		gl.glGetShaderiv(vertShader, GL2.GL_COMPILE_STATUS, compiled, 0);
+		if (compiled[0] == 0) {
+		// compilation error!
+		}
+		
+		int shaderprogram = gl.glCreateProgram();
+		gl.glAttachShader(shaderprogram, vertShader);
+		gl.glAttachShader(shaderprogram, fragShader);
+		gl.glLinkProgram(shaderprogram);
+		gl.glValidateProgram(shaderprogram);
+		
+		String VERTEX_SHADER = “myV1.glsl”;
+		String FRAGMENT_SHADER= “myF1.glsl”;
+		int shaderprogram;
+		shaderprogram = Shader.initShaders(gl,
+		VERTEX_SHADER, FRAGMENT_SHADER);
+		*/
+		// ~~~~~~~~~~~~ end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		
 		//colours = new float[]{1,0,0, 0,1,0, 1,1,1, 0,0,0, 0,0,1, 1,1,0};
 		FloatBuffer posData = Buffers.newDirectFloatBuffer(positions);
 		FloatBuffer normalData = Buffers.newDirectFloatBuffer(normals);
