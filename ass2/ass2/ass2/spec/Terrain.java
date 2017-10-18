@@ -32,12 +32,18 @@ public class Terrain {
     private static MyTexture[] myTextures;
     private static String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
     private static String textureExt1 = "jpg";
+    private static String textureFileName2 = "ass2/ass2/textures/star.bmp";
+    private static String textureExt2 = "bmp";
     
     //Material lighting
     float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
     float matDif[] = {0.44f, 0.55f, 0.07f, 1.0f};
 	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	float matShine[] = { 5.0f };
+	
+	//Particle
+	private static final int MAX_PARTICLES = 10;
+	private RainParticle[] particles = new RainParticle[MAX_PARTICLES];
 	
     
     /**
@@ -80,8 +86,9 @@ public class Terrain {
     //Initialisation function for terrain
     public void init(GL2 gl) {
     	// Create texture ids. 
-    	myTextures = new MyTexture[1];
+    	myTextures = new MyTexture[2];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
+    	myTextures[1] = new MyTexture(gl, textureFileName2, textureExt2, true);
     	
     	for (Tree t : myTrees) {
     		t.init(gl);
@@ -95,6 +102,10 @@ public class Terrain {
     	
     	for (Monster m: myMonsters) {
     		m.init(gl);
+    	}
+    	
+    	for (int i = 0; i < MAX_PARTICLES; i++) {
+    		particles[i] = new RainParticle(this);
     	}
     }
 
@@ -373,6 +384,82 @@ public class Terrain {
 		for (Monster m: myMonsters) {
 			m.draw(gl);
 		}
+		
+		
+		/*##########################################################
+		 * DRAWING RAIN PARTICLES
+		 *##########################################################*/
+		
+		//Material lighting for rain
+        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+        float matDif[] = {0.25f, 0.64f, 0.87f, 1.0f};
+    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    	float matShine[] = { 1.0f };
+    	
+    	// Material properties.
+    	/*gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);*/
+    	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+    	
+    	gl.glPushMatrix();
+    	gl.glMatrixMode(GL2.GL_MODELVIEW);
+    	gl.glLoadIdentity();
+		
+		for (int i = 0; i < MAX_PARTICLES; i++) {
+			if (particles[i].alive) {
+				double px = particles[i].pos[0];
+				double py = particles[i].pos[1];
+				double pz = particles[i].pos[2];
+				
+				gl.glBegin(GL2.GL_QUADS);
+					gl.glTexCoord2d(1, 1);
+		            gl.glVertex3d(px + 0.5, py, pz + 0.5); // Top Right
+		            gl.glTexCoord2d(0, 1);
+		            gl.glVertex3d(px - 0.5, py, pz + 0.5); // Top Left
+		            gl.glTexCoord2d(0, 0);
+		            gl.glVertex3d(px - 0.5, py, pz - 0.5); // Bottom Left
+		            gl.glTexCoord2d(1, 0);
+		            gl.glVertex3d(px + 0.5, py, pz - 0.5); // Bottom Right
+				gl.glEnd();
+				
+				/*if (px > 9 || pz > 9) {
+					System.out.println("PX: " + px + " " + "PZ: " + pz);
+				}*/
+				//System.out.println("particle number: " + i);
+				
+				
+				if (py < 0 || py < altitude(px, pz)) {
+					System.out.println("RESET");
+					double randX = Math.random()*(mySize.getWidth()-1);
+		    		double randZ = Math.random()*(mySize.getHeight()-1);
+		    		
+		    		particles[i].pos[0] = randX;
+					particles[i].pos[1] = particles[i].start_pos;
+					particles[i].pos[2] = randZ;
+				} else {
+					//System.out.println("moving");
+					//Move particles after drawing them
+					//particles[i].pos[0] -= particles[i].speed;
+					particles[i].pos[1] -= particles[i].speed;
+					//particles[i].pos[2] -= particles[i].speed;
+				}
+			}
+		}
+		
+		/*gl.glLineWidth(20);
+		gl.glBegin(GL2.GL_LINES);
+			System.out.println("Draw line");
+			gl.glVertex3d(0, 0, 0);
+			gl.glVertex3d(0, 2, 0);
+		gl.glEnd();
+		
+		gl.glPopMatrix();*/
+		/*##########################################################
+		 * 
+		 *##########################################################*/
 		
 		gl.glPopMatrix();
     }
