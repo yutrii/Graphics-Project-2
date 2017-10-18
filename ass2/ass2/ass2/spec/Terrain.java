@@ -385,6 +385,7 @@ public class Terrain {
 			m.draw(gl);
 		}
 		
+		gl.glPopMatrix();
 		
 		/*##########################################################
 		 * DRAWING RAIN PARTICLES

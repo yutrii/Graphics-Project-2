@@ -9,7 +9,8 @@ public class Camera {
 	private double aspectRatio;
 	public static enum Mode {
 		FIRST_PERSON,
-		THIRD_PERSON
+		THIRD_PERSON,
+		FREE_VIEW
 	}
 
 	private Mode mode;
@@ -23,25 +24,27 @@ public class Camera {
 		terrain = t;
 		aang = a;
 		aspectRatio = 1;
-		mode = Mode.FIRST_PERSON;
+		mode = Mode.FREE_VIEW;
 	}
 	
 	//updates the camera based on new movements or rotations
 	public void updateCamera(GL2 gl) {
 		GLU glu = new GLU();
 		
+		if (mode != Mode.FREE_VIEW) {
 		//use terrain altitude if within bounds, otherwise float 0.5 above sea level (0 y ordinate)
-		if (terrain.withinRange(pos[0], pos[2])) {
-			pos[1] = terrain.altitude(pos[0], pos[2]) + 0.5;
-		} else {
-			pos[1] = 0.5;
+			if (terrain.withinRange(pos[0], pos[2])) {
+				pos[1] = terrain.altitude(pos[0], pos[2]) + 0.5;
+			} else {
+				pos[1] = 0.5;
+			}
 		}
 		
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         
         //regular camera in first person, follow avatar in third person
-        if (mode == Mode.FIRST_PERSON) {
+        if (mode == Mode.FIRST_PERSON || mode == Mode.FREE_VIEW) {
         	glu.gluLookAt(pos[0], pos[1], pos[2], pos[0] + forward[0], pos[1], pos[2] + forward[2], 0, 1, 0);
         } else if (mode == Mode.THIRD_PERSON) {
         	glu.gluLookAt(pos[0] - forward[0], pos[1], pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
@@ -69,14 +72,18 @@ public class Camera {
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         
-        glu.gluPerspective(60, aspectRatio, 0.1f, 100f);
+        if (mode == Mode.FREE_VIEW) {
+        	glu.gluPerspective(90, aspectRatio, 0.1f, 100f);
+        } else {
+        	glu.gluPerspective(60, aspectRatio, 0.1f, 100f);
+        }
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 	
 	//moves camera forward or back
 	public void move(double l) {
-		if (mode == Mode.FIRST_PERSON || aang.canMove(l)) {
+		if (mode == Mode.FREE_VIEW || aang.canMove(l)) {
 			pos[0] += l * forward[0];
 			pos[2] += l * forward[2];
 		}
@@ -84,9 +91,15 @@ public class Camera {
 	
 	//moves camera side to side (not rotate)
 	public void strafe(double l) {
-		if (mode == Mode.FIRST_PERSON || aang.canMove(l)) {
+		if (mode == Mode.FREE_VIEW || aang.canStrafe(l)) {
 			pos[0] += l * forward[2];
 			pos[2] -= l * forward[0];
+		}
+	}
+	
+	public void fly(double l) {
+		if (mode == Mode.FREE_VIEW) {
+			pos[1] += l;
 		}
 	}
 	
@@ -118,9 +131,20 @@ public class Camera {
 	//switches the mode between first and third person
 	public void changeMode() {
 		if (mode == Mode.FIRST_PERSON) {
-			mode = Mode.THIRD_PERSON;
+			mode = Mode.FREE_VIEW;
 		} else if (mode == Mode.THIRD_PERSON) {
+			moveWithinMap();
 			mode = Mode.FIRST_PERSON;
+		} else {
+			moveWithinMap();
+			mode = Mode.THIRD_PERSON;
 		}
+	}
+	
+	private void moveWithinMap() {
+		if (pos[0] < 0) pos[0] = 0;
+		if (pos[2] < 0) pos[2] = 0;
+		if (pos[0] >= terrain.size().width) pos[0] = terrain.size().width-1;
+		if (pos[2] >= terrain.size().height) pos[2] = terrain.size().height-1;
 	}
 }

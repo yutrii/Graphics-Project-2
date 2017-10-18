@@ -66,6 +66,10 @@ public class Avatar {
     	return terrain.withinRange(myPos[0] + l * forward[0], myPos[2] + l * forward[2]);
     }
     
+    public boolean canStrafe(double l) {
+    	return terrain.withinRange(myPos[0] + l * forward[0], myPos[2] - l * forward[2]);
+    }
+    
     public void move(double l) {
     	if (canMove(l)) {
     		myPos[0] += l * forward[0];
@@ -75,7 +79,7 @@ public class Avatar {
     }
     
     public void strafe(double l) {
-    	if (canMove(l)) {
+    	if (canStrafe(l)) {
     		myPos[0] += l * forward[2];
     		myPos[2] -= l * forward[0];
     		myPos[1] = terrain.altitude(myPos[0], myPos[2]) + 0.5;

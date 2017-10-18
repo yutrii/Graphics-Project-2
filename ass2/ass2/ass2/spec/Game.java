@@ -246,18 +246,25 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
+		int code = e.getKeyCode();
+		if (code == KeyEvent.VK_UP) {
 			keyStates[1] = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		} else if (code == KeyEvent.VK_DOWN) {
 			keyStates[2] = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		} else if (code == KeyEvent.VK_LEFT) {
 			keyStates[3] = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		} else if (code == KeyEvent.VK_RIGHT) {
 			keyStates[4] = true;
+		} else if (code == KeyEvent.VK_SHIFT) {
+			keyStates[5] = true;
+		} else if (code == KeyEvent.VK_CONTROL) {
+			keyStates[6] = true;
 		} else {
-		
 			char key = e.getKeyChar();
-			keyStates[key] = true;
+			
+			if (key >= 32 && key <= 122) {
+				keyStates[key] = true;
+			}
 			
 			if (key == 'c') {
 				camera.changeMode();
@@ -270,15 +277,20 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
+		int code = e.getKeyCode();
+		if (code == KeyEvent.VK_UP) {
 			keyStates[1] = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+		} else if (code == KeyEvent.VK_DOWN) {
 			keyStates[2] = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+		} else if (code == KeyEvent.VK_LEFT) {
 			keyStates[3] = false;
-		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		} else if (code == KeyEvent.VK_RIGHT) {
 			keyStates[4] = false;
-		} else {
+		} else if (code == KeyEvent.VK_SHIFT) {
+			keyStates[5] = false;
+		} else if (code == KeyEvent.VK_CONTROL) {
+			keyStates[6] = false;
+		} else if (e.getKeyChar() >= 32 && e.getKeyChar() <= 122){
 			keyStates[e.getKeyChar()] = false;
 		}
 	}
@@ -292,51 +304,38 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	void keyOperations() {
 		if (keyStates[1]) {
 			camera.move(0.01);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
 				aang.move(0.01);
-			}
+			//}
 		}
 		
 		if (keyStates[2]) {
 			camera.move(-0.01);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
 				aang.move(-0.01);
-			}
+			//}
 		}
 		
 		if (keyStates[4]) {
 			camera.rotate(-0.02);
-			if (camera.getMode() ==  Mode.THIRD_PERSON) {
+			//if (camera.getMode() ==  Mode.THIRD_PERSON) {
 				aang.rotate(-0.02);
-			}
+			//}
 		}
 		
 		if (keyStates[3]) {
 			camera.rotate(0.02);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
 				aang.rotate(0.02);
-			}
+			//}
 		}
 		
-		if (keyStates['w']) {
-			camera.move(0.01);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(0.01);
-			}
+		if (keyStates[5] && camera.getMode() == Mode.FREE_VIEW) {
+			camera.fly(0.01);
 		}
 		
-		if (keyStates['s']) {
-			camera.move(-0.01);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(-0.01);
-			}
-		}
-		
-		if (keyStates['a']) {
-			camera.strafe(0.01);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.strafe(0.01);
-			}
+		if (keyStates[6] && camera.getMode() == Mode.FREE_VIEW) {
+			camera.fly(-0.01);
 		}
 		
 		if (keyStates['d']) {
@@ -344,6 +343,34 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 			if (camera.getMode() == Mode.THIRD_PERSON) {
 				aang.strafe(-0.01);
 			}
+		}
+		
+		if (keyStates['w']) {
+			camera.move(0.01);
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(0.01);
+			//}
+		}
+		
+		if (keyStates['s']) {
+			camera.move(-0.01);
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.move(-0.01);
+			//}
+		}
+		
+		if (keyStates['a']) {
+			camera.strafe(0.01);
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.strafe(0.01);
+			//}
+		}
+		
+		if (keyStates['d']) {
+			camera.strafe(-0.01);
+			//if (camera.getMode() == Mode.THIRD_PERSON) {
+				aang.strafe(-0.01);
+			//}
 		}
 	}
 }
