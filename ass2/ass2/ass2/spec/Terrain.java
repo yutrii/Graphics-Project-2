@@ -34,8 +34,8 @@ public class Terrain {
     private static String textureExt1 = "jpg";
     
     //Material lighting
-    float matAmb[] = {0.2f, 0.2f, 0.2f, 1.0f};
-    float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+    float matDif[] = {0.44f, 0.55f, 0.07f, 1.0f};
 	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	float matShine[] = { 5.0f };
 	
@@ -296,6 +296,7 @@ public class Terrain {
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
     	
+    	//Offset the polgyon back to allow the roads to show
     	gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
     	gl.glPolygonOffset(1.0f, 1.0f);
     	
@@ -334,13 +335,9 @@ public class Terrain {
     				double[] n2 = MathUtil.cross(v4, v3);
     				n2 = MathUtil.normalise(n2);
     				
-    				
-    				System.out.println("Normal n1 is: " + n1[0] + " " + n1[1] + " " + n1[2]);
-    				System.out.println("Normal n2 is: " + n2[0] + " " + n2[1] + " " + n2[2]);
-    				
     				//Average the two normals to use on the two joining vertices
-    				double[] n3 = { n1[0] + n2[0], n1[1] + n2[1], n1[2] + n2[2] };
-    				double[] smoothNormal = MathUtil.normalise(n3);
+    				/*double[] n3 = { n1[0] + n2[0], n1[1] + n2[1], n1[2] + n2[2] };
+    				double[] smoothNormal = MathUtil.normalise(n3);*/
     						
     				gl.glNormal3dv(n1, 0);
     				//First triangle
@@ -369,7 +366,6 @@ public class Terrain {
 			t.drawTree(gl);
 		}
     	
-		//System.out.println("Roads: " + myRoads.size());
 		for (Road r : myRoads) {		
 			r.drawRoad(gl, this);
 		}
