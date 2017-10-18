@@ -20,12 +20,6 @@ public class Tree {
     private static String textureExt1 = "jpg";
     private static String textureFileName2 = "ass2/ass2/textures/leaves2.jpg";
     
-    //Material lighting
-    float matAmb[] = {0.2f, 0.2f, 0.2f, 1.0f};
-    float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
-	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	float matShine[] = { 5.0f };
-    
     public Tree(double x, double y, double z) {
         myPos = new double[3];
         myPos[0] = x;
@@ -53,6 +47,12 @@ public class Tree {
     	
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
+    	//Material lighting for wood
+        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+        float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
+    	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    	float matShine[] = { 50.0f };
+    	
     	// Material properties.
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
@@ -65,6 +65,7 @@ public class Tree {
 		    	x1 = radius * Math.cos(INC*i);
 		    	z1 = radius * Math.sin(INC*i);
 		    	
+		    	//Since the trunk is a cylinder, the normal is just the x and z
 		    	double[] n = {x1, 0, z1};
 		    	n = MathUtil.normalise(n);
 		    	gl.glNormal3d(n[0], 0, n[2]);
@@ -84,6 +85,20 @@ public class Tree {
     
     private void drawSphere(GL2 gl) {
     	gl.glTranslated(0, 1.3, 0);
+    	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+    	//Material lighting for the sphere
+        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+        float matDif[] = {0.12f, 0.58f, 0.18f, 1.0f};
+    	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    	float matShine[] = { 50.0f };
+    	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+    	
     	double deltaT;
     	double radius = 0.5;
     	int maxStacks = 10;
@@ -97,8 +112,6 @@ public class Tree {
     	int ang;  
     	int delang = 360/maxSlices;
     	double x1,x2,z1,z2,y1,y2;
-    	
-    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
     	
     	for (int i = 0; i < numStacks; i++) 
     	{ 

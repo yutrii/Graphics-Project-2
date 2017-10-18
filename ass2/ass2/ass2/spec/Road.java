@@ -14,7 +14,7 @@ public class Road {
 
     private List<Double> myPoints;
     private double myWidth;
-    private static final double t = 0.001;
+    private static final double tIncrement = 0.001;
     private static final double texInc = 0.005;
     
     //Texture variables
@@ -22,13 +22,11 @@ public class Road {
     private static String textureFileName1 = "ass2/ass2/textures/road2.jpg";
     private static String textureExt1 = "jpg";
     
-    //Material lighting
-    float matAmbAndDif2[] = {0.0f, 0.9f, 0.0f, 1.0f};
-	float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	float matShine[] = { 120.0f };
-
-	// Material property vectors.
-	float matAmbAndDif1[] = {1.0f, 1.0f, 1.0f, 1.0f};
+  	//Material lighting
+    float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+    float matDif[] = {0.0f, 0.0f, 0.0f, 1.0f};
+	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	float matShine[] = { 50.0f };
     
     /** 
      * Create a new road starting at the specified point
@@ -58,12 +56,6 @@ public class Road {
     	// Create texture ids. 
     	myTextures = new MyTexture[1];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
-    	
-    	// Material properties.
-    	/*gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif1,0);
-    	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);*/
     }
 
     /**
@@ -227,51 +219,22 @@ public class Road {
     public void drawRoad(GL2 gl, Terrain terrain) {
     	gl.glPushMatrix();
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
-    	//Only handling flat surfaces for now
-    	
-    	
-    	//Setup of initial cross section
-    	/*double d = 0.5*myWidth;
-    	System.out.println("Distance is: " + d);
-    	double[] newPoint1 = new double[4];
-    	double[] newPoint2 = new double[4];
-    	newPoint1[3] = 1;
-    	newPoint2[3] = 1;
-    	
-    	//Starting point
-    	double x1 = newPoint1[0] = newPoint2[0] = myPoints.get(0);//point(0)[0];
-    	double z1 = newPoint1[2] = newPoint2[2] = myPoints.get(1);//point(0)[1];
-	    	
-		double x2 = point(t)[0];
-    	double z2 = point(t)[1];
 
-		if (z2 - z1 == 0) { //Means the curve starts horizontally
-			newPoint1[2] += d;
-			newPoint2[2] -= d;
-		} else if (x2 - x1 == 0) {//Means the curve starts vertically
-			newPoint1[0] += d;
-			newPoint2[0] -= d;
-		} else {
-			double gradient = (z2 - z1)/(x2 - x1); //z2-z1 / x2-x1
-	    	double rightAngle = -1/gradient;
-	    	
-	    	//Calculating initial cross-section points that are
-	    	// perpendicular to the initial points on the curve.
-			newPoint1[0] = x1 + d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-			newPoint1[2] = z1 + d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-			
-			newPoint2[0] = x1 - d*(1/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-			newPoint2[2] = z1 - d*(rightAngle/(Math.sqrt(1+Math.pow(rightAngle, 2))));
-		}*/
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
     	
     	double[][] tMatrix = new double[4][4];
     	
     	//Attempt to transform the cross section
     	//gl.glLineWidth(10.0f);
     	double texCoord = 0;
+    	gl.glNormal3d(0, 1, 0);
     	gl.glBegin(GL2.GL_QUAD_STRIP);
-    		for (double increment = 0; increment < size(); increment += t) {
-    			double[] point = point(increment);
+    		for (double t = 0; t < size(); t += tIncrement) {
+    			double[] point = point(t);
 	    		double spineX = point[0];
 	    		double spineZ = point[1];
 	    		double altitude = terrain.altitude(spineX, spineZ);
@@ -282,15 +245,15 @@ public class Road {
 	    		tMatrix[2][3] = spineZ;
 	    		tMatrix[3][3] = 1;
 	    		
-	    		//Add the new k vector to the transformation matrix
+	    		//Find the vector that is the tangent to the point
 	    		double[] k = new double[3];
-	    		double[] tmp = getTangent(increment);
+	    		double[] tmp = getTangent(t);
 	    		k[0] = tmp[0];
 	    		k[1] = altitude;
 	    		k[2] = tmp[1];
 	    		k = MathUtil.normalise(k);
 	    		
-	    		//Point that is perpendicular to curve
+	    		//Perpendicular vector to the curve at the point
 	    		double[] i1 = new double[3];
 	    		i1[0] = k[2];
 	    		i1[1] = altitude;
@@ -325,40 +288,10 @@ public class Road {
 	    		gl.glVertex3d(i2[0], altitude, i2[2]);
 	    		
 	    		texCoord += texInc;
-	    		
     		}
-    		
-    		//Last point is a special case
-    		double lastX = myPoints.get(myPoints.size()-2);
-    		double lastZ = myPoints.get(myPoints.size()-1);
-    		/*double[] k = new double[3];
-    		double[] tmp = getTangent(increment);
-    		k[0] = tmp[0];
-    		k[1] = 0;
-    		k[2] = tmp[1];
-    		k = MathUtil.normalise(k);
-    		
-    		//Add the new i vector to the transformation matrix
-    		double[] i = new double[3];
-    		i[0] = k[2];
-    		i[1] = 0;
-    		i[2] = -k[0];
-    		
-    		//Adding the point onto the normal
-    		i = MathUtil.normalise(i);
-    		i[0] = 0.5*myWidth*i[0];
-    		i[2] = 0.5*myWidth*i[2];
-    		
-    		i[0] += spineX;
-    		i[2] += spineZ;
-
-    		gl.glVertex3d(i[0], 0, i[2]);
-    		gl.glVertex3d(spineX, 0, spineZ);*/
     		
     	gl.glEnd();
     	
     	gl.glPopMatrix();
     }
-
-
 }

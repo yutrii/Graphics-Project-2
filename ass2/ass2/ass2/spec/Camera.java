@@ -56,6 +56,16 @@ public class Camera {
         lightPos[3] = 0;
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
         
+//        ##############################
+        gl.glPushMatrix();
+        gl.glLineWidth(20);
+        gl.glBegin(GL2.GL_LINES);
+        	gl.glVertex3d(0, 0, 0);
+        	gl.glVertex3d(sun[0], sun[1], sun[2]);
+        gl.glEnd();
+        gl.glPopMatrix();
+//        ##############################
+        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         
