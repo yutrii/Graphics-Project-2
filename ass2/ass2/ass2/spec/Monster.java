@@ -10,6 +10,7 @@ public class Monster {
 	private double[] pos;
 	private float[] positions;
 	private float[] normals;
+	private int shader1;
 	//private float[] colours;
 	
 	private int[] bufferIDs;
@@ -54,19 +55,23 @@ public class Monster {
 		gl.glAttachShader(shaderprogram, fragShader);
 		gl.glLinkProgram(shaderprogram);
 		gl.glValidateProgram(shaderprogram);
-		
+		*/
 		//Shader.java stuff
 		
-		String VERTEX_SHADER = “myV1.glsl”;
-		String FRAGMENT_SHADER= “myF1.glsl”;
-		int shaderprogram;
-		shaderprogram = Shader.initShaders(gl, VERTEX_SHADER, FRAGMENT_SHADER);
+		String VERTEX_SHADER = "vertexShader.glsl";
+		String FRAGMENT_SHADER= "fragmentShader.glsl";
+		try {
+			shader1 = Shader.initShaders(gl, VERTEX_SHADER, FRAGMENT_SHADER);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		gl.glUseProgram(shaderProgramID);
+		
 		//
 		
 		//gl.glUseProgram(0);
-		*/
+		
 		// ~~~~~~~~~~~~ end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		
 		//colours = new float[]{1,0,0, 0,1,0, 1,1,1, 0,0,0, 0,0,1, 1,1,0};
@@ -88,6 +93,7 @@ public class Monster {
 		gl.glPushMatrix();
 		gl.glTranslated(pos[0], pos[1], pos[2]);
 		{
+			gl.glUseProgram(shader1);
 			//head
 			gl.glPushMatrix();
 			gl.glTranslated(0, 1, 0);
