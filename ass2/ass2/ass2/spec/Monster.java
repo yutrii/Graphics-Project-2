@@ -55,11 +55,17 @@ public class Monster {
 		gl.glLinkProgram(shaderprogram);
 		gl.glValidateProgram(shaderprogram);
 		
+		//Shader.java stuff
+		
 		String VERTEX_SHADER = “myV1.glsl”;
 		String FRAGMENT_SHADER= “myF1.glsl”;
 		int shaderprogram;
-		shaderprogram = Shader.initShaders(gl,
-		VERTEX_SHADER, FRAGMENT_SHADER);
+		shaderprogram = Shader.initShaders(gl, VERTEX_SHADER, FRAGMENT_SHADER);
+		
+		gl.glUseProgram(shaderProgramID);
+		
+		
+		//gl.glUseProgram(0);
 		*/
 		// ~~~~~~~~~~~~ end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		

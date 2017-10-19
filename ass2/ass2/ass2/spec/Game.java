@@ -270,6 +270,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 				if (camera.getMode() == Mode.THIRD_PERSON) {
 					 aang.summonAvatar(camera.getPos()[0], camera.getPos()[1], camera.getPos()[2], camera.getAngle());
 				}
+			} else if (key == 'r') {
+				myTerrain.toggleRain();
 			}
 		}
 	}
@@ -301,67 +303,77 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	}
 	
 	void keyOperations() {
+		double moveDist = 0.015;
+		double angle = 0.02;
+		
+		if (camera.getMode() == Mode.FREE_VIEW) {
+			moveDist = 0.02;
+			angle = 0.04;
+		}
+		
+		
+		
 		if (keyStates[1]) {
-			camera.move(0.01);
+			camera.move(moveDist);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(0.01);
+				aang.move(moveDist);
 			//}
 		}
 		
 		if (keyStates[2]) {
-			camera.move(-0.01);
+			camera.move(-moveDist);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(-0.01);
+				aang.move(-moveDist);
 			//}
 		}
 		
 		if (keyStates[4]) {
-			camera.rotate(-0.02);
+			camera.rotate(-angle);
 			//if (camera.getMode() ==  Mode.THIRD_PERSON) {
-				aang.rotate(-0.02);
+				aang.rotate(-angle);
 			//}
 		}
 		
 		if (keyStates[3]) {
-			camera.rotate(0.02);
+			camera.rotate(angle);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.rotate(0.02);
+				aang.rotate(angle);
 			//}
 		}
 		
 		if (keyStates[5] && camera.getMode() == Mode.FREE_VIEW) {
-			camera.fly(0.01);
+			camera.fly(moveDist);
 		}
 		
 		if (keyStates[6] && camera.getMode() == Mode.FREE_VIEW) {
-			camera.fly(-0.01);
+			camera.fly(-moveDist);
 		}
 		
 		if (keyStates['w']) {
-			camera.move(0.01);
+			camera.move(moveDist);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(0.01);
+				aang.move(moveDist);
 			//}
 		}
 		
 		if (keyStates['s']) {
-			camera.move(-0.01);
+			camera.move(-moveDist);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.move(-0.01);
+				aang.move(-moveDist);
 			//}
 		}
 		
 		if (keyStates['a']) {
-			camera.strafe(0.01);
+			camera.strafe(moveDist);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.strafe(0.01);
+				aang.strafe(moveDist);
 			//}
 		}
 		
 		if (keyStates['d']) {
-			camera.strafe(-0.01);
+			camera.strafe(-moveDist);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.strafe(-0.01);
+				aang.strafe(-moveDist);
 			//}
 		}
 	}
