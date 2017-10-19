@@ -390,12 +390,12 @@ public class Terrain {
 		 * DRAWING RAIN PARTICLES
 		 *##########################################################*/
 		
-		if (isRaining) {
+		if (this.isRaining) {
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
 			
 			//Material lighting for rain
 	        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
-	        float matDif[] = {0.19f, 0.34f, 0.74f, 1.0f};
+	        float matDif[] = {0.19f, 0.34f, 0.74f, 0.5f};
 	    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	    	float matShine[] = { 0.5f };
 	    	
