@@ -450,16 +450,16 @@ public class Terrain {
 			gl.glColor4f(1f, 1f, 1f, 0.1f);
 			//System.out.println("Draw line");
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex3d(0, 1, 1); //Top right
+			gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
 			
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex3d(1, 1, 0); //Top left
+			gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
 			
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex3d(1, 0, 0); //Bottom left
+			gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
 			
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex3d(0, 0, 1); //Bottom right
+			gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
 		gl.glEnd();
 		
 		gl.glPopMatrix();
