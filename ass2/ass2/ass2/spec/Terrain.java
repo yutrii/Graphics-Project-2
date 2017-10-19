@@ -385,8 +385,6 @@ public class Terrain {
 			m.draw(gl);
 		}
 		
-		gl.glPopMatrix();
-		
 		/*##########################################################
 		 * DRAWING RAIN PARTICLES
 		 *##########################################################*/
@@ -406,8 +404,8 @@ public class Terrain {
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
     	
     	gl.glPushMatrix();
-    	gl.glMatrixMode(GL2.GL_MODELVIEW);
-    	gl.glLoadIdentity();
+    	//gl.glMatrixMode(GL2.GL_MODELVIEW);
+    	//gl.glLoadIdentity();
 		
 		for (int i = 0; i < MAX_PARTICLES; i++) {
 			if (particles[i].alive) {
@@ -426,12 +424,8 @@ public class Terrain {
 		            gl.glVertex3d(px + 0.5, py, pz - 0.5); // Bottom Right
 				gl.glEnd();
 				
-				/*if (px > 9 || pz > 9) {
-					System.out.println("PX: " + px + " " + "PZ: " + pz);
-				}*/
-				//System.out.println("particle number: " + i);
-				
-				
+				//Once the particle has reached the ground, re-position it
+				// and repeat.
 				if (py < 0 || py < altitude(px, pz)) {
 					System.out.println("RESET");
 					double randX = Math.random()*(mySize.getWidth()-1);
@@ -455,9 +449,9 @@ public class Terrain {
 			System.out.println("Draw line");
 			gl.glVertex3d(0, 0, 0);
 			gl.glVertex3d(0, 2, 0);
-		gl.glEnd();
+		gl.glEnd();*/
 		
-		gl.glPopMatrix();*/
+		gl.glPopMatrix();
 		/*##########################################################
 		 * 
 		 *##########################################################*/
