@@ -19,7 +19,7 @@ public class Camera {
 	private double angle = 5.5; //starting position 315 degrees in radians
 	
 	public Camera(Terrain t, Avatar a) {
-		pos = new double[] {0, 0.5, 0};
+		pos = new double[] {0, 0.25, 0};
 		forward = new double[] {0.707, 0, 0.707};
 		terrain = t;
 		aang = a;
@@ -34,9 +34,9 @@ public class Camera {
 		if (mode != Mode.FREE_VIEW) {
 		//use terrain altitude if within bounds, otherwise float 0.5 above sea level (0 y ordinate)
 			if (terrain.withinRange(pos[0], pos[2])) {
-				pos[1] = terrain.altitude(pos[0], pos[2]) + 0.5;
+				pos[1] = terrain.altitude(pos[0], pos[2]) + 0.25;
 			} else {
-				pos[1] = 0.5;
+				pos[1] = 0.25;
 			}
 		}
 		

@@ -337,13 +337,6 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 			camera.fly(-0.01);
 		}
 		
-		if (keyStates['d']) {
-			camera.strafe(-0.01);
-			if (camera.getMode() == Mode.THIRD_PERSON) {
-				aang.strafe(-0.01);
-			}
-		}
-		
 		if (keyStates['w']) {
 			camera.move(0.01);
 			//if (camera.getMode() == Mode.THIRD_PERSON) {

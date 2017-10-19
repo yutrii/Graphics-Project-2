@@ -67,14 +67,14 @@ public class Avatar {
     }
     
     public boolean canStrafe(double l) {
-    	return terrain.withinRange(myPos[0] + l * forward[0], myPos[2] - l * forward[2]);
+    	return terrain.withinRange(myPos[0] + l * forward[2], myPos[2] - l * forward[0]);
     }
     
     public void move(double l) {
     	if (canMove(l)) {
     		myPos[0] += l * forward[0];
     		myPos[2] += l * forward[2];
-    		myPos[1] = terrain.altitude(myPos[0], myPos[2]) + 0.5;
+    		myPos[1] = terrain.altitude(myPos[0], myPos[2]) + 0.25;
     	}
     }
     
@@ -82,7 +82,7 @@ public class Avatar {
     	if (canStrafe(l)) {
     		myPos[0] += l * forward[2];
     		myPos[2] -= l * forward[0];
-    		myPos[1] = terrain.altitude(myPos[0], myPos[2]) + 0.5;
+    		myPos[1] = terrain.altitude(myPos[0], myPos[2]) + 0.25;
     	}
     }
     
@@ -105,7 +105,7 @@ public class Avatar {
     	gl.glTranslated(myPos[0], myPos[1], myPos[2]);
     	//gl.glRotated(Math.toDegrees(angle), 0, 1, 0);
     	double deltaT;
-    	double radius = 0.25;
+    	double radius = 0.125;
     	int maxStacks = 10;
     	int maxSlices = 20;
     	int numStacks = 10;
