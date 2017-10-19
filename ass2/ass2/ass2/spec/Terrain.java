@@ -21,6 +21,7 @@ public class Terrain {
     private List<Road> myRoads;
     private List<Monster> myMonsters;
     private float[] mySunlight;
+    private boolean isRaining = false;
     
     //Points as array for normal calculations
     double[] p0 = new double[3];
@@ -42,7 +43,7 @@ public class Terrain {
 	float matShine[] = { 5.0f };
 	
 	//Particle
-	private static final int MAX_PARTICLES = 10;
+	private static final int MAX_PARTICLES = 1000;
 	private RainParticle[] particles = new RainParticle[MAX_PARTICLES];
 	
     
@@ -468,5 +469,9 @@ public class Terrain {
 		 *##########################################################*/
 		
 		gl.glPopMatrix();
+    }
+    
+    public void toggleRain() {
+    	this.isRaining = !this.isRaining;
     }
 }
