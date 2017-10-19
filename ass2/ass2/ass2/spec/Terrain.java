@@ -390,84 +390,84 @@ public class Terrain {
 		 * DRAWING RAIN PARTICLES
 		 *##########################################################*/
 		
-		
-		gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
-		
-		//Material lighting for rain
-        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
-        float matDif[] = {0.19f, 0.34f, 0.74f, 1.0f};
-    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    	float matShine[] = { 0.5f };
-    	
-    	// Material properties.
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
-    	
-    	gl.glPushMatrix();
-    	//gl.glMatrixMode(GL2.GL_MODELVIEW);
-    	//gl.glLoadIdentity();
-		
-		for (int i = 0; i < MAX_PARTICLES; i++) {
-			if (particles[i].alive) {
-				double px = particles[i].pos[0];
-				double py = particles[i].pos[1];
-				double pz = particles[i].pos[2];
-				
-				gl.glBegin(GL2.GL_QUADS);
-					gl.glTexCoord2d(1, 1);
-		            gl.glVertex3d(px, py + 0.09375, pz); // Top Right
-		            gl.glTexCoord2d(0, 1);
-		            gl.glVertex3d(px - 0.0625, py, pz); // Left point
-		            gl.glTexCoord2d(0, 0);
-		            gl.glVertex3d(px, py - 0.03125, pz); // Bottom point
-		            gl.glTexCoord2d(1, 0);
-		            gl.glVertex3d(px + 0.0625, py, pz); // Right point
-				gl.glEnd();
-				
-				//Once the particle has reached the ground, re-position it
-				// and repeat.
-				if (py < 0 || py < altitude(px, pz)) {
-					System.out.println("RESET");
-					double randX = Math.random()*(mySize.getWidth()-1);
-		    		double randZ = Math.random()*(mySize.getHeight()-1);
-		    		
-		    		particles[i].pos[0] = randX;
-					particles[i].pos[1] = particles[i].start_pos;
-					particles[i].pos[2] = randZ;
-				} else {
-					//System.out.println("moving");
-					//Move particles after drawing them
-					//particles[i].pos[0] -= particles[i].speed;
-					particles[i].pos[1] -= particles[i].speed;
-					//particles[i].pos[2] -= particles[i].speed;
+		if (isRaining) {
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+			
+			//Material lighting for rain
+	        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+	        float matDif[] = {0.19f, 0.34f, 0.74f, 1.0f};
+	    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	    	float matShine[] = { 0.5f };
+	    	
+	    	// Material properties.
+	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
+	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
+	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
+	    	
+	    	gl.glPushMatrix();
+	    	//gl.glMatrixMode(GL2.GL_MODELVIEW);
+	    	//gl.glLoadIdentity();
+			
+			for (int i = 0; i < MAX_PARTICLES; i++) {
+				if (particles[i].alive) {
+					double px = particles[i].pos[0];
+					double py = particles[i].pos[1];
+					double pz = particles[i].pos[2];
+					
+					gl.glBegin(GL2.GL_QUADS);
+						gl.glTexCoord2d(1, 1);
+			            gl.glVertex3d(px, py + 0.09375, pz); // Top Right
+			            gl.glTexCoord2d(0, 1);
+			            gl.glVertex3d(px - 0.0625, py, pz); // Left point
+			            gl.glTexCoord2d(0, 0);
+			            gl.glVertex3d(px, py - 0.03125, pz); // Bottom point
+			            gl.glTexCoord2d(1, 0);
+			            gl.glVertex3d(px + 0.0625, py, pz); // Right point
+					gl.glEnd();
+					
+					//Once the particle has reached the ground, re-position it
+					// and repeat.
+					if (py < 0 || py < altitude(px, pz)) {
+						System.out.println("RESET");
+						double randX = Math.random()*(mySize.getWidth()-1);
+			    		double randZ = Math.random()*(mySize.getHeight()-1);
+			    		
+			    		particles[i].pos[0] = randX;
+						particles[i].pos[1] = particles[i].start_pos;
+						particles[i].pos[2] = randZ;
+					} else {
+						//System.out.println("moving");
+						//Move particles after drawing them
+						//particles[i].pos[0] -= particles[i].speed;
+						particles[i].pos[1] -= particles[i].speed;
+						//particles[i].pos[2] -= particles[i].speed;
+					}
 				}
 			}
+			
+			//gl.glLineWidth(20);
+			gl.glBegin(GL2.GL_QUADS);
+				gl.glColor4f(1f, 1f, 1f, 0.1f);
+				//System.out.println("Draw line");
+				gl.glTexCoord2d(1, 1);
+				gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
+				
+				gl.glTexCoord2d(0, 1);
+				gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
+				
+				gl.glTexCoord2d(0, 0);
+				gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
+				
+				gl.glTexCoord2d(1, 0);
+				gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
+			gl.glEnd();
+			
+			gl.glPopMatrix();
+			/*##########################################################
+			 * 
+			 *##########################################################*/
 		}
-		
-		//gl.glLineWidth(20);
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glColor4f(1f, 1f, 1f, 0.1f);
-			//System.out.println("Draw line");
-			gl.glTexCoord2d(1, 1);
-			gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
-			
-			gl.glTexCoord2d(0, 1);
-			gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
-			
-			gl.glTexCoord2d(0, 0);
-			gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
-			
-			gl.glTexCoord2d(1, 0);
-			gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
-		gl.glEnd();
-		
-		gl.glPopMatrix();
-		/*##########################################################
-		 * 
-		 *##########################################################*/
-		
 		gl.glPopMatrix();
     }
     
