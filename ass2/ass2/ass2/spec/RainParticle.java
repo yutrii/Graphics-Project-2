@@ -15,7 +15,7 @@ public class RainParticle {
 		pos[0] = randX;
 		pos[1] = start_pos;
 		pos[2] = randZ;
-		speed = 1;
+		speed = 0.5;
 		alive = true;
 		
 	}

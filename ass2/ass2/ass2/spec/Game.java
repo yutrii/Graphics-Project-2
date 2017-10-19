@@ -136,10 +136,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		
 		gl.glEnable(GL2.GL_DEPTH_TEST);
 		
-		/*// Enable Blending 
-	    gl.glEnable(GL2.GL_BLEND);      
-	    //Creates an additive blend, which looks spectacular on a black background
-	    gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE);*/
+		//Enable blending and set the blend to be a weighted average
+		gl.glEnable(GL2.GL_BLEND);
+		gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		
 		lightingInit(gl);
 		textureInit(gl);

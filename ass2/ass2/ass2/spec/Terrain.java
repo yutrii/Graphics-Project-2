@@ -32,8 +32,8 @@ public class Terrain {
     private static MyTexture[] myTextures;
     private static String textureFileName1 = "ass2/ass2/textures/grass1.jpg";
     private static String textureExt1 = "jpg";
-    private static String textureFileName2 = "ass2/ass2/textures/star.bmp";
-    private static String textureExt2 = "bmp";
+    private static String textureFileName2 = "ass2/ass2/textures/rain.jpg";
+    private static String textureExt2 = "jpg";
     
     //Material lighting
     float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
@@ -302,10 +302,10 @@ public class Terrain {
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	
     	// Material properties.
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
     	
     	//Offset the polgyon back to allow the roads to show
     	gl.glEnable(GL2.GL_POLYGON_OFFSET_FILL);
@@ -389,25 +389,26 @@ public class Terrain {
 		 * DRAWING RAIN PARTICLES
 		 *##########################################################*/
 		
+		
+		gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+		
 		//Material lighting for rain
         float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
-        float matDif[] = {0.25f, 0.64f, 0.87f, 1.0f};
+        float matDif[] = {0.25f, 0.64f, 0.87f, 0.5f};
     	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
-    	float matShine[] = { 1.0f };
+    	float matShine[] = { 0.5f };
     	
     	// Material properties.
-    	/*gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);*/
-    	
-    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
     	
     	gl.glPushMatrix();
     	//gl.glMatrixMode(GL2.GL_MODELVIEW);
     	//gl.glLoadIdentity();
 		
-		for (int i = 0; i < MAX_PARTICLES; i++) {
+		/*for (int i = 0; i < MAX_PARTICLES; i++) {
 			if (particles[i].alive) {
 				double px = particles[i].pos[0];
 				double py = particles[i].pos[1];
@@ -415,13 +416,13 @@ public class Terrain {
 				
 				gl.glBegin(GL2.GL_QUADS);
 					gl.glTexCoord2d(1, 1);
-		            gl.glVertex3d(px + 0.5, py, pz + 0.5); // Top Right
+		            gl.glVertex3d(px + 0.1, py + 0.1, pz); // Top Right
 		            gl.glTexCoord2d(0, 1);
-		            gl.glVertex3d(px - 0.5, py, pz + 0.5); // Top Left
+		            gl.glVertex3d(px - 0.1, py + 0.1, pz); // Top Left
 		            gl.glTexCoord2d(0, 0);
-		            gl.glVertex3d(px - 0.5, py, pz - 0.5); // Bottom Left
+		            gl.glVertex3d(px - 0.1, py - 0.1, pz); // Bottom Left
 		            gl.glTexCoord2d(1, 0);
-		            gl.glVertex3d(px + 0.5, py, pz - 0.5); // Bottom Right
+		            gl.glVertex3d(px + 0.1, py - 0.1, pz); // Bottom Right
 				gl.glEnd();
 				
 				//Once the particle has reached the ground, re-position it
@@ -442,14 +443,24 @@ public class Terrain {
 					//particles[i].pos[2] -= particles[i].speed;
 				}
 			}
-		}
+		}*/
 		
-		/*gl.glLineWidth(20);
-		gl.glBegin(GL2.GL_LINES);
-			System.out.println("Draw line");
-			gl.glVertex3d(0, 0, 0);
-			gl.glVertex3d(0, 2, 0);
-		gl.glEnd();*/
+		//gl.glLineWidth(20);
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glColor4f(1f, 1f, 1f, 0.1f);
+			//System.out.println("Draw line");
+			gl.glTexCoord2d(1, 1);
+			gl.glVertex3d(0, 1, 1); //Top right
+			
+			gl.glTexCoord2d(0, 1);
+			gl.glVertex3d(1, 1, 0); //Top left
+			
+			gl.glTexCoord2d(0, 0);
+			gl.glVertex3d(1, 0, 0); //Bottom left
+			
+			gl.glTexCoord2d(1, 0);
+			gl.glVertex3d(0, 0, 1); //Bottom right
+		gl.glEnd();
 		
 		gl.glPopMatrix();
 		/*##########################################################
