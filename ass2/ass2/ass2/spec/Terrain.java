@@ -1,6 +1,7 @@
 package ass2.spec;
 
 import java.awt.Dimension;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -405,9 +406,11 @@ public class Terrain {
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
 	    	
+	    	FloatBuffer modelView = new FloatBuffer;
 	    	gl.glPushMatrix();
 	    	//gl.glMatrixMode(GL2.GL_MODELVIEW);
 	    	//gl.glLoadIdentity();
+	    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView);
 			
 			for (int i = 0; i < MAX_PARTICLES; i++) {
 				if (particles[i].alive) {
@@ -417,19 +420,19 @@ public class Terrain {
 					
 					gl.glBegin(GL2.GL_QUADS);
 						gl.glTexCoord2d(1, 1);
-			            gl.glVertex3d(px, py + 0.09375, pz); // Top Right
+			            gl.glVertex3d(px, py + 0.15, pz); // Top Right
 			            gl.glTexCoord2d(0, 1);
-			            gl.glVertex3d(px - 0.0625, py, pz); // Left point
+			            gl.glVertex3d(px - 0.003125, py, pz); // Left point
 			            gl.glTexCoord2d(0, 0);
 			            gl.glVertex3d(px, py - 0.03125, pz); // Bottom point
 			            gl.glTexCoord2d(1, 0);
-			            gl.glVertex3d(px + 0.0625, py, pz); // Right point
+			            gl.glVertex3d(px + 0.003125, py, pz); // Right point
 					gl.glEnd();
 					
 					//Once the particle has reached the ground, re-position it
 					// and repeat.
 					if (py < 0 || py < altitude(px, pz)) {
-						System.out.println("RESET");
+						//System.out.println("RESET");
 						double randX = Math.random()*(mySize.getWidth()-1);
 			    		double randZ = Math.random()*(mySize.getHeight()-1);
 			    		
