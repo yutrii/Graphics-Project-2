@@ -63,7 +63,7 @@ public class Monster {
 		shaderprogram = Shader.initShaders(gl, VERTEX_SHADER, FRAGMENT_SHADER);
 		
 		gl.glUseProgram(shaderProgramID);
-		
+		//
 		
 		//gl.glUseProgram(0);
 		*/
