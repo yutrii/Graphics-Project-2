@@ -21,6 +21,7 @@ public class Terrain {
     private List<Road> myRoads;
     private List<Monster> myMonsters;
     private float[] mySunlight;
+    private boolean isRaining = false;
     
     //Points as array for normal calculations
     double[] p0 = new double[3];
@@ -42,7 +43,7 @@ public class Terrain {
 	float matShine[] = { 5.0f };
 	
 	//Particle
-	private static final int MAX_PARTICLES = 10;
+	private static final int MAX_PARTICLES = 1000;
 	private RainParticle[] particles = new RainParticle[MAX_PARTICLES];
 	
     
@@ -394,7 +395,7 @@ public class Terrain {
 		
 		//Material lighting for rain
         float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
-        float matDif[] = {0.25f, 0.64f, 0.87f, 0.5f};
+        float matDif[] = {0.19f, 0.34f, 0.74f, 1.0f};
     	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
     	float matShine[] = { 0.5f };
     	
@@ -408,7 +409,7 @@ public class Terrain {
     	//gl.glMatrixMode(GL2.GL_MODELVIEW);
     	//gl.glLoadIdentity();
 		
-		/*for (int i = 0; i < MAX_PARTICLES; i++) {
+		for (int i = 0; i < MAX_PARTICLES; i++) {
 			if (particles[i].alive) {
 				double px = particles[i].pos[0];
 				double py = particles[i].pos[1];
@@ -416,13 +417,13 @@ public class Terrain {
 				
 				gl.glBegin(GL2.GL_QUADS);
 					gl.glTexCoord2d(1, 1);
-		            gl.glVertex3d(px + 0.1, py + 0.1, pz); // Top Right
+		            gl.glVertex3d(px, py + 0.09375, pz); // Top Right
 		            gl.glTexCoord2d(0, 1);
-		            gl.glVertex3d(px - 0.1, py + 0.1, pz); // Top Left
+		            gl.glVertex3d(px - 0.0625, py, pz); // Left point
 		            gl.glTexCoord2d(0, 0);
-		            gl.glVertex3d(px - 0.1, py - 0.1, pz); // Bottom Left
+		            gl.glVertex3d(px, py - 0.03125, pz); // Bottom point
 		            gl.glTexCoord2d(1, 0);
-		            gl.glVertex3d(px + 0.1, py - 0.1, pz); // Bottom Right
+		            gl.glVertex3d(px + 0.0625, py, pz); // Right point
 				gl.glEnd();
 				
 				//Once the particle has reached the ground, re-position it
@@ -443,23 +444,23 @@ public class Terrain {
 					//particles[i].pos[2] -= particles[i].speed;
 				}
 			}
-		}*/
+		}
 		
 		//gl.glLineWidth(20);
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glColor4f(1f, 1f, 1f, 0.1f);
 			//System.out.println("Draw line");
 			gl.glTexCoord2d(1, 1);
-			gl.glVertex3d(0, 1, 1); //Top right
+			gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
 			
 			gl.glTexCoord2d(0, 1);
-			gl.glVertex3d(1, 1, 0); //Top left
+			gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
 			
 			gl.glTexCoord2d(0, 0);
-			gl.glVertex3d(1, 0, 0); //Bottom left
+			gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
 			
 			gl.glTexCoord2d(1, 0);
-			gl.glVertex3d(0, 0, 1); //Bottom right
+			gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
 		gl.glEnd();
 		
 		gl.glPopMatrix();
@@ -468,5 +469,9 @@ public class Terrain {
 		 *##########################################################*/
 		
 		gl.glPopMatrix();
+    }
+    
+    public void toggleRain() {
+    	this.isRaining = !this.isRaining;
     }
 }
