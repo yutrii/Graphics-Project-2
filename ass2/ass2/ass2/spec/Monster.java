@@ -160,6 +160,8 @@ public class Monster {
 			
 			gl.glPopMatrix();
 		}
+		//Disable shader program
+		gl.glUseProgram(0);
 		gl.glPopMatrix();
 	}
 	

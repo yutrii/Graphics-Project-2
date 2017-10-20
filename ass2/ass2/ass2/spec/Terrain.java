@@ -44,8 +44,8 @@ public class Terrain {
 	float matShine[] = { 5.0f };
 	
 	//Particle
-	private static final int MAX_PARTICLES = 1000;
-	private RainParticle[] particles = new RainParticle[MAX_PARTICLES];
+	private int MAX_PARTICLES;
+	private RainParticle[] particles;// = new RainParticle[MAX_PARTICLES];
 	
     
     /**
@@ -61,7 +61,8 @@ public class Terrain {
         myRoads = new ArrayList<Road>();
         myMonsters = new ArrayList<Monster>();
         mySunlight = new float[3];
-        
+        MAX_PARTICLES = width*depth*30;
+        particles = new RainParticle[MAX_PARTICLES];
      
     }
     
@@ -395,9 +396,9 @@ public class Terrain {
 			//gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
 			
 			//Material lighting for rain
-	        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
-	        float matDif[] = {0.19f, 0.34f, 0.74f, 1.0f};
-	    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f};
+	        float matAmb[] = {0.12f, 0.26f, 0.9f, 1.0f};
+	        float matDif[] = {0.12f, 0.26f, 0.9f, 0.4f};
+	    	float matSpec[] = {0.12f, 0.26f, 0.9f, 1.0f};
 	    	float matShine[] = { 0.5f };
 	    	
 	    	//float[] modelView = new float[16];
@@ -484,6 +485,7 @@ public class Terrain {
 			/*##########################################################
 			 * 
 			 *##########################################################*/
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		}
 		gl.glPopMatrix();
     }
