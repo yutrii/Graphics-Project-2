@@ -5,7 +5,7 @@ public class RainParticle {
 	double speed;
 	boolean alive;
 	
-	double start_pos = 20;
+	double start_pos = 5;
 	
 	//private double gradient;
 	
@@ -15,8 +15,8 @@ public class RainParticle {
 		pos[0] = randX;
 		pos[1] = start_pos;
 		pos[2] = randZ;
-		speed = 0.5 + Math.random()*0.5;
-		//speed = 0.01;
+		//speed = 0.5 + Math.random()*0.5;
+		speed = 0.005;
 		alive = true;
 		
 	}

@@ -96,9 +96,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     	//Terrain terrain = LevelIO.load(new File(args[0]));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
+    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
-    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testWorld.json"));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testWorld.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testLight.json"));
         Game game = new Game(terrain);
         game.run();
@@ -170,22 +170,6 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     	gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb,0); // Global ambient light.
     	gl.glLightModeli(GL2.GL_LIGHT_MODEL_TWO_SIDE, GL2.GL_TRUE); // Enable two-sided lighting.
     	gl.glLightModeli(GL2.GL_LIGHT_MODEL_COLOR_CONTROL, GL2.GL_SEPARATE_SPECULAR_COLOR);
-
-    	/*
-    	// Material property vectors.
-
-    	float matAmbAndDif2[] = {0.0f, 0.9f, 0.0f, 1.0f};
-    	float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    	float matShine[] = { 50.0f };
-
-    	// Material property vectors.
-    	float matAmbAndDif1[] = {1.0f, 1.0f, 1.0f, 1.0f};
-
-    	// Material properties.
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif1,0);
-    	gl.glMaterialfv(GL2.GL_BACK, GL2.GL_AMBIENT_AND_DIFFUSE, matAmbAndDif2,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);*/
 	}
 	
 	//Does the texture initialisations.
