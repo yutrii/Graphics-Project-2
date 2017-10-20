@@ -401,7 +401,7 @@ public class Terrain {
 	    	float matSpec[] = {0.12f, 0.26f, 0.9f, 1.0f};
 	    	float matShine[] = { 0.5f };
 	    	
-	    	//float[] modelView = new float[16];
+	    	float[] modelView = new float[16];
 	    	gl.glPushMatrix();
 	    	
 	    	// Material properties.
@@ -411,9 +411,9 @@ public class Terrain {
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
 	    	
 	    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
-	    	//gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
 	    	
-	    	/*//Set billboarding
+	    	//Set billboarding
+	    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
 	    	modelView[0] = 1.0f;
 	    	modelView[1] = 0.0f;
 	    	modelView[2] = 0.0f;
@@ -423,7 +423,7 @@ public class Terrain {
 	    	modelView[8] = 0.0f;
 	    	modelView[9] = 0.0f;
 	    	modelView[10] = 1.0f;
-	    	gl.glLoadMatrixf(modelView, 0);*/
+	    	gl.glLoadMatrixf(modelView, 0);
 			
 			for (int i = 0; i < MAX_PARTICLES; i++) {
 				if (particles[i].alive) {
@@ -435,7 +435,7 @@ public class Terrain {
 						gl.glNormal3d(0, 0, 1);
 						
 						gl.glTexCoord2d(0.2, 1);
-			            gl.glVertex3d(px, py + 0.15, pz); // Top Right
+			            gl.glVertex3d(px, py + 0.1, pz); // Top Right
 			            gl.glTexCoord2d(0, 1);
 			            gl.glVertex3d(px - 0.003125, py, pz); // Left point
 			            gl.glTexCoord2d(0, 0);
