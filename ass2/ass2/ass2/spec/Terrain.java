@@ -392,13 +392,16 @@ public class Terrain {
 		 *##########################################################*/
 		
 		if (this.isRaining) {
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+			//gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
 			
 			//Material lighting for rain
 	        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
-	        float matDif[] = {0.19f, 0.34f, 0.74f, 0.5f};
-	    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	        float matDif[] = {0.19f, 0.34f, 0.74f, 1.0f};
+	    	float matSpec[] = { 0.1f, 0.1f, 0.1f, 1.0f};
 	    	float matShine[] = { 0.5f };
+	    	
+	    	//float[] modelView = new float[16];
+	    	gl.glPushMatrix();
 	    	
 	    	// Material properties.
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
@@ -406,11 +409,20 @@ public class Terrain {
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
 	    	
-	    	FloatBuffer modelView = new FloatBuffer;
-	    	gl.glPushMatrix();
-	    	//gl.glMatrixMode(GL2.GL_MODELVIEW);
-	    	//gl.glLoadIdentity();
-	    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView);
+	    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+	    	//gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
+	    	
+	    	/*//Set billboarding
+	    	modelView[0] = 1.0f;
+	    	modelView[1] = 0.0f;
+	    	modelView[2] = 0.0f;
+	    	modelView[4] = 0.0f;
+	    	modelView[5] = 1.0f;
+	    	modelView[6] = 0.0f;
+	    	modelView[8] = 0.0f;
+	    	modelView[9] = 0.0f;
+	    	modelView[10] = 1.0f;
+	    	gl.glLoadMatrixf(modelView, 0);*/
 			
 			for (int i = 0; i < MAX_PARTICLES; i++) {
 				if (particles[i].alive) {
@@ -419,13 +431,15 @@ public class Terrain {
 					double pz = particles[i].pos[2];
 					
 					gl.glBegin(GL2.GL_QUADS);
-						gl.glTexCoord2d(1, 1);
+						gl.glNormal3d(0, 0, 1);
+						
+						gl.glTexCoord2d(0.2, 1);
 			            gl.glVertex3d(px, py + 0.15, pz); // Top Right
 			            gl.glTexCoord2d(0, 1);
 			            gl.glVertex3d(px - 0.003125, py, pz); // Left point
 			            gl.glTexCoord2d(0, 0);
 			            gl.glVertex3d(px, py - 0.03125, pz); // Bottom point
-			            gl.glTexCoord2d(1, 0);
+			            gl.glTexCoord2d(0.2, 0);
 			            gl.glVertex3d(px + 0.003125, py, pz); // Right point
 					gl.glEnd();
 					
