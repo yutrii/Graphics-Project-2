@@ -10,6 +10,7 @@ public class Monster {
 	private double[] pos;
 	private float[] positions;
 	private float[] normals;
+	private float[] texCoords;
 	private int shader1;
 	//private float[] colours;
 	
@@ -34,6 +35,10 @@ public class Monster {
 				-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1
+		};
+		
+		texCoords = new float[] {
+			0, 0, 1, 0, 1, 1, 0, 1	
 		};
 		
 		// ~~~~~~~~~~~ vertex and fragment shader stuff ~~~~~~~~~~~~~~~~~~~~~~~~`
@@ -77,6 +82,7 @@ public class Monster {
 		//colours = new float[]{1,0,0, 0,1,0, 1,1,1, 0,0,0, 0,0,1, 1,1,0};
 		FloatBuffer posData = Buffers.newDirectFloatBuffer(positions);
 		FloatBuffer normalData = Buffers.newDirectFloatBuffer(normals);
+		FloatBuffer texData = Buffers.newDirectFloatBuffer(texCoords);
 		
 		bufferIDs = new int[2];
 		gl.glGenBuffers(2, bufferIDs,0);
@@ -87,6 +93,8 @@ public class Monster {
 		
 		gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, 0, positions.length*Float.BYTES, posData);
 		gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, positions.length*Float.BYTES, normals.length*Float.BYTES, normalData);
+		gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, (positions.length + normals.length) * Float.BYTES, texCoords.length * Float.BYTES, 
+												texData);
 	}
 	
 	public void draw(GL2 gl) {
@@ -94,6 +102,7 @@ public class Monster {
 		gl.glTranslated(pos[0], pos[1], pos[2]);
 		{
 			gl.glUseProgram(shader1);
+			gl.glBindTexture(GL2.GL_TEXTURE_2D, 7);   
 			//head
 			gl.glPushMatrix();
 			gl.glTranslated(0, 1, 0);
@@ -159,6 +168,8 @@ public class Monster {
 			drawCube(gl);
 			
 			gl.glPopMatrix();
+			
+			gl.glUseProgram(0);
 		}
 		gl.glPopMatrix();
 	}
@@ -168,15 +179,17 @@ public class Monster {
 		
 		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+		gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 		
 		gl.glVertexPointer(3,GL.GL_FLOAT,0, 0);
 		gl.glNormalPointer(GL.GL_FLOAT,0, normals.length*Float.BYTES );
+		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, positions.length*Float.BYTES);
 		
 		gl.glDrawArrays(GL2.GL_QUADS,0,24);
 		
 		gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 		gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-		
+		gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
 		
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 	}
