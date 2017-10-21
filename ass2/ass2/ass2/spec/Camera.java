@@ -146,5 +146,6 @@ public class Camera {
 		if (pos[2] < 0) pos[2] = 0;
 		if (pos[0] >= terrain.size().width) pos[0] = terrain.size().width-1;
 		if (pos[2] >= terrain.size().height) pos[2] = terrain.size().height-1;
+		pos[1] = terrain.altitude(pos[0], pos[2]) +  0.25;
 	}
 }

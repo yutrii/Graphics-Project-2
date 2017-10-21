@@ -101,8 +101,6 @@ public class Terrain {
     		r.init(gl);
     	}
     	
-    	myMonsters.add(new Monster(1, getGridAltitude(1, 1), 1));
-    	
     	for (Monster m: myMonsters) {
     		m.init(gl);
     	}
@@ -286,6 +284,17 @@ public class Terrain {
     public void addRoad(double width, double[] spine) {
         Road road = new Road(width, spine);
         myRoads.add(road);        
+    }
+    
+    /**
+     * Add a Monster. 
+     * 
+     * @param x
+     * @param z
+     */
+    public void addMonster(double x, double z) {
+    	Monster monster = new Monster(x, altitude(x, z), z);
+        myMonsters.add(monster);        
     }
     
     public boolean withinRange(double x, double z) {

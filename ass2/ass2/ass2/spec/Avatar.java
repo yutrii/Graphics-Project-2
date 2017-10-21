@@ -8,17 +8,26 @@ public class Avatar {
 	private double[] forward;// = new double[] {0.707, 0, 0.707};
 	private double angle;
 	private Terrain terrain;
-    private double radius = 0.1;
-    private static final double NUM_QUADS = 32;
-    private static final double INC = 2*Math.PI/NUM_QUADS;
+	
+	private static MyTexture[] myTextures;
+    private static String textureFileName1 = "ass2/ass2/textures/gold.jpg";
+    private static String textureExt1 = "jpg";
 
-
+    float matAmb[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    float matDif[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float matSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float matShine[] = { 1f };
+    
     public Avatar(double x, double y, double z, Terrain t) {
         myPos = new double[3];
         forward = new double[3];
         summonAvatar(x, y, z, 5.5);
         terrain = t;
-        
+    }
+
+    public void init(GL2 gl) {
+    	myTextures = new MyTexture[1];
+    	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
     }
     
     public double[] getPosition() {
@@ -36,10 +45,18 @@ public class Avatar {
     
     public void drawAvatar(GL2 gl) {
     	gl.glPushMatrix();
-  
+    	
     	GLUT glut = new GLUT();
     	gl.glTranslated(myPos[0], myPos[1], myPos[2]);
     	gl.glRotated(Math.toDegrees(angle) + 90, 0, 1, 0);
+    	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+    	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
     	glut.glutSolidTeapot(0.1);
     	
     	gl.glPopMatrix();
