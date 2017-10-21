@@ -190,7 +190,7 @@ public class Monster {
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
 			
 			gl.glDrawArrays(GL2.GL_QUADS,0,4);
-			
+			//set start as 4 to render rest of the cube
 			start = 4;
 		}
 		
