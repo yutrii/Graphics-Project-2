@@ -1,6 +1,7 @@
 package ass2.spec;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.util.gl2.GLUT;
 
 /**
  * COMMENT: Comment Tree 
@@ -79,10 +80,22 @@ public class Tree {
 	    	}
     	gl.glEnd();
     	
-    	drawSphere(gl);
+    	gl.glTranslated(0, 1.3, 0);
+    	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+    	GLUT glut = new GLUT();
+    	glut.glutSolidSphere(0.5, 20, 10);
+    	//drawSphere(gl);
     	gl.glPopMatrix();
     }
-    
+}
+
+/*    
     private void drawSphere(GL2 gl) {
     	gl.glTranslated(0, 1.3, 0);
     	
@@ -188,3 +201,4 @@ public class Tree {
     
 
 }
+*/
