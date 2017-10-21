@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.glu.GLU;
 
 //TESTING COMMENT FOR GIT SETUP
 
@@ -23,6 +24,7 @@ public class Terrain {
     private List<Monster> myMonsters;
     private float[] mySunlight;
     private boolean isRaining = false;
+    private boolean isBillboard = false;
     
     //Points as array for normal calculations
     double[] p0 = new double[3];
@@ -421,18 +423,25 @@ public class Terrain {
 	    	
 	    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
 	    	
-	    	//Set billboarding
-	    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
-	    	modelView[0] = 1.0f;
-	    	modelView[1] = 0.0f;
-	    	modelView[2] = 0.0f;
-	    	modelView[4] = 0.0f;
-	    	modelView[5] = 1.0f;
-	    	modelView[6] = 0.0f;
-	    	modelView[8] = 0.0f;
-	    	modelView[9] = 0.0f;
-	    	modelView[10] = 1.0f;
-	    	gl.glLoadMatrixf(modelView, 0);
+	    	if (isBillboard) {
+		    	//Set billboarding
+		    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
+		    	float d = (float) Math.sqrt(modelView[0]*modelView[0] + modelView[4]*modelView[4] + modelView[8]*modelView[8]);
+		    	modelView[0] = d;
+		    	modelView[1] = 0.0f;
+		    	modelView[2] = 0.0f;
+		    	modelView[4] = 0.0f;
+		    	modelView[5] = d;
+		    	modelView[6] = 0.0f;
+		    	modelView[8] = 0.0f;
+		    	modelView[9] = 0.0f;
+		    	modelView[10] = d;
+		    	modelView[12] = 0.0f;
+		    	modelView[13] = 0.0f;
+		    	modelView[14] = 0.0f;
+		    	modelView[15] = 1.0f;
+		    	gl.glLoadMatrixf(modelView, 0);
+	    	}
 			
 			for (int i = 0; i < MAX_PARTICLES; i++) {
 				if (particles[i].alive) {
@@ -501,5 +510,9 @@ public class Terrain {
     
     public void toggleRain() {
     	this.isRaining = !this.isRaining;
+    }
+    
+    public void toggleBillboard() {
+    	this.isBillboard = !this.isBillboard;
     }
 }
