@@ -257,8 +257,10 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 				}
 			} else if (key == 'r') {
 				myTerrain.toggleRain();
+			} else if (key == 't') {
+				camera.toggleTorch();
 			} else if (key == 'b') {
-				myTerrain.toggleBillboard();
+				myTerrain.toggleBillboard();;
 			}
 		}
 	}
