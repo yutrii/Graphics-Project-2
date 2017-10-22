@@ -12,12 +12,12 @@ public class Camera {
 	
 	//Moving sun settings
 	private boolean isSunMove = false;
-	private float[] sunPos = { (float) Math.cos(Math.PI*0), (float) Math.sin(Math.PI*0), 0, 0};
+	private float[] sunPos = { (float) Math.cos(0), (float) Math.sin(0), 0, 0};
 	private double sunTime = 0;
 	private double sunIncrement = 0.0087;
 	// Light property vectors.
-	float lightAmb[] = { 0.99f, 0.5f, 0f, 0.5f };
-	float lightDifAndSpec[] = { 0.99f, 0.5f, 0f, 0.5f };
+	float lightAmb[] = { 0.99f, 0.5f, 0f, 0.1f };
+	float lightDifAndSpec[] = { 0.99f, 0.5f, 0f, 0.1f };
 	float globAmb[] = { 1f, 1f, 1f, 1.0f };
 	
 	public static enum Mode {
@@ -100,8 +100,8 @@ public class Camera {
         	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, sunPos, 0);
         	
         	sunTime += sunIncrement;
-        	sunPos[0] = (float) Math.cos(Math.PI*sunTime);
-        	sunPos[1] = (float) Math.sin(Math.PI*sunTime);
+        	sunPos[0] = (float) Math.cos(sunTime);
+        	sunPos[1] = (float) Math.sin(sunTime);
         	
         	gl.glLineWidth(20);
         	gl.glBegin(GL2.GL_LINES);
