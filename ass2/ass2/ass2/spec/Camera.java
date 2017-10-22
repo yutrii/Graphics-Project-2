@@ -86,7 +86,7 @@ public class Camera {
         
         /*############### SUNLIGHT POSITIONING AND MOVEMENT ###############*/
         if (!isSunMove) {
-        	gl.glEnable(GL2.GL_LIGHT0);
+        	if (!isTorch) { gl.glEnable(GL2.GL_LIGHT0); } 
         	gl.glDisable(GL2.GL_LIGHT2);
         	float[] lightPos = new float[4];
             float[] sun = terrain.getSunlight();
