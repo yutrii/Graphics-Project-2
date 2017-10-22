@@ -55,6 +55,7 @@ public class Camera {
 			System.out.println("torch on");
 			gl.glDisable(GL2.GL_LIGHT0);
 			gl.glEnable(GL2.GL_LIGHT1);
+			gl.glDisable(GL2.GL_LIGHT2);
 			gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
 			torch.updatePos(pos, forward);
 			torch.setTorch(gl);
@@ -92,17 +93,28 @@ public class Camera {
             lightPos[2] = sun[2];
             lightPos[3] = 0;
             gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
+            
+            // Light property vectors.
+        	float lightAmb[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+        	// Light properties.
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
         } else {
+        	gl.glDisable(GL2.GL_LIGHT0);
+        	gl.glEnable(GL2.GL_LIGHT2);
         	//Set the sunlight
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, sunLight,0);
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, sunLight,0);
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, sunLight,0);
+        	gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_AMBIENT, sunLight,0);
+        	gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_DIFFUSE, sunLight,0);
+        	gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_SPECULAR, sunLight,0);
         	
         	//Set the sky light
         	gl.glClearColor(lightAmb[0], lightAmb[1], lightAmb[2], 1);
         	
         	//Position the sun
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, sunPos, 0);
+        	gl.glLightfv(GL2.GL_LIGHT2, GL2.GL_POSITION, sunPos, 0);
         	
         	sunTime += sunIncrement;
         	sunPos[0] = (float) Math.cos(sunTime);
@@ -162,8 +174,8 @@ public class Camera {
 	public void resetDay() {
 		sunTime = 0;
 		lightAmb[0] = lightDifAndSpec[0] = 0.99f;
-		lightAmb[1] = lightDifAndSpec[1] = 0.5f;
-		lightAmb[2] = lightDifAndSpec[2] = 0.0f;
+		lightAmb[1] = lightDifAndSpec[1] = 0.36f;
+		lightAmb[2] = lightDifAndSpec[2] = 0.21f;
 		sunPos[0] = (float) Math.cos(Math.PI*0);
 		sunPos[1] = (float) Math.sin(Math.PI*0);
 		sunPos[2] = 0;
