@@ -80,7 +80,7 @@ public class Tree {
 	    	}
     	gl.glEnd();
     	
-    	gl.glTranslated(0, 1.3, 0);
+    	//gl.glTranslated(0, 1.3, 0);
     	
     	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
     	// Material properties.
@@ -89,13 +89,12 @@ public class Tree {
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
     	GLUT glut = new GLUT();
-    	glut.glutSolidSphere(0.5, 20, 10);
-    	//drawSphere(gl);
+    	//glut.glutSolidSphere(0.5, 20, 10);
+    	//glut.glutSolidCube(1);
+    	drawSphere(gl);
     	gl.glPopMatrix();
     }
-}
-
-/*    
+    
     private void drawSphere(GL2 gl) {
     	gl.glTranslated(0, 1.3, 0);
     	
@@ -198,7 +197,4 @@ public class Tree {
     	double y  = Math.sin(2 * Math.PI * t);
         return y;
     }
-    
-
 }
-*/

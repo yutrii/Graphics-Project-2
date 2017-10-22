@@ -37,6 +37,7 @@ public class Camera {
 		GLU glu = new GLU();
 		
 		if (isTorch) {
+			System.out.println("torch on");
 			gl.glDisable(GL2.GL_LIGHT0);
 			gl.glEnable(GL2.GL_LIGHT1);
 			
