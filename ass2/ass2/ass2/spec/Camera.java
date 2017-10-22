@@ -16,9 +16,14 @@ public class Camera {
 	private double sunTime = 0;
 	private double sunIncrement = 0.0087;
 	// Light property vectors.
-	float lightAmb[] = { 0.99f, 0.5f, 0f, 0.1f };
-	float lightDifAndSpec[] = { 0.99f, 0.5f, 0f, 0.1f };
+	float lightAmb[] = { 0.99f, 0.36f, 0.21f, 1.0f };
+	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	float globAmb[] = { 1f, 1f, 1f, 1.0f };
+	
+	// Light property vectors.
+	float sunLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+	//float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	//float globAmb[] = { 1f, 1f, 1f, 1.0f };
 	
 	public static enum Mode {
 		FIRST_PERSON,
@@ -89,9 +94,9 @@ public class Camera {
             gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
         } else {
         	//Set the sunlight
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
-        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, sunLight,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, sunLight,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, sunLight,0);
         	
         	//Set the sky light
         	gl.glClearColor(lightAmb[0], lightAmb[1], lightAmb[2], 1);
@@ -109,15 +114,31 @@ public class Camera {
         		gl.glVertex3d(sunPos[0], sunPos[1], 0);
         	gl.glEnd();
         	
-        	if (sunTime < 1.57) {
-        		lightAmb[0] = lightDifAndSpec[0] -= 0.0027;
-        		//lightAmb[1] = lightDifAndSpec[1];
-        		lightAmb[2] = lightDifAndSpec[2] += 0.0056;
-        	} else if (sunTime >= 1.57 && sunTime < 3.14) {
-        		lightAmb[0] = lightDifAndSpec[0] += 0.0027;
-        		lightAmb[1] = lightDifAndSpec[1] -= 0.00077;
-        		lightAmb[2] = lightDifAndSpec[2] -= 0.0044;
-        	} else if (sunTime >= 3.14) {
+        	if (sunTime < 1.57) { //SUNRISE
+        		lightAmb[0] /*= lightDifAndSpec[0]*/ -= 0.0027;
+        		lightAmb[1] /*= lightDifAndSpec[1]*/ += 0.00077;
+        		lightAmb[2] /*= lightDifAndSpec[2]*/ += 0.0044;
+        		
+        		sunLight[0] = sunLight[1] = sunLight[2] += 0.0044;
+        	} else if (sunTime >= 1.57 && sunTime < 3.14) { //MIDDAY
+        		lightAmb[0] /*= lightDifAndSpec[0]*/ += 0.0027;
+        		lightAmb[1] /*= lightDifAndSpec[1]*/ -= 0.00077;
+        		lightAmb[2] /*= lightDifAndSpec[2]*/ -= 0.0044;
+        		
+        		sunLight[0] = sunLight[1] = sunLight[2] -= 0.0044;
+        	} else if (sunTime >= 3.14 && sunTime < 4.71) { //SUNSET
+        		lightAmb[0] /*= lightDifAndSpec[0]*/ -= 0.0055;
+        		lightAmb[1] /*= lightDifAndSpec[1]*/ -= 0.002;
+        		lightAmb[2] /*= lightDifAndSpec[2]*/ -= 0.0012;
+        		
+        		sunLight[0] = sunLight[1] = sunLight[2] -= 0.0011;
+        	} else if (sunTime >= 4.71 && sunTime < 6.28) { //MIDNIGHT
+        		lightAmb[0] /*= lightDifAndSpec[0]*/ += 0.0055;
+        		lightAmb[1] /*= lightDifAndSpec[1]*/ += 0.002;
+        		lightAmb[2] /*= lightDifAndSpec[2]*/ += 0.0012;
+        		
+        		sunLight[0] = sunLight[1] = sunLight[2] += 0.0011;
+        	} else if (sunTime >= 6.28) { //SUNRISE
         		//RESET THE SUN
         		resetDay();
         	}
@@ -146,6 +167,8 @@ public class Camera {
 		sunPos[0] = (float) Math.cos(Math.PI*0);
 		sunPos[1] = (float) Math.sin(Math.PI*0);
 		sunPos[2] = 0;
+		sunLight[0] = sunLight[1] = sunLight[2] = 0.2f;
+		
 	}
 	
 	public void toggleTorch() {
