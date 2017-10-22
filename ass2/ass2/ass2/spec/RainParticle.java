@@ -4,6 +4,7 @@ public class RainParticle {
 	double[] pos = new double[3];
 	double speed;
 	boolean alive;
+	static double speedSetting = 0.5;
 	
 	double start_pos = 5;
 	
@@ -15,8 +16,8 @@ public class RainParticle {
 		pos[0] = randX;
 		pos[1] = start_pos;
 		pos[2] = randZ;
-		//speed = 0.5 + Math.random()*0.5;
-		speed = 0.005;
+		speed = Math.random()*0.5;
+		//speed = 0.005;
 		alive = true;
 		
 	}
