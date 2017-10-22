@@ -40,10 +40,11 @@ public class Camera {
 			System.out.println("torch on");
 			gl.glDisable(GL2.GL_LIGHT0);
 			gl.glEnable(GL2.GL_LIGHT1);
-			
+			gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
 			torch.updatePos(pos, forward);
 			torch.setTorch(gl);
 		} else {
+			gl.glClearColor(0.5f, 0.5f, 1f, 1);
 			gl.glDisable(GL2.GL_LIGHT1);
 			gl.glEnable(GL2.GL_LIGHT0);
 		}
