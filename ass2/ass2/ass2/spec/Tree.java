@@ -80,7 +80,6 @@ public class Tree {
 	    	}
     	gl.glEnd();
     	
-    	
     	//GLUT glut = new GLUT();
     	//glut.glutSolidSphere(0.5, 20, 10);
     	//glut.glutSolidIcosahedron();
