@@ -13,6 +13,8 @@ public class Monster {
 	private float[] normals;
 	private float[] texCoords;
 	private int shader1;
+	private int lightLoc;
+	private int textureLoc;
 	//private float[] colours;
 	//Texture variables
     private static MyTexture[] myTextures;
@@ -44,11 +46,12 @@ public class Monster {
 		
 		
 		normals = new float[]{0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+				
+				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
+				0, -1, 0, 0, -1, 0,	0, -1, 0, 0, -1, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
-				-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
-				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
-				0, -1, 0, 0, -1, 0,	0, -1, 0, 0, -1, 0
+				-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0
 		};
 		
 		texCoords = new float[] {
@@ -71,11 +74,13 @@ public class Monster {
 			e.printStackTrace();
 		}
 		
+		lightLoc = gl.glGetUniformLocation(shader1, "light");
+		
 		myTextures = new MyTexture[2];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
     	myTextures[1] = new MyTexture(gl, textureFileName2, textureExt2, true);
 		//
-		
+    	textureLoc = gl.glGetUniformLocation(shader1, "colour");
 		//gl.glUseProgram(0);
 		
 		// ~~~~~~~~~~~~ end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,13 +101,18 @@ public class Monster {
 		gl.glBufferSubData(GL2.GL_ARRAY_BUFFER, (positions.length + normals.length) * Float.BYTES, texCoords.length * Float.BYTES, texData);
 	}
 	
-	public void draw(GL2 gl) {
+	public void draw(GL2 gl, boolean isTorch) {
 		gl.glPushMatrix();
 		gl.glTranslated(pos[0], pos[1], pos[2]);
 		gl.glRotated(angle, 0, 1, 0);
 		gl.glScaled(0.5, 0.5, 0.5);
 		{
-			  
+			if (isTorch) {
+				gl.glEnable(GL2.GL_TEXTURE_2D);
+			} else {
+				gl.glUseProgram(shader1);
+			}
+			
 			//head
 			gl.glPushMatrix();
 			gl.glTranslated(0, 2, 0);
@@ -176,10 +186,6 @@ public class Monster {
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
-		
-		
-		gl.glUseProgram(shader1);
-		//gl.glEnable(GL2.GL_TEXTURE_2D);
     			
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bufferIDs[0]);
 		

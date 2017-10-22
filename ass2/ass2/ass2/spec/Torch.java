@@ -7,7 +7,7 @@ public class Torch {
 	private float pos[];
 	private float direction[];
 	
-	private float lightAmb[] = { 1, 1, 1, 1 };
+	private float lightAmb[] = { 0.7f, 0.7f, 0.7f, 1 };
 	private float lightDiff[] = { 1, 1, 1, 1};
 	private float lightSpec[] = { 1, 1, 1, 1 };
 	private float gloAmb[] = { 0.2f, 0.2f, 0.2f, 1.0f };
@@ -22,8 +22,6 @@ public class Torch {
 	}
 	
 	public void setTorch(GL2 gl) {
-		System.out.println("setting torch");		
-		
 		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, lightAmb,0);
     	gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, lightDiff,0);
     	gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPECULAR, lightSpec,0);

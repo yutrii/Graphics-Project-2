@@ -67,7 +67,7 @@ public class Terrain {
         myRoads = new ArrayList<Road>();
         myMonsters = new ArrayList<Monster>();
         mySunlight = new float[3];
-        MAX_PARTICLES = width*depth*20;
+        MAX_PARTICLES = width*depth*5;
         //MAX_PARTICLES = 100;
         particles = new RainParticle[MAX_PARTICLES];
      
@@ -450,7 +450,7 @@ public class Terrain {
 		}
 		
 		for (Monster m: myMonsters) {
-			m.draw(gl);
+			m.draw(gl, myCamera.isTorch());
 		}
 		
 		/*##########################################################
@@ -459,7 +459,7 @@ public class Terrain {
 		
 		if (this.isRaining) {
 			//Material lighting for rain
-	        float matAmb[] = {0.12f, 0.26f, 0.9f, 1.0f};
+	        float matAmb[] = {0.53f, 0.81f, 0.92f, 1.0f};
 	        float matDif[] = {0.12f, 0.26f, 0.9f, 0.4f};
 	    	float matSpec[] = {0.12f, 0.26f, 0.9f, 1.0f};
 	    	float matShine[] = { 0.5f };

@@ -6,7 +6,7 @@ public class RainParticle {
 	boolean alive;
 	static double speedSetting = 0.0;
 	
-	double start_pos = 3;
+	double start_pos = 20;
 	
 	//private double gradient;
 	

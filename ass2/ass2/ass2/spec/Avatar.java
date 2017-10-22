@@ -48,7 +48,7 @@ public class Avatar {
     	
     	GLUT glut = new GLUT();
     	gl.glTranslated(myPos[0], myPos[1], myPos[2]);
-    	gl.glRotated(Math.toDegrees(angle) + 90, 0, 1, 0);
+    	gl.glRotated(Math.toDegrees(angle) - 90, 0, 1, 0);
     	
     	// Material properties.
     	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
