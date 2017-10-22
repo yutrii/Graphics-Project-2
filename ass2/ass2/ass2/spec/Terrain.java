@@ -28,6 +28,7 @@ public class Terrain {
     private boolean isBillboard = true;
     private boolean showRainDrop = false;
     private boolean demoBillboard = false;
+    private boolean rainPause = false;
     
     //Points as array for normal calculations
     double[] p0 = new double[3];
@@ -518,9 +519,11 @@ public class Terrain {
 					particles[i].pos[1] = particles[i].start_pos;
 					particles[i].pos[2] = randZ;
 				} else {
-					//Move particles after drawing them
-					particles[i].pos[1] -= particles[i].speed + RainParticle.speedSetting;
-					//particles[1].pos[1] = Math.max(particles[1].pos[1] - particles[i].speed + RainParticle.speedSetting, 0.001);
+					if (!rainPause) {
+						//Move particles after drawing them
+						particles[i].pos[1] -= particles[i].speed + RainParticle.speedSetting;
+						//particles[1].pos[1] = Math.max(particles[1].pos[1] - particles[i].speed + RainParticle.speedSetting, 0.001);
+					}
 				}
 			}
 			
@@ -582,5 +585,9 @@ public class Terrain {
     
     public void toggleDemoBillboard() {
     	this.demoBillboard = !this.demoBillboard;
+    }
+    
+    public void toggleRainPause() {
+    	this.rainPause = !this.rainPause;
     }
 }
