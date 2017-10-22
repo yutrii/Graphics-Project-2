@@ -207,62 +207,59 @@ public class Terrain {
         	//method is to check which side of the diagonal edge the point lies (between p2 and p4)
         	//then interpolate
         	
-        	double p2x = Math.ceil(x);
-        	double p2z = Math.floor(z);
+        	double xh = Math.ceil(x);
+        	double zl = Math.floor(z);
         	
-        	double p4x = Math.floor(x);
-        	double p4z = Math.ceil(z);
+        	double xl = Math.floor(x);
+        	double zh = Math.ceil(z);
         	
-        	if (x == p4x) {
-        		//on left line
-        		double p1y = getGridAltitude((int)p2x, (int)p4z);
-        		double p4y = getGridAltitude((int)p4x, (int)p4z);
-        		double height = p1y - p4y;
+        	if (x == xl) {
+        		//on left line, so interpolate along the left line
+        		double p1 = getGridAltitude((int)xl, (int)zl);
+        		double p2 = getGridAltitude((int)xl, (int)zh);
+        		double height = p1 - p2;
         		
         		if (height == 0) { //points are same altitude
-        			altitude = getGridAltitude((int)p4x, (int)p4z);
-        		} else {
-        			double pos;
-        			double dist = Math.sqrt(2);
-        			
-        			if (height > 0) { // p1 is higher
-        			//distance of unknown point along line
-        				pos = p4z - z;
-        			} else { //p1 is higher than p2
-        				height = Math.abs(height);
-        				pos = z - p2z;
-        			}
-        			altitude = pos * height / dist;
-        		}
-        	} else if (z == p2z) {
-        		//on top line
-        		double p1y = getGridAltitude((int)p4x, (int)p2z);
-        		double p2y = getGridAltitude((int)p2x, (int)p2z);
-        		double height = p1y - p2y;
-        		
-        		if (height == 0) { //points are same altitude
-        			altitude = getGridAltitude((int)p4x, (int)p4z);
+        			altitude = getGridAltitude((int)xl, (int)zh);
         		} else {
         			double pos;
         			double dist = 1;
         			
         			if (height > 0) { // p1 is higher
         			//distance of unknown point along line
-        				pos = p2x - x;
+        				pos = zh - z;
         			} else { //p1 is higher than p2
         				height = Math.abs(height);
-        				pos = x - p4x;
+        				pos = z - zl;
+        			}
+        			altitude = pos * height / dist;
+        		}
+        	} else if (z == zl) {
+        		//on top line, so interpolate along top line
+        		double p1 = getGridAltitude((int)xl, (int)zl);
+        		double p2 = getGridAltitude((int)xh, (int)zl);
+        		double height = p1 - p2;
+        		
+        		if (height == 0) { //points are same altitude
+        			altitude = getGridAltitude((int)xl, (int)zl);
+        		} else {
+        			double pos;
+        			double dist = 1;
+        			
+        			if (height > 0) { // p1 is higher
+        			//distance of unknown point along line
+        				pos = xh - x;
+        			} else { //p1 is higher than p2
+        				height = Math.abs(height);
+        				pos = x - xl;
         			}
         			altitude = pos * height / dist;
         		}
         	} else {
-        	
-	        	//double det = ((p4x - p2x)*(z - p2z) - (p4z - p2z)*(x - p2x));
+	        	double det = (xh - x) - (z - zl);
 	        	
-	        	double det = (p2x - x) - (z - p2z);
-	        	
-	        	double p2y = getGridAltitude((int)p2x, (int)p2z);
-	        	double p4y = getGridAltitude((int)p4x, (int)p4z);
+	        	double p2y = getGridAltitude((int)xh, (int)zl);
+	        	double p4y = getGridAltitude((int)xl, (int)zh);
 	        	
 	        	if (det == 0) {
 	        		//it's on the diagonal line, easy
@@ -272,42 +269,39 @@ public class Terrain {
 	        		double height = p2y - p4y;
 	        		
 	        		if (height == 0) { //points are same altitude
-	        			altitude = getGridAltitude((int)p4x, (int)p4z);
+	        			altitude = getGridAltitude((int)xl, (int)zh);
 	        		} else {
 	        			double pos;
 	        			double dist = Math.sqrt(2);
 	        			
 	        			if (height < 0) { // p2 is higher than p1
 	        			//distance of unknown point along line
-	        				pos = Math.sqrt((p2x-x)*(p2x-x) + (z-p2z)*(z-p2z));
+	        				pos = Math.sqrt((xh-x)*(xh-x) + (z-zl)*(z-zl));
 	        			} else { //p1 is higher than p2
 	        				height = Math.abs(height);
-	        				pos = Math.sqrt((x-p4x)*(x-p4x) + (p4z-z)*(p4z-z));
+	        				pos = Math.sqrt((x-xl)*(x-xl) + (zh-z)*(zh-z));
 	        			}
 	        			altitude = pos * height / dist;
 	        		}
 	        	} else {
 	        		double r1;
 	        		double r2;
+	        		//bilinear interpolation for within triangles
 	        		if (det > 0) {
-	        			//it's in upper trangle (i think)
-	        			double p1x = p4x;
-	                	double p1z = p2z;
-	                	double p1y = getGridAltitude((int)p1x, (int)p1z);
+	        			//it's in upper triangle
+	                	double p1y = getGridAltitude((int)xl, (int)zl);
 	                	
-	                	r1 = (z-p1z)*p4y + (p4z-z)*p1y;
-	                	r2 = (z-p2z)*p4y + (p4z-z)*p2y;
-	                	altitude = ((x-p4x)/(p4z-z))*r2 + ((p4x+p4z-z-x)/(p4z-z))*r1;
+	                	r1 = (z-zl)*p4y + (zh-z)*p1y;
+	                	r2 = (z-zl)*p4y + (zh-z)*p2y;
+	                	altitude = ((x-xl)/(zh-z))*r2 + ((xl+zh-z-x)/(zh-z))*r1;
 	                	
 	        		} else {
-	        			//it's in lower (i think)
-	        			double p3x = p2x;
-	                	double p3z = p4z;
-	                	double p3y = getGridAltitude((int)p3x, (int)p3z);
+	        			//it's in lower
+	                	double p3y = getGridAltitude((int)xh, (int)zh);
 	
-	                	r1 = (z-p2z)*p4y + (p4z-z)*p2y;
-	                	r2 = (z-p2z)*p3y + (p3z-z)*p2y;
-	                	altitude = ((x-p2x-p2z+z)/(z-p2z))*r2 + ((p2x-x)/(z-p2z))*r1;
+	                	r1 = (z-zl)*p4y + (zh-z)*p2y;
+	                	r2 = (z-zl)*p3y + (zh-z)*p2y;
+	                	altitude = ((x-xh-zl+z)/(z-zl))*r2 + ((xh-x)/(z-zl))*r1;
 	        		}
 	        	}
         	}
@@ -353,6 +347,7 @@ public class Terrain {
         myMonsters.add(monster);        
     }
     
+    //check if point is within the map
     public boolean withinRange(double x, double z) {
     	if (x < 0 || x > mySize.height - 1 || z < 0 || z > mySize.width - 1) {
     		return false;
