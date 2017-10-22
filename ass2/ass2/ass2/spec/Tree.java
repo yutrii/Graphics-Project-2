@@ -80,20 +80,68 @@ public class Tree {
 	    	}
     	gl.glEnd();
     	
-    	//gl.glTranslated(0, 1.3, 0);
     	
-    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
-    	// Material properties.
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
-    	GLUT glut = new GLUT();
+    	//GLUT glut = new GLUT();
     	//glut.glutSolidSphere(0.5, 20, 10);
-    	//glut.glutSolidCube(1);
-    	drawSphere(gl);
+    	//glut.glutSolidIcosahedron();
+    	drawCube(gl);
     	gl.glPopMatrix();
     }
+    
+    private void drawCube(GL2 gl) {
+    	float[] p = new float[]{-1, 1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1,//front
+				1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1,//right
+				-1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1,//back
+				-1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, -1,//left
+				-1, 1, 1, 1, 1, 1, 1, 1, -1, -1, 1, -1,//top
+				-1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1//bottom
+		};
+    	
+    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
+    	//Material lighting for the sphere
+        float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
+        float matDif[] = {0.12f, 0.58f, 0.18f, 1.0f};
+    	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    	float matShine[] = { 50.0f };
+    	
+    	// Material properties.
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
+    	
+    	gl.glTranslated(0, 1.3, 0);
+    	gl.glScaled(0.5, 0.5, 0.5);
+    	
+    	gl.glBegin(GL2.GL_QUADS); 
+    	
+    	int[][] norm = new int[][] {
+    		{0, 0, 1},
+			{1, 0, 0},
+			{0, 0, -1},
+			{-1, 0, 0},
+			{0, 1, 0},
+			{0, -1, 0}
+    	};
+    	
+    	for (int i = 0, j = 0; i < p.length; j++) {
+    		gl.glNormal3d(norm[j][0], norm[j][1], norm[j][2]);
+    		gl.glTexCoord2d(1, 1);
+    		gl.glVertex3d(p[i++], p[i++], p[i++]);
+    		gl.glTexCoord2d(0, 1);
+    		gl.glVertex3d(p[i++], p[i++], p[i++]);
+    		gl.glTexCoord2d(0, 0);
+    		gl.glVertex3d(p[i++], p[i++], p[i++]);
+    		gl.glTexCoord2d(1, 0);
+    		gl.glVertex3d(p[i++], p[i++], p[i++]);
+    	}
+    	
+    	gl.glEnd();
+    }
+    
+    
+    
+    
     
     private void drawSphere(GL2 gl) {
     	gl.glTranslated(0, 1.3, 0);
