@@ -40,8 +40,6 @@ public class Torch {
 		//gl.glLightf(GL2.GL_LIGHT1, GL2.GL_QUADRATIC_ATTENUATION, 0.5f);
 		
 		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPOT_DIRECTION, direction, 0);
-		
-		
 	}
 	
 	public void drawTorch(GL2 gl) {
