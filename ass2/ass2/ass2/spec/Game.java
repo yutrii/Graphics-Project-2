@@ -81,8 +81,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      * @throws FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException {
-    	//Terrain terrain = LevelIO.load(new File(args[0]));
-    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
+    	Terrain terrain = LevelIO.load(new File(args[0]));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
