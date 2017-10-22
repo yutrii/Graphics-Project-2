@@ -16,15 +16,18 @@ import com.jogamp.opengl.glu.GLU;
  * @author malcolmr
  */
 public class Terrain {
-	//hello
+	//Objects on the terrain
     private Dimension mySize;
     private double[][] myAltitude;
     private List<Tree> myTrees;
     private List<Road> myRoads;
     private List<Monster> myMonsters;
     private float[] mySunlight;
+    
+    //Flags for showing things
     private boolean isRaining = false;
     private boolean isBillboard = false;
+    private boolean showRainDrop = false;
     
     //Points as array for normal calculations
     double[] p0 = new double[3];
@@ -63,7 +66,7 @@ public class Terrain {
         myRoads = new ArrayList<Road>();
         myMonsters = new ArrayList<Monster>();
         mySunlight = new float[3];
-        MAX_PARTICLES = width*depth*30;
+        MAX_PARTICLES = width*depth*15;
         particles = new RainParticle[MAX_PARTICLES];
      
     }
@@ -404,8 +407,6 @@ public class Terrain {
 		 *##########################################################*/
 		
 		if (this.isRaining) {
-			//gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
-			
 			//Material lighting for rain
 	        float matAmb[] = {0.12f, 0.26f, 0.9f, 1.0f};
 	        float matDif[] = {0.12f, 0.26f, 0.9f, 0.4f};
@@ -413,6 +414,7 @@ public class Terrain {
 	    	float matShine[] = { 0.5f };
 	    	
 	    	float[] modelView = new float[16];
+	    	float[] projection = new float[16];
 	    	gl.glPushMatrix();
 	    	
 	    	// Material properties.
@@ -426,20 +428,31 @@ public class Terrain {
 	    	if (isBillboard) {
 		    	//Set billboarding
 		    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
-		    	float d = (float) Math.sqrt(modelView[0]*modelView[0] + modelView[4]*modelView[4] + modelView[8]*modelView[8]);
-		    	modelView[0] = d;
+		    	gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
+		    	System.out.println("BEFORE");
+		    	System.out.println(modelView[0] + " " + modelView[4] + " " + modelView[8] + " " + modelView[12]);
+		    	System.out.println(modelView[1] + " " + modelView[5] + " " + modelView[9] + " " + modelView[13]);
+		    	System.out.println(modelView[2] + " " + modelView[6] + " " + modelView[10] + " " + modelView[14]);
+		    	System.out.println(modelView[3] + " " + modelView[7] + " " + modelView[11] + " " + modelView[15]);
+		    	//float d = (float) Math.sqrt(modelView[0]*modelView[0] + modelView[4]*modelView[4] + modelView[8]*modelView[8]);
+		    	modelView[0] = 1.0f;
 		    	modelView[1] = 0.0f;
 		    	modelView[2] = 0.0f;
 		    	modelView[4] = 0.0f;
-		    	modelView[5] = d;
+		    	modelView[5] = 1.0f;
 		    	modelView[6] = 0.0f;
 		    	modelView[8] = 0.0f;
 		    	modelView[9] = 0.0f;
-		    	modelView[10] = d;
-		    	modelView[12] = 0.0f;
-		    	modelView[13] = 0.0f;
-		    	modelView[14] = 0.0f;
+		    	modelView[10] = 1.0f;
+		    	modelView[12] = -modelView[12];
+		    	modelView[13] = -modelView[13];
+		    	modelView[14] = -modelView[14];
 		    	modelView[15] = 1.0f;
+		    	System.out.println("AFTER");
+		    	System.out.println(modelView[0] + " " + modelView[4] + " " + modelView[8] + " " + modelView[12]);
+		    	System.out.println(modelView[1] + " " + modelView[5] + " " + modelView[9] + " " + modelView[13]);
+		    	System.out.println(modelView[2] + " " + modelView[6] + " " + modelView[10] + " " + modelView[14]);
+		    	System.out.println(modelView[3] + " " + modelView[7] + " " + modelView[11] + " " + modelView[15]);
 		    	gl.glLoadMatrixf(modelView, 0);
 	    	}
 			
@@ -465,7 +478,6 @@ public class Terrain {
 					//Once the particle has reached the ground, re-position it
 					// and repeat.
 					if (py < 0 || py < altitude(px, pz)) {
-						//System.out.println("RESET");
 						double randX = Math.random()*(mySize.getWidth()-1);
 			    		double randZ = Math.random()*(mySize.getHeight()-1);
 			    		
@@ -473,37 +485,36 @@ public class Terrain {
 						particles[i].pos[1] = particles[i].start_pos;
 						particles[i].pos[2] = randZ;
 					} else {
-						//System.out.println("moving");
 						//Move particles after drawing them
-						//particles[i].pos[0] -= particles[i].speed;
-						particles[i].pos[1] -= particles[i].speed;
-						//particles[i].pos[2] -= particles[i].speed;
+						particles[i].pos[1] -= particles[i].speed + RainParticle.speedSetting;
 					}
 				}
 			}
 			
-			//gl.glLineWidth(20);
-			gl.glBegin(GL2.GL_QUADS);
-				gl.glColor4f(1f, 1f, 1f, 0.1f);
-				//System.out.println("Draw line");
-				gl.glTexCoord2d(1, 1);
-				gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
-				
-				gl.glTexCoord2d(0, 1);
-				gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
-				
-				gl.glTexCoord2d(0, 0);
-				gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
-				
-				gl.glTexCoord2d(1, 0);
-				gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
-			gl.glEnd();
+			
+			if (showRainDrop) {
+				gl.glBegin(GL2.GL_QUADS);
+					gl.glNormal3d(0, 0, 1);
+					
+					gl.glTexCoord2d(1, 1);
+					gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
+					
+					gl.glTexCoord2d(0, 1);
+					gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
+					
+					gl.glTexCoord2d(0, 0);
+					gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
+					
+					gl.glTexCoord2d(1, 0);
+					gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
+				gl.glEnd();
+			}
 			
 			gl.glPopMatrix();
 			/*##########################################################
 			 * 
 			 *##########################################################*/
-			gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
+			//gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		}
 		gl.glPopMatrix();
     }
@@ -514,5 +525,17 @@ public class Terrain {
     
     public void toggleBillboard() {
     	this.isBillboard = !this.isBillboard;
+    }
+    
+    public void toggleRainDrop() {
+    	this.showRainDrop = !this.showRainDrop;
+    }
+    
+    public void rainFast() {
+    	RainParticle.speedSetting = Math.min(RainParticle.speedSetting + 0.1, 1);
+    }
+    
+    public void rainSlow() {
+    	RainParticle.speedSetting = Math.max(RainParticle.speedSetting - 0.1, 0.05);
     }
 }

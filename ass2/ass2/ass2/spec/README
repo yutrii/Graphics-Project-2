@@ -1,0 +1,18 @@
+README FILE:
+
+Toggling some features:
+
+'r' turns rain off/on
+'b' turns billboarding off/on
+'l' shows a raindrop model at the starting corner of the map
+'=' speeds up rain
+'-' slows down rain
+
+Camera movements:
+
+'a' strafe left
+'s / down arrow' walk backwards
+'w / up arrow' walk forwards
+'d' strafe right
+'left arrow' rotate view left
+'right arrow' rotate view right

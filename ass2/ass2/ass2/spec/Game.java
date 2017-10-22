@@ -94,9 +94,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      */
     public static void main(String[] args) throws FileNotFoundException {
     	//Terrain terrain = LevelIO.load(new File(args[0]));
-    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
+    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testb.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/largeTerrain.json"));
-    	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
+    	Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testRoads3.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testHill.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testWorld.json"));
     	//Terrain terrain = LevelIO.load(new File("ass2/ass2/spec/testLight.json"));
@@ -109,7 +109,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
 		//GLU glu = new GLU();
-		gl.glClearColor(0.5f, 0.5f, 1, 1);
+		//gl.glClearColor(0.5f, 0.5f, 1, 1);
+		gl.glClearColor(1f, 1f, 1f, 1);
 		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
 				| GL2.GL_DEPTH_BUFFER_BIT);
 		
@@ -259,7 +260,14 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 				myTerrain.toggleRain();
 			} else if (key == 'b') {
 				myTerrain.toggleBillboard();
+			} else if (key == 'l') {
+				myTerrain.toggleRainDrop();
+			} else if (key == '=') {
+				myTerrain.rainFast();
+			} else if (key == '-') {
+				myTerrain.rainSlow();
 			}
+			
 		}
 	}
 
