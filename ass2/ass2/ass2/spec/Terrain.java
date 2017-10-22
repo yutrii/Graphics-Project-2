@@ -521,8 +521,8 @@ public class Terrain {
 				} else {
 					if (!rainPause) {
 						//Move particles after drawing them
-						particles[i].pos[1] -= particles[i].speed + RainParticle.speedSetting;
-						//particles[1].pos[1] = Math.max(particles[1].pos[1] - particles[i].speed + RainParticle.speedSetting, 0.001);
+						double speed = Math.max(particles[i].speed + RainParticle.speedSetting, 0.001);
+						particles[i].pos[1] -= speed;
 					}
 				}
 			}

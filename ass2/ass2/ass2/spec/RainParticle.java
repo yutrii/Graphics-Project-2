@@ -16,7 +16,7 @@ public class RainParticle {
 		pos[0] = randX;
 		pos[1] = start_pos;
 		pos[2] = randZ;
-		speed = Math.random()*0.5;
+		speed = Math.random()*0.5 + 0.5;
 		//speed = 0.005;
 		alive = true;
 		

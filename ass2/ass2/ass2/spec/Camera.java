@@ -9,12 +9,17 @@ public class Camera {
 	private Torch torch;
 	private double aspectRatio;
 	private boolean isTorch;
+	private Mode mode;
+	private double[] pos;
+	private double[] forward; //starting position facing 315deg
+	private double angle = 5.5; //starting position 315 degrees in radians
 	
 	//Moving sun settings
 	private boolean isSunMove = false;
 	private float[] sunPos = { (float) Math.cos(0), (float) Math.sin(0), 0, 0};
 	private double sunTime = 0;
 	private double sunIncrement = 0.0087;
+	
 	// Light property vectors.
 	float lightAmb[] = { 0.99f, 0.36f, 0.21f, 1.0f };
 	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -30,11 +35,6 @@ public class Camera {
 		THIRD_PERSON,
 		FREE_VIEW
 	}
-
-	private Mode mode;
-	private double[] pos;
-	private double[] forward; //starting position facing 315deg
-	private double angle = 5.5; //starting position 315 degrees in radians
 	
 	public Camera(Terrain t, Avatar a) {
 		pos = new double[] {0, 0.25, 0};
@@ -51,22 +51,22 @@ public class Camera {
 	public void updateCamera(GL2 gl) {
 		GLU glu = new GLU();
 		
-		if (isTorch) {
-			System.out.println("torch on");
+		if (isTorch) { //if the torch is on (i.e. night mode)
+			//disable sunlight and activate the torch
 			gl.glDisable(GL2.GL_LIGHT0);
 			gl.glEnable(GL2.GL_LIGHT1);
 			gl.glDisable(GL2.GL_LIGHT2);
 			gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
 			torch.updatePos(pos, forward);
 			torch.setTorch(gl);
-		} else {
+		} else { //otherwise re-enable sunlight
 			gl.glClearColor(0.5f, 0.5f, 1f, 1);
 			gl.glDisable(GL2.GL_LIGHT1);
 			gl.glEnable(GL2.GL_LIGHT0);
 		}
 		
 		if (mode != Mode.FREE_VIEW) {
-		//use terrain altitude if within bounds, otherwise float 0.5 above sea level (0 y ordinate)
+			//use terrain altitude if within bounds, otherwise float 0.5 above sea level (0 y ordinate)
 			if (terrain.withinRange(pos[0], pos[2])) {
 				pos[1] = terrain.altitude(pos[0], pos[2]) + 0.25;
 			} else {
@@ -156,7 +156,6 @@ public class Camera {
         	}
         }
         
-        
         /*#################################################################*/
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
@@ -180,7 +179,6 @@ public class Camera {
 		sunPos[1] = (float) Math.sin(Math.PI*0);
 		sunPos[2] = 0;
 		sunLight[0] = sunLight[1] = sunLight[2] = 0.2f;
-		
 	}
 	
 	public void toggleTorch() {
@@ -207,6 +205,7 @@ public class Camera {
 		}
 	}
 	
+	//moves camera up and down (free view mode only)
 	public void fly(double l) {
 		if (mode == Mode.FREE_VIEW) {
 			pos[1] += l;
@@ -241,7 +240,7 @@ public class Camera {
 		return isTorch;
 	}
 	
-	//switches the mode between first and third person
+	//switches the mode between first and third person and free view
 	public void changeMode() {
 		if (mode == Mode.FIRST_PERSON) {
 			mode = Mode.FREE_VIEW;
@@ -254,6 +253,8 @@ public class Camera {
 		}
 	}
 	
+	//used to bring the camera back to within bounds of the map
+	//if it had been moved beyond in free view mode
 	private void moveWithinMap() {
 		if (pos[0] < 0) pos[0] = 0;
 		if (pos[2] < 0) pos[2] = 0;

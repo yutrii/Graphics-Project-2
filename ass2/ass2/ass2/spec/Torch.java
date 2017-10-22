@@ -1,7 +1,6 @@
 package ass2.spec;
 
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Torch {
 	private float pos[];
@@ -16,11 +15,13 @@ public class Torch {
 		updatePos(p, d);
 	}
 	
+	//updates the torch position
 	public void updatePos(double[] p, double[] d) {
 		pos = new float[] {(float)p[0], (float)p[1], (float)p[2], 1};
 		direction = new float[] {(float)d[0], (float)d[1], (float)d[2], 1};
 	}
 	
+	//activates the torch
 	public void setTorch(GL2 gl) {
 		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_AMBIENT, lightAmb,0);
     	gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_DIFFUSE, lightDiff,0);

@@ -13,9 +13,7 @@ public class Monster {
 	private float[] normals;
 	private float[] texCoords;
 	private int shader1;
-	private int lightLoc;
-	private int textureLoc;
-	//private float[] colours;
+
 	//Texture variables
     private static MyTexture[] myTextures;
     private static String textureFileName1 = "ass2/ass2/textures/monster1.jpg";
@@ -44,7 +42,6 @@ public class Monster {
 				-1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1//bottom
 		};
 		
-		
 		normals = new float[]{0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1,
@@ -54,7 +51,6 @@ public class Monster {
 		};
 		
 		texCoords = new float[] {
-			//0, 0, 1, 0, 1, 1, 0, 1
 			1, 1, 0, 1, 0, 0, 1, 0,
 			1, 1, 0, 1, 0, 0, 1, 0,
 			1, 1, 0, 1, 0, 0, 1, 0,
@@ -64,7 +60,6 @@ public class Monster {
 		};
 		
 		//Shader.java stuff
-		
 		String VERTEX_SHADER = "vertexShader.glsl";
 		String FRAGMENT_SHADER= "fragmentShader.glsl";
 		try {
@@ -73,18 +68,10 @@ public class Monster {
 			e.printStackTrace();
 		}
 		
-		lightLoc = gl.glGetUniformLocation(shader1, "light");
-		
 		myTextures = new MyTexture[2];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
     	myTextures[1] = new MyTexture(gl, textureFileName2, textureExt2, true);
-		//
-    	textureLoc = gl.glGetUniformLocation(shader1, "colour");
-		//gl.glUseProgram(0);
 		
-		// ~~~~~~~~~~~~ end ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		
-		//colours = new float[]{1,0,0, 0,1,0, 1,1,1, 0,0,0, 0,0,1, 1,1,0};
 		FloatBuffer posData = Buffers.newDirectFloatBuffer(positions);
 		FloatBuffer normalData = Buffers.newDirectFloatBuffer(normals);
 		FloatBuffer texData = Buffers.newDirectFloatBuffer(texCoords);
@@ -116,7 +103,6 @@ public class Monster {
 			gl.glPushMatrix();
 			gl.glTranslated(0, 2, 0);
 			gl.glScaled(0.25, 0.22, 0.25);
-			
 			
 			drawCube(gl, true);
 			

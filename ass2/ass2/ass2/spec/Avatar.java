@@ -5,7 +5,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 
 public class Avatar {
 	private double[] myPos;
-	private double[] forward;// = new double[] {0.707, 0, 0.707};
+	private double[] forward;
 	private double angle;
 	private Terrain terrain;
 	
@@ -70,6 +70,7 @@ public class Avatar {
     	return terrain.withinRange(myPos[0] + l * forward[2], myPos[2] - l * forward[0]);
     }
     
+    //moves the avatar forward and back
     public void move(double l) {
     	if (canMove(l)) {
     		myPos[0] += l * forward[0];
@@ -78,6 +79,7 @@ public class Avatar {
     	}
     }
     
+    //moves the avatar left and right
     public void strafe(double l) {
     	if (canStrafe(l)) {
     		myPos[0] += l * forward[2];
@@ -86,8 +88,8 @@ public class Avatar {
     	}
     }
     
+    //rotates the avatar to face forward
     public void rotate(double rad) {
-    	//System.out.println("rotating");
     	angle += rad;
     	forward[0] = Math.cos(angle);
     	forward[2] = -Math.sin(angle);
