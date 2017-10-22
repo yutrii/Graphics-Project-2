@@ -1,12 +1,10 @@
 package ass2.spec;
 
 import java.awt.Dimension;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.glu.GLU;
 
 //TESTING COMMENT FOR GIT SETUP
 
@@ -23,11 +21,13 @@ public class Terrain {
     private List<Road> myRoads;
     private List<Monster> myMonsters;
     private float[] mySunlight;
+    private Camera myCamera;
     
     //Flags for showing things
     private boolean isRaining = false;
-    private boolean isBillboard = false;
+    private boolean isBillboard = true;
     private boolean showRainDrop = false;
+    private boolean demoBillboard = false;
     
     //Points as array for normal calculations
     double[] p0 = new double[3];
@@ -66,7 +66,8 @@ public class Terrain {
         myRoads = new ArrayList<Road>();
         myMonsters = new ArrayList<Monster>();
         mySunlight = new float[3];
-        MAX_PARTICLES = width*depth*15;
+        MAX_PARTICLES = width*depth*20;
+        //MAX_PARTICLES = 100;
         particles = new RainParticle[MAX_PARTICLES];
      
     }
@@ -213,7 +214,6 @@ public class Terrain {
         	
         	if (x == p4x) {
         		//on left line
-        		System.out.println("on left line");
         		double p1y = getGridAltitude((int)p2x, (int)p4z);
         		double p4y = getGridAltitude((int)p4x, (int)p4z);
         		double height = p1y - p4y;
@@ -235,7 +235,6 @@ public class Terrain {
         		}
         	} else if (z == p2z) {
         		//on top line
-        		System.out.println("on top line");
         		double p1y = getGridAltitude((int)p4x, (int)p2z);
         		double p2y = getGridAltitude((int)p2x, (int)p2z);
         		double height = p1y - p2y;
@@ -265,7 +264,6 @@ public class Terrain {
 	        	double p4y = getGridAltitude((int)p4x, (int)p4z);
 	        	
 	        	if (det == 0) {
-	        		System.out.println("its on the diagonal");
 	        		//it's on the diagonal line, easy
 	        		//use p1 and p2 altitude to interpolate
 	        		 //length of diagonal
@@ -292,7 +290,6 @@ public class Terrain {
 	        		double r2;
 	        		if (det > 0) {
 	        			//it's in upper trangle (i think)
-	        			System.out.println("its in upper triangle");
 	        			double p1x = p4x;
 	                	double p1z = p2z;
 	                	double p1y = getGridAltitude((int)p1x, (int)p1z);
@@ -303,7 +300,6 @@ public class Terrain {
 	                	
 	        		} else {
 	        			//it's in lower (i think)
-	        			System.out.println("its in lower triangle");
 	        			double p3x = p2x;
 	                	double p3z = p4z;
 	                	double p3y = getGridAltitude((int)p3x, (int)p3z);
@@ -328,7 +324,7 @@ public class Terrain {
      */
     public void addTree(double x, double z) {
         double y = altitude(x, z);
-    	System.out.println("Tree at (" + x + ", " + z + ") is at altitude " + y);
+    	//System.out.println("Tree at (" + x + ", " + z + ") is at altitude " + y);
         Tree tree = new Tree(x, y, z);
         myTrees.add(tree);
     }
@@ -467,8 +463,6 @@ public class Terrain {
 	    	float matSpec[] = {0.12f, 0.26f, 0.9f, 1.0f};
 	    	float matShine[] = { 0.5f };
 	    	
-	    	float[] modelView = new float[16];
-	    	float[] projection = new float[16];
 	    	gl.glPushMatrix();
 	    	
 	    	// Material properties.
@@ -478,37 +472,6 @@ public class Terrain {
 	    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
 	    	
 	    	gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
-	    	
-	    	if (isBillboard) {
-		    	//Set billboarding
-		    	gl.glGetFloatv(GL2.GL_MODELVIEW_MATRIX, modelView, 0);
-		    	gl.glGetFloatv(GL2.GL_PROJECTION_MATRIX, projection, 0);
-		    	System.out.println("BEFORE");
-		    	System.out.println(modelView[0] + " " + modelView[4] + " " + modelView[8] + " " + modelView[12]);
-		    	System.out.println(modelView[1] + " " + modelView[5] + " " + modelView[9] + " " + modelView[13]);
-		    	System.out.println(modelView[2] + " " + modelView[6] + " " + modelView[10] + " " + modelView[14]);
-		    	System.out.println(modelView[3] + " " + modelView[7] + " " + modelView[11] + " " + modelView[15]);
-		    	//float d = (float) Math.sqrt(modelView[0]*modelView[0] + modelView[4]*modelView[4] + modelView[8]*modelView[8]);
-		    	modelView[0] = 1.0f;
-		    	modelView[1] = 0.0f;
-		    	modelView[2] = 0.0f;
-		    	modelView[4] = 0.0f;
-		    	modelView[5] = 1.0f;
-		    	modelView[6] = 0.0f;
-		    	modelView[8] = 0.0f;
-		    	modelView[9] = 0.0f;
-		    	modelView[10] = 1.0f;
-		    	modelView[12] = -modelView[12];
-		    	modelView[13] = -modelView[13];
-		    	modelView[14] = -modelView[14];
-		    	modelView[15] = 1.0f;
-		    	System.out.println("AFTER");
-		    	System.out.println(modelView[0] + " " + modelView[4] + " " + modelView[8] + " " + modelView[12]);
-		    	System.out.println(modelView[1] + " " + modelView[5] + " " + modelView[9] + " " + modelView[13]);
-		    	System.out.println(modelView[2] + " " + modelView[6] + " " + modelView[10] + " " + modelView[14]);
-		    	System.out.println(modelView[3] + " " + modelView[7] + " " + modelView[11] + " " + modelView[15]);
-		    	gl.glLoadMatrixf(modelView, 0);
-	    	}
 			
 			for (int i = 0; i < MAX_PARTICLES; i++) {
 				if (particles[i].alive) {
@@ -516,32 +479,48 @@ public class Terrain {
 					double py = particles[i].pos[1];
 					double pz = particles[i].pos[2];
 					
+					gl.glPushMatrix();
+					gl.glTranslated(px, py, pz);
+					gl.glRotated(Math.toDegrees(myCamera.getAngle())+90, 0, 1, 0);
 					gl.glBegin(GL2.GL_QUADS);
-						gl.glNormal3d(0, 0, 1);
-						
-						gl.glTexCoord2d(0.2, 1);
-			            gl.glVertex3d(px, py + 0.1, pz); // Top Right
-			            gl.glTexCoord2d(0, 1);
-			            gl.glVertex3d(px - 0.003125, py, pz); // Left point
-			            gl.glTexCoord2d(0, 0);
-			            gl.glVertex3d(px, py - 0.03125, pz); // Bottom point
-			            gl.glTexCoord2d(0.2, 0);
-			            gl.glVertex3d(px + 0.003125, py, pz); // Right point
+						gl.glNormal3d(0, 0, 1);			            
+			            
+						if (demoBillboard) {
+							gl.glTexCoord2d(1, 1);
+				            gl.glVertex3d(0.5, 0.5, 0); // Top Right
+				            gl.glTexCoord2d(0, 1);
+				            gl.glVertex3d(0, 0.5, 0); // Left point
+				            gl.glTexCoord2d(0, 0);
+				            gl.glVertex3d(0, 0, 0); // Bottom point
+				            gl.glTexCoord2d(1, 0);
+				            gl.glVertex3d(0.5, 0, 0); // Right point
+						} else {
+							gl.glTexCoord2d(0.2, 1);
+				            gl.glVertex3d(0, 0.1, 0); // Top Right
+				            gl.glTexCoord2d(0, 1);
+				            gl.glVertex3d(-0.003125, 0, 0); // Left point
+				            gl.glTexCoord2d(0, 0);
+				            gl.glVertex3d(0, -0.03125, 0); // Bottom point
+				            gl.glTexCoord2d(0.2, 0);
+				            gl.glVertex3d(0.003125, 0, 0); // Right point
+						}
 					gl.glEnd();
-					
-					//Once the particle has reached the ground, re-position it
-					// and repeat.
-					if (py < 0 || py < altitude(px, pz)) {
-						double randX = Math.random()*(mySize.getWidth()-1);
-			    		double randZ = Math.random()*(mySize.getHeight()-1);
-			    		
-			    		particles[i].pos[0] = randX;
-						particles[i].pos[1] = particles[i].start_pos;
-						particles[i].pos[2] = randZ;
-					} else {
-						//Move particles after drawing them
-						particles[i].pos[1] -= particles[i].speed + RainParticle.speedSetting;
-					}
+					gl.glPopMatrix();
+				}
+				
+				//Once the particle has reached the ground, re-position it
+				// and repeat.
+				if (particles[i].pos[1] < 0 || particles[i].pos[1] < altitude(particles[i].pos[0], particles[i].pos[2])) {
+					double randX = Math.random()*(mySize.getWidth()-1);
+		    		double randZ = Math.random()*(mySize.getHeight()-1);
+		    		
+		    		particles[i].pos[0] = randX;
+					particles[i].pos[1] = particles[i].start_pos;
+					particles[i].pos[2] = randZ;
+				} else {
+					//Move particles after drawing them
+					particles[i].pos[1] -= particles[i].speed + RainParticle.speedSetting;
+					//particles[1].pos[1] = Math.max(particles[1].pos[1] - particles[i].speed + RainParticle.speedSetting, 0.001);
 				}
 			}
 			
@@ -573,6 +552,14 @@ public class Terrain {
 		gl.glPopMatrix();
     }
     
+    public void setCamera(Camera c ) {
+    	this.myCamera = c;
+    }
+    
+    public double getCameraAngle() {
+    	return this.myCamera.getAngle();
+    }
+    
     public void toggleRain() {
     	this.isRaining = !this.isRaining;
     }
@@ -590,6 +577,10 @@ public class Terrain {
     }
     
     public void rainSlow() {
-    	RainParticle.speedSetting = Math.max(RainParticle.speedSetting - 0.1, 0.05);
+    	RainParticle.speedSetting = Math.max(RainParticle.speedSetting - 0.1, -1);
+    }
+    
+    public void toggleDemoBillboard() {
+    	this.demoBillboard = !this.demoBillboard;
     }
 }

@@ -4,9 +4,9 @@ public class RainParticle {
 	double[] pos = new double[3];
 	double speed;
 	boolean alive;
-	static double speedSetting = 0.5;
+	static double speedSetting = 0.0;
 	
-	double start_pos = 5;
+	double start_pos = 3;
 	
 	//private double gradient;
 	

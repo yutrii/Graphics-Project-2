@@ -11,8 +11,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.glu.GLU;
-
 import javax.swing.JFrame;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -37,15 +35,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
     private Avatar aang;
 	private Camera camera;
 	
-    private double rotateX = 0;
-    private double rotateY = 0;
     private Point myMousePoint = null;
-    private static final int ROTATION_SCALE = 1;
     private static double zoom = 1;
-    private static double translateX = 0;
-    private static double translateY = 0;
-    private static double translateZ = 0;
-    
     private boolean[] keyStates;
     
     private static MyTexture[] myTextures;
@@ -66,7 +57,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
      */
     public void run() {
     	  GLProfile glp = GLProfile.getDefault();
-          GLCapabilities caps = new GLCapabilities(glp);
+          new GLCapabilities(glp);
           GLJPanel panel = new GLJPanel();
           panel.addGLEventListener(this);
           panel.addMouseMotionListener(this);
@@ -145,6 +136,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		textureInit(gl);
 		
 		myTerrain.init(gl);
+		myTerrain.setCamera(camera);
 		aang.init(gl);
 		
 		//gl.glPopMatrix();
@@ -199,15 +191,6 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		Point p = e.getPoint();
 
         if (myMousePoint != null) {
-            int dx = p.x - myMousePoint.x;
-            int dy = p.y - myMousePoint.y;
-
-            // Note: dragging in the x dir rotates about y
-            //       dragging in the y dir rotates about x
-            rotateY += dx * ROTATION_SCALE;
-            
-            //camera.rotate(rotateY/10000);
-            rotateX += dy * ROTATION_SCALE;
 
         }
         
@@ -261,7 +244,7 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 			} else if (key == 't') {
 				camera.toggleTorch();
 			} else if (key == 'b') {
-				myTerrain.toggleBillboard();
+				myTerrain.toggleDemoBillboard();
 			} else if (key == 'l') {
 				myTerrain.toggleRainDrop();
 			} else if (key == '=') {
