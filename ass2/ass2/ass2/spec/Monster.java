@@ -161,16 +161,17 @@ public class Monster {
 			gl.glPopMatrix();
 			
 		}
+		gl.glUseProgram(0);
 		gl.glPopMatrix();
 	}
 	
 	private void drawCube(GL2 gl, boolean isHead) {
 		int start = 0;
 		
-		gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_AMBIENT, matAmb,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_DIFFUSE, matDif,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SPECULAR, matSpec,0);
-    	gl.glMaterialfv(GL2.GL_FRONT, GL2.GL_SHININESS, matShine,0);
+		gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
+    	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
     			
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bufferIDs[0]);
 		
@@ -194,7 +195,7 @@ public class Monster {
 		
 		gl.glDrawArrays(GL2.GL_QUADS,start,24);
 		
-		gl.glUseProgram(0);
+		
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 		
 		gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);

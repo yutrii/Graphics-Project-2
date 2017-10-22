@@ -103,7 +103,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		
 		camera.updateCamera(gl);
 		if (camera.getMode() == Mode.THIRD_PERSON) {
+			gl.glPushMatrix();
 			aang.drawAvatar(gl);
+			gl.glPopMatrix();
 		}
 		myTerrain.drawTerrain(gl);
 		
@@ -140,17 +142,18 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		// Light property vectors.
     	float lightAmb[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    	float globAmb[] = { 1f, 1f, 1f, 1.0f };
+    	float globAmb[] = { 0.2f, 0.2f, 0.2f, 1.0f };
 
     	// Light properties.
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
 
-    	gl.glEnable(GL2.GL_LIGHT0); // Enable particular light source.
+    	//gl.glEnable(GL2.GL_LIGHT0); // Enable particular light source.
     	gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb,0); // Global ambient light.
     	gl.glLightModeli(GL2.GL_LIGHT_MODEL_TWO_SIDE, GL2.GL_TRUE); // Enable two-sided lighting.
     	gl.glLightModeli(GL2.GL_LIGHT_MODEL_COLOR_CONTROL, GL2.GL_SEPARATE_SPECULAR_COLOR);
+    	gl.glEnable(GL2.GL_LIGHT0);
 	}
 	
 	//Does the texture initialisations.
