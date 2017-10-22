@@ -27,8 +27,6 @@ public class Camera {
 	
 	// Light property vectors.
 	float sunLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
-	//float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	//float globAmb[] = { 1f, 1f, 1f, 1.0f };
 	
 	public static enum Mode {
 		FIRST_PERSON,
@@ -157,6 +155,7 @@ public class Camera {
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         
+        //90 degree FOV in free mode, otherwise 60 degrees
         if (mode == Mode.FREE_VIEW) {
         	glu.gluPerspective(90, aspectRatio, 0.1f, 100f);
         } else {

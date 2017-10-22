@@ -78,15 +78,13 @@ public class Tree {
 	
 	    	}
     	gl.glEnd();
-    	
-    	//GLUT glut = new GLUT();
-    	//glut.glutSolidSphere(0.5, 20, 10);
-    	//glut.glutSolidIcosahedron();
     	drawCube(gl);
     	gl.glPopMatrix();
     }
     
+    //draws a cube (for the leaves)
     private void drawCube(GL2 gl) {
+    	//points to draw
     	float[] p = new float[]{-1, 1, 1, 1, 1, 1, 1, -1, 1, -1, -1, 1,//front
 				1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1,//right
 				-1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1,//back

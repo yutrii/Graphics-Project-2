@@ -7,12 +7,12 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
 public class Monster {
-	private double[] pos;
-	private double angle;
-	private float[] positions;
-	private float[] normals;
-	private float[] texCoords;
-	private int shader1;
+	private double[] pos; //position of monster
+	private double angle; //angle that the monster is facing
+	private float[] positions; //VBO vertex data
+	private float[] normals; //VBO normal data
+	private float[] texCoords; //VBO texture data
+	private int shader1; //shader ID
 
 	//Texture variables
     private static MyTexture[] myTextures;
@@ -21,6 +21,7 @@ public class Monster {
     private static String textureFileName2 = "ass2/ass2/textures/monster2.jpg";
     private static String textureExt2 = "jpg";
 	
+    //material variables
     float matAmb[] = {0.25f, 0.25f, 0.25f, 1.0f};
     float matDif[] = {0.2f, 0.2f, 0.2f, 1.0f};
 	float matSpec[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -68,14 +69,17 @@ public class Monster {
 			e.printStackTrace();
 		}
 		
+		//set up textures
 		myTextures = new MyTexture[2];
     	myTextures[0] = new MyTexture(gl, textureFileName1, textureExt1, true);
     	myTextures[1] = new MyTexture(gl, textureFileName2, textureExt2, true);
 		
+    	//set data buffers
 		FloatBuffer posData = Buffers.newDirectFloatBuffer(positions);
 		FloatBuffer normalData = Buffers.newDirectFloatBuffer(normals);
 		FloatBuffer texData = Buffers.newDirectFloatBuffer(texCoords);
 		
+		//load data buffers
 		bufferIDs = new int[1];
 		gl.glGenBuffers(1, bufferIDs,0);
 		
@@ -93,6 +97,7 @@ public class Monster {
 		gl.glRotated(angle, 0, 1, 0);
 		gl.glScaled(0.5, 0.5, 0.5);
 		{
+			//if torch/night mode is on, use immediate mode (shader cannot handle moving light)
 			if (isTorch) {
 				gl.glEnable(GL2.GL_TEXTURE_2D);
 			} else {
@@ -165,16 +170,18 @@ public class Monster {
 		gl.glPopMatrix();
 	}
 	
+	//render the cube with the VBO
 	private void drawCube(GL2 gl, boolean isHead) {
 		int start = 0;
 		
+		//set up material properties
 		gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_AMBIENT, matAmb,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_DIFFUSE, matDif,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SPECULAR, matSpec,0);
     	gl.glMaterialfv(GL2.GL_FRONT_AND_BACK, GL2.GL_SHININESS, matShine,0);
     			
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bufferIDs[0]);
-		
+
 		gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 		gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
@@ -183,6 +190,7 @@ public class Monster {
 		gl.glNormalPointer(GL.GL_FLOAT,0, normals.length*Float.BYTES );
 		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, (positions.length + normals.length)*Float.BYTES);
 		
+		//if we are rendering the head, texture it with the monster's face
 		if (isHead) {
 			gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[1].getTextureId());
 			
@@ -194,7 +202,6 @@ public class Monster {
 		gl.glBindTexture(GL2.GL_TEXTURE_2D, myTextures[0].getTextureId());
 		
 		gl.glDrawArrays(GL2.GL_QUADS,start,24);
-		
 		
 		gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, 0);
 		

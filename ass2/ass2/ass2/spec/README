@@ -10,6 +10,7 @@ Toggling some features:
 'f' pauses rain
 't' turns on torch and enables nightmode
 'g' enables the movement of the sun
+'c' changes camera mode between first person, third person and free view mode
 
 Camera movements:
 
@@ -19,3 +20,6 @@ Camera movements:
 'd' strafe right
 'left arrow' rotate view left
 'right arrow' rotate view right
+
+in free view mode, shift and ctrl will raise and lower the camera (along y axis)
+you can also fly off the map and through the terrain
