@@ -3,10 +3,11 @@ README FILE:
 Toggling some features:
 
 'r' turns rain off/on
-'b' turns billboarding off/on
+'b' changes rain particles to a quad
 'l' shows a raindrop model at the starting corner of the map
 '=' speeds up rain
 '-' slows down rain
+'f' pauses rain
 
 Camera movements:
 

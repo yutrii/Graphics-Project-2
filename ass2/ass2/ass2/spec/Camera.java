@@ -10,6 +10,16 @@ public class Camera {
 	private double aspectRatio;
 	private boolean isTorch;
 	
+	//Moving sun settings
+	private boolean isSunMove = false;
+	private float[] sunPos = { (float) Math.cos(Math.PI*0), (float) Math.sin(Math.PI*0), 0, 0};
+	private double sunTime = 0;
+	private double sunIncrement = 0.0087;
+	// Light property vectors.
+	float lightAmb[] = { 0.99f, 0.5f, 0f, 0.5f };
+	float lightDifAndSpec[] = { 0.99f, 0.5f, 0f, 0.5f };
+	float globAmb[] = { 1f, 1f, 1f, 1.0f };
+	
 	public static enum Mode {
 		FIRST_PERSON,
 		THIRD_PERSON,
@@ -68,24 +78,53 @@ public class Camera {
         	glu.gluLookAt(pos[0] - forward[0], pos[1], pos[2] - forward[2], pos[0], pos[1], pos[2], 0, 1, 0);
         }
         
-        //Set the directional light after camera is set so it remains fixed.
-        float[] lightPos = new float[4];
-        float[] sun = terrain.getSunlight();
-        lightPos[0] = sun[0];
-        lightPos[1] = sun[1];
-        lightPos[2] = sun[2];
-        lightPos[3] = 0;
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
+        /*############### SUNLIGHT POSITIONING AND MOVEMENT ###############*/
+        if (!isSunMove) {
+        	float[] lightPos = new float[4];
+            float[] sun = terrain.getSunlight();
+            lightPos[0] = sun[0];
+            lightPos[1] = sun[1];
+            lightPos[2] = sun[2];
+            lightPos[3] = 0;
+            gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos, 0);
+        } else {
+        	//Set the sunlight
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
+        	
+        	//Set the sky light
+        	gl.glClearColor(lightAmb[0], lightAmb[1], lightAmb[2], 1);
+        	
+        	//Position the sun
+        	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, sunPos, 0);
+        	
+        	sunTime += sunIncrement;
+        	sunPos[0] = (float) Math.cos(Math.PI*sunTime);
+        	sunPos[1] = (float) Math.sin(Math.PI*sunTime);
+        	
+        	gl.glLineWidth(20);
+        	gl.glBegin(GL2.GL_LINES);
+        		gl.glVertex3d(0, 0, 0);
+        		gl.glVertex3d(sunPos[0], sunPos[1], 0);
+        	gl.glEnd();
+        	
+        	if (sunTime < 1.57) {
+        		lightAmb[0] = lightDifAndSpec[0] -= 0.0027;
+        		//lightAmb[1] = lightDifAndSpec[1];
+        		lightAmb[2] = lightDifAndSpec[2] += 0.0056;
+        	} else if (sunTime >= 1.57 && sunTime < 3.14) {
+        		lightAmb[0] = lightDifAndSpec[0] += 0.0027;
+        		lightAmb[1] = lightDifAndSpec[1] -= 0.00077;
+        		lightAmb[2] = lightDifAndSpec[2] -= 0.0044;
+        	} else if (sunTime >= 3.14) {
+        		//RESET THE SUN
+        		resetDay();
+        	}
+        }
         
-//        ##############################
-        gl.glPushMatrix();
-        gl.glLineWidth(20);
-        gl.glBegin(GL2.GL_LINES);
-        	gl.glVertex3d(0, 0, 0);
-        	gl.glVertex3d(sun[0], sun[1], sun[2]);
-        gl.glEnd();
-        gl.glPopMatrix();
-//        ##############################
+        
+        /*#################################################################*/
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -99,8 +138,22 @@ public class Camera {
         gl.glMatrixMode(GL2.GL_MODELVIEW);
 	}
 	
+	public void resetDay() {
+		sunTime = 0;
+		lightAmb[0] = lightDifAndSpec[0] = 0.99f;
+		lightAmb[1] = lightDifAndSpec[1] = 0.5f;
+		lightAmb[2] = lightDifAndSpec[2] = 0.0f;
+		sunPos[0] = (float) Math.cos(Math.PI*0);
+		sunPos[1] = (float) Math.sin(Math.PI*0);
+		sunPos[2] = 0;
+	}
+	
 	public void toggleTorch() {
 		isTorch = !isTorch;
+	}
+	
+	public void toggleSunMove() {
+		isSunMove = !isSunMove;
 	}
 	
 	//moves camera forward or back
@@ -149,6 +202,9 @@ public class Camera {
 		aspectRatio = ar;
 	}
 	
+	public boolean isTorch() {
+		return isTorch;
+	}
 	
 	//switches the mode between first and third person
 	public void changeMode() {

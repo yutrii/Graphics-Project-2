@@ -144,17 +144,14 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 		gl.glEnable(GL2.GL_NORMALIZE);
 		
 		// Light property vectors.
-		//float[] sun = myTerrain.getSunlight();
     	float lightAmb[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     	float lightDifAndSpec[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    	//float lightPos[] = { sun[0], sun[1], sun[2], 0.0f };
     	float globAmb[] = { 1f, 1f, 1f, 1.0f };
 
     	// Light properties.
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, lightAmb,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, lightDifAndSpec,0);
     	gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_SPECULAR, lightDifAndSpec,0);
-    	//gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, lightPos,0);
 
     	gl.glEnable(GL2.GL_LIGHT0); // Enable particular light source.
     	gl.glLightModelfv(GL2.GL_LIGHT_MODEL_AMBIENT, globAmb,0); // Global ambient light.
@@ -249,6 +246,8 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 				myTerrain.rainSlow();
 			} else if (key == 'f') {
 				myTerrain.toggleRainPause();
+			} else if (key == 'g') {
+				camera.toggleSunMove();
 			}
 			
 		}
