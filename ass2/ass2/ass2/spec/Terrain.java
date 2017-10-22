@@ -521,32 +521,30 @@ public class Terrain {
 					}
 				}
 			}
-			
-			
-			if (showRainDrop) {
-				gl.glBegin(GL2.GL_QUADS);
-					gl.glNormal3d(0, 0, 1);
-					
-					gl.glTexCoord2d(1, 1);
-					gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
-					
-					gl.glTexCoord2d(0, 1);
-					gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
-					
-					gl.glTexCoord2d(0, 0);
-					gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
-					
-					gl.glTexCoord2d(1, 0);
-					gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
-				gl.glEnd();
-			}
-			
 			gl.glPopMatrix();
 			/*##########################################################
 			 * 
 			 *##########################################################*/
-			//gl.glBindTexture(GL2.GL_TEXTURE_2D, 0);
 		}
+		
+		if (showRainDrop) {
+			gl.glBegin(GL2.GL_QUADS);
+				gl.glNormal3d(0, 0, 1);
+				
+				gl.glTexCoord2d(1, 1);
+				gl.glVertex3d(0.0625, 0.125, 0.0625); //Top point
+				
+				gl.glTexCoord2d(0, 1);
+				gl.glVertex3d(0.075, 0.03125, 0.05); //Left point
+				
+				gl.glTexCoord2d(0, 0);
+				gl.glVertex3d(0.0625, 0, 0.0625); //Bottom point
+				
+				gl.glTexCoord2d(1, 0);
+				gl.glVertex3d(0.05, 0.03125, 0.075); //Right point
+			gl.glEnd();
+		}
+		
 		gl.glPopMatrix();
     }
     

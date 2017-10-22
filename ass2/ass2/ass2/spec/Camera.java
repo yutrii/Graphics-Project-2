@@ -86,6 +86,8 @@ public class Camera {
         
         /*############### SUNLIGHT POSITIONING AND MOVEMENT ###############*/
         if (!isSunMove) {
+        	gl.glEnable(GL2.GL_LIGHT0);
+        	gl.glDisable(GL2.GL_LIGHT2);
         	float[] lightPos = new float[4];
             float[] sun = terrain.getSunlight();
             lightPos[0] = sun[0];
@@ -119,12 +121,6 @@ public class Camera {
         	sunTime += sunIncrement;
         	sunPos[0] = (float) Math.cos(sunTime);
         	sunPos[1] = (float) Math.sin(sunTime);
-        	
-        	gl.glLineWidth(20);
-        	gl.glBegin(GL2.GL_LINES);
-        		gl.glVertex3d(0, 0, 0);
-        		gl.glVertex3d(sunPos[0], sunPos[1], 0);
-        	gl.glEnd();
         	
         	if (sunTime < 1.57) { //SUNRISE
         		lightAmb[0] /*= lightDifAndSpec[0]*/ -= 0.0027;
