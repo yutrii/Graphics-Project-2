@@ -99,13 +99,9 @@ public class Game extends JFrame implements GLEventListener, MouseMotionListener
 	public void display(GLAutoDrawable drawable) {
 		// TODO Auto-generated method stub
 		GL2 gl = drawable.getGL().getGL2();
-		//GLU glu = new GLU();
-		//gl.glClearColor(0.5f, 0.5f, 1, 1);
-		gl.glClearColor(1f, 1f, 1f, 1);
-		gl.glClear(GL2.GL_COLOR_BUFFER_BIT 
-				| GL2.GL_DEPTH_BUFFER_BIT);
 		
-		
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+	
 		keyOperations();
 		
 		camera.updateCamera(gl);
