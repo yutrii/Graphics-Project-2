@@ -41,8 +41,5 @@ public class Torch {
 		
 		gl.glLightfv(GL2.GL_LIGHT1, GL2.GL_SPOT_DIRECTION, direction, 0);
 	}
-	
-	public void drawTorch(GL2 gl) {
-	}
 }
 
