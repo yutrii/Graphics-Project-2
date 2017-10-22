@@ -181,12 +181,13 @@ public class Terrain {
      * @return
      */
     public double altitude(double x, double z) {
-        double altitude;
+        double altitude = 0;
         
         //if point is integer
         if (x == Math.floor(x) && z == Math.floor(z)) {
         	altitude = getGridAltitude((int)x, (int)z);
         } else { //non integer
+        
         	/*	 +-----+  
    				 | U  /|  
    				 |  /  |
@@ -210,17 +211,12 @@ public class Terrain {
         	double p4x = Math.floor(x);
         	double p4z = Math.ceil(z);
         	
-        	double det = ((p4x - p2x)*(z - p2z) - (p4z - p2z)*(x - p2x));
-        	
-        	double p2y = getGridAltitude((int)p2x, (int)p2z);
-        	double p4y = getGridAltitude((int)p4x, (int)p4z);
-        	
-        	if (det == 0) {
-        		//it's on the diagonal line, easy
-        		//use p1 and p2 altitude to interpolate
-        		 //length of diagonal
-        		// simplifly interpolation by finding difference in altitude
-        		double height = p2y - p4y;
+        	if (x == p4x) {
+        		//on left line
+        		System.out.println("on left line");
+        		double p1y = getGridAltitude((int)p2x, (int)p4z);
+        		double p4y = getGridAltitude((int)p4x, (int)p4z);
+        		double height = p1y - p4y;
         		
         		if (height == 0) { //points are same altitude
         			altitude = getGridAltitude((int)p4x, (int)p4z);
@@ -228,38 +224,95 @@ public class Terrain {
         			double pos;
         			double dist = Math.sqrt(2);
         			
-        			if (height > 0) { // p2 is higher than p1
+        			if (height > 0) { // p1 is higher
         			//distance of unknown point along line
-        				pos = Math.sqrt((p2x-x)*(p2x-x) + (z-p2z)*(z-p2z));
+        				pos = p4z - z;
         			} else { //p1 is higher than p2
         				height = Math.abs(height);
-        				pos = Math.sqrt((x-p4x)*(x-p4x) + (p4z-z)*(p4z-z));
+        				pos = z - p2z;
+        			}
+        			altitude = pos * height / dist;
+        		}
+        	} else if (z == p2z) {
+        		//on top line
+        		System.out.println("on top line");
+        		double p1y = getGridAltitude((int)p4x, (int)p2z);
+        		double p2y = getGridAltitude((int)p2x, (int)p2z);
+        		double height = p1y - p2y;
+        		
+        		if (height == 0) { //points are same altitude
+        			altitude = getGridAltitude((int)p4x, (int)p4z);
+        		} else {
+        			double pos;
+        			double dist = 1;
+        			
+        			if (height > 0) { // p1 is higher
+        			//distance of unknown point along line
+        				pos = p2x - x;
+        			} else { //p1 is higher than p2
+        				height = Math.abs(height);
+        				pos = x - p4x;
         			}
         			altitude = pos * height / dist;
         		}
         	} else {
-        		double r1;
-        		double r2;
-        		if (det > 0) {
-        			//it's in upper trangle (i think)
-        			double p1x = p4x;
-                	double p1z = p2z;
-                	double p1y = getGridAltitude((int)p1x, (int)p1z);
-                	
-                	r1 = (z-p1z)*p4y + (p4z-z)*p1y;
-                	r2 = (z-p2z)*p4y + (p4z-z)*p2y;
-                	altitude = ((x-p4x)/(p4z-z))*r2 + ((p4x+p4z-z-x)/(p4z-z))*r1;
-                	
-        		} else {
-        			//it's in lower (i think)
-        			double p3x = p2x;
-                	double p3z = p4z;
-                	double p3y = getGridAltitude((int)p3x, (int)p3z);
-
-                	r1 = (z-p2z)*p4y + (p4z-z)*p2y;
-                	r2 = (z-p2z)*p3y + (p3z-z)*p2y;
-                	altitude = ((x-p2x-p2z+z)/(z-p2z))*r2 + ((p2x-x)/(z-p2z))*r1;
-        		}
+        	
+	        	//double det = ((p4x - p2x)*(z - p2z) - (p4z - p2z)*(x - p2x));
+	        	
+	        	double det = (p2x - x) - (z - p2z);
+	        	
+	        	double p2y = getGridAltitude((int)p2x, (int)p2z);
+	        	double p4y = getGridAltitude((int)p4x, (int)p4z);
+	        	
+	        	if (det == 0) {
+	        		System.out.println("its on the diagonal");
+	        		//it's on the diagonal line, easy
+	        		//use p1 and p2 altitude to interpolate
+	        		 //length of diagonal
+	        		// simplify interpolation by finding difference in altitude
+	        		double height = p2y - p4y;
+	        		
+	        		if (height == 0) { //points are same altitude
+	        			altitude = getGridAltitude((int)p4x, (int)p4z);
+	        		} else {
+	        			double pos;
+	        			double dist = Math.sqrt(2);
+	        			
+	        			if (height < 0) { // p2 is higher than p1
+	        			//distance of unknown point along line
+	        				pos = Math.sqrt((p2x-x)*(p2x-x) + (z-p2z)*(z-p2z));
+	        			} else { //p1 is higher than p2
+	        				height = Math.abs(height);
+	        				pos = Math.sqrt((x-p4x)*(x-p4x) + (p4z-z)*(p4z-z));
+	        			}
+	        			altitude = pos * height / dist;
+	        		}
+	        	} else {
+	        		double r1;
+	        		double r2;
+	        		if (det > 0) {
+	        			//it's in upper trangle (i think)
+	        			System.out.println("its in upper triangle");
+	        			double p1x = p4x;
+	                	double p1z = p2z;
+	                	double p1y = getGridAltitude((int)p1x, (int)p1z);
+	                	
+	                	r1 = (z-p1z)*p4y + (p4z-z)*p1y;
+	                	r2 = (z-p2z)*p4y + (p4z-z)*p2y;
+	                	altitude = ((x-p4x)/(p4z-z))*r2 + ((p4x+p4z-z-x)/(p4z-z))*r1;
+	                	
+	        		} else {
+	        			//it's in lower (i think)
+	        			System.out.println("its in lower triangle");
+	        			double p3x = p2x;
+	                	double p3z = p4z;
+	                	double p3y = getGridAltitude((int)p3x, (int)p3z);
+	
+	                	r1 = (z-p2z)*p4y + (p4z-z)*p2y;
+	                	r2 = (z-p2z)*p3y + (p3z-z)*p2y;
+	                	altitude = ((x-p2x-p2z+z)/(z-p2z))*r2 + ((p2x-x)/(z-p2z))*r1;
+	        		}
+	        	}
         	}
         }
         
@@ -275,6 +328,7 @@ public class Terrain {
      */
     public void addTree(double x, double z) {
         double y = altitude(x, z);
+    	System.out.println("Tree at (" + x + ", " + z + ") is at altitude " + y);
         Tree tree = new Tree(x, y, z);
         myTrees.add(tree);
     }

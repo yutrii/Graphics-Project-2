@@ -6,7 +6,10 @@ import com.jogamp.opengl.glu.GLU;
 public class Camera {
 	private Terrain terrain;
 	private Avatar aang;
+	private Torch torch;
 	private double aspectRatio;
+	private boolean isTorch;
+	
 	public static enum Mode {
 		FIRST_PERSON,
 		THIRD_PERSON,
@@ -25,11 +28,24 @@ public class Camera {
 		aang = a;
 		aspectRatio = 1;
 		mode = Mode.FREE_VIEW;
+		torch = new Torch(pos, forward);
+		isTorch = false;
 	}
 	
 	//updates the camera based on new movements or rotations
 	public void updateCamera(GL2 gl) {
 		GLU glu = new GLU();
+		
+		if (isTorch) {
+			gl.glDisable(GL2.GL_LIGHT0);
+			gl.glEnable(GL2.GL_LIGHT1);
+			
+			torch.updatePos(pos, forward);
+			torch.setTorch(gl);
+		} else {
+			gl.glDisable(GL2.GL_LIGHT1);
+			gl.glEnable(GL2.GL_LIGHT0);
+		}
 		
 		if (mode != Mode.FREE_VIEW) {
 		//use terrain altitude if within bounds, otherwise float 0.5 above sea level (0 y ordinate)
@@ -79,6 +95,10 @@ public class Camera {
         }
 
         gl.glMatrixMode(GL2.GL_MODELVIEW);
+	}
+	
+	public void toggleTorch() {
+		isTorch = !isTorch;
 	}
 	
 	//moves camera forward or back
